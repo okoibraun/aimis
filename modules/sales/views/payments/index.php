@@ -12,29 +12,48 @@ if (!isset($_SESSION['user_id'])) {
 $page = "reports";
 $user_permissions = get_user_permissions($_SESSION['user_id']);
 
-// Get Super Roles
-$roles = super_roles();
-
-if (!in_array($_SESSION['role'], $roles) && !in_array($page, $user_permissions)) {
+if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
     exit;
 }
 
 if(in_array($_SESSION['user_role'], system_users())) {
-  $invoices = $db->query("
-      SELECT i.*, c.name AS customer_name,
+  // $invoices = $db->query("
+  //     SELECT i.*, c.name AS customer_name,
+  //         DATEDIFF(NOW(), i.invoice_date) AS days_outstanding
+  //     FROM sales_invoices i
+  //     JOIN sales_customers c ON c.id = i.customer_id
+  //     WHERE i.payment_status != 'paid'
+  //     ORDER BY i.invoice_date ASC
+  // ");
+  $invoices = $conn->query("
+  SELECT i.*, c.name AS customer_name, l.title, q.quote_number, o.order_number,
           DATEDIFF(NOW(), i.invoice_date) AS days_outstanding
       FROM sales_invoices i
-      JOIN sales_customers c ON c.id = i.customer_id
+      LEFT JOIN sales_customers l ON i.lead_id = l.id
+      LEFT JOIN sales_quotations q ON i.quotation_id = q.id
+      LEFT JOIN sales_customers c ON i.customer_id = c.id
+      LEFT JOIN sales_orders o ON i.order_id = o.id
       WHERE i.payment_status != 'paid'
       ORDER BY i.invoice_date ASC
   ");
 } else {
-  $invoices = $db->query("
-      SELECT i.*, c.name AS customer_name,
-          DATEDIFF(NOW(), i.invoice_date) AS days_outstanding
+  // $invoices = $db->query("
+  //     SELECT i.*, c.name AS customer_name,
+  //         DATEDIFF(NOW(), i.invoice_date) AS days_outstanding
+  //     FROM sales_invoices i
+  //     JOIN sales_customers c ON c.id = i.customer_id
+  //     WHERE i.payment_status != 'paid' AND i.company_id = $company_id
+  //     ORDER BY i.invoice_date ASC
+  // ");
+  $invoices = $conn->query("
+  SELECT i.*, c.name AS customer_name, l.title, q.quote_number, o.order_number,
+        DATEDIFF(NOW(), i.invoice_date) AS days_outstanding
       FROM sales_invoices i
-      JOIN sales_customers c ON c.id = i.customer_id
+      LEFT JOIN sales_customers l ON i.lead_id = l.id
+      LEFT JOIN sales_quotations q ON i.quotation_id = q.id
+      LEFT JOIN sales_customers c ON i.customer_id = c.id
+      LEFT JOIN sales_orders o ON i.order_id = o.id
       WHERE i.payment_status != 'paid' AND i.company_id = $company_id
       ORDER BY i.invoice_date ASC
   ");
@@ -86,12 +105,15 @@ if(in_array($_SESSION['user_role'], system_users())) {
                     <div class="card-header">
                         <h3 class="card-title">Outstanding Invoices</h3>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body table-responsive">
                         <table class="table table-bordered table-striped DataTable">
                             <thead>
                                 <tr>
                                     <th>Invoice #</th>
                                     <th>Customer</th>
+                                    <th>Lead Title</th>
+                                    <th>Quotation #</th>
+                                    <th>Order #</th>
                                     <th>Amount</th>
                                     <th>Paid</th>
                                     <th>Balance</th>
@@ -113,7 +135,10 @@ if(in_array($_SESSION['user_role'], system_users())) {
                                 ?>
                                 <tr>
                                     <td><?= $inv['invoice_number'] ?></td>
-                                    <td><?= htmlspecialchars($inv['customer_name']) ?></td>
+                                    <td><?= $inv['customer_name'] ?></td>
+                                    <td><?= $inv['title']; ?></td>
+                                    <td><?= $inv['quote_number']; ?></td>
+                                    <td><?= $inv['order_number']; ?></td>
                                     <td>N<?= number_format($inv['total_amount'], 2) ?></td>
                                     <td>N<?= number_format($inv['paid_amount'], 2) ?></td>
                                     <td>N<?= number_format($balance, 2) ?></td>
@@ -124,7 +149,9 @@ if(in_array($_SESSION['user_role'], system_users())) {
                                     <td><?= $days ?> days</td>
                                     <td><?= $bucket ?></td>
                                     <td>
-                                        <a href="add?id=<?= $inv['id'] ?>" class="btn btn-xs btn-success">Add Payment</a>
+                                      <?php if($inv['payment_status'] != 'paid') { ?>
+                                        <a href="add.php?id=<?= $inv['id'] ?>" class="btn btn-xs btn-success">Add Payment</a>
+                                      <?php } ?>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>
