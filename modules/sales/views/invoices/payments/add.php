@@ -20,7 +20,7 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
 $invoice_id = $_GET['invoice_id'] ?? null;
     if (!$invoice_id) exit('Invoice ID is required');
 
-    $invoice = $db->query("SELECT * FROM sales_invoices WHERE id = $invoice_id")->fetch_assoc();
+    $invoice = $db->query("SELECT * FROM sales_invoices WHERE id = $invoice_id AND company_id = $company_id")->fetch_assoc();
     if (!$invoice) exit('Invoice not found');
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -45,14 +45,14 @@ $invoice_id = $_GET['invoice_id'] ?? null;
         if($add) {
           // Update payment total and status
           $paid = $db->query("SELECT SUM(amount) AS amount FROM sales_invoice_payments WHERE invoice_id = $invoice_id")->fetch_assoc();
-          $status = ($paid >= $invoice['total_amount']) ? 'paid' : (($paid > 0) ? 'partial' : 'unpaid');
+          $status = ($paid['amount'] >= $invoice['total_amount']) ? 'paid' : (($paid['amount'] < $invoice['total_amount']) ? 'partial' : 'unpaid');
         
           // $db->update('sales_invoices', [
           //   'payment_received' => $paid,
           //   'status' => $status
           // ], ['id' => $invoice_id]);
 
-          $db->query("UPDATE sales_invoices SET payment_received={$paid['amount']}, status='$status' WHERE id = $invoice_id");
+          $db->query("UPDATE sales_invoices SET payment_received={$paid['amount']}, paid_amount={$paid['amount']}, status='$status', payment_status = '$status' WHERE id = $invoice_id");
           
           redirect("/modules/sales/views/invoices/invoice?id=$invoice_id");
         }
@@ -100,18 +100,22 @@ $invoice_id = $_GET['invoice_id'] ?? null;
                               </div>
   
                               <div class="form-group">
-                              <label>Payment Date</label>
-                              <input type="date" name="payment_date" class="form-control" required value="<?= date('Y-m-d') ?>">
+                                <label>Payment Date</label>
+                                <input type="date" name="payment_date" class="form-control" required value="<?= date('Y-m-d') ?>">
                               </div>
   
                               <div class="form-group">
-                              <label>Payment Method</label>
-                              <input type="text" name="payment_method" class="form-control" placeholder="e.g. Bank Transfer, Credit Card">
+                                <label for="payment_method">Payment Method</label>
+                                <select name="payment_method" class="form-control" required>
+                                  <?php foreach(['Cash', 'Bank Transfer', 'Card', 'Mobile Money'] as $payment_method) { ?>
+                                  <option value="<?= $payment_method; ?>"><?= $payment_method; ?></option>
+                                  <?php } ?>
+                                </select>
                               </div>
   
                               <div class="form-group">
-                              <label>Reference</label>
-                              <input type="text" name="reference" class="form-control" placeholder="e.g. Transaction ID">
+                                <label>Reference</label>
+                                <input type="text" name="reference" class="form-control" placeholder="e.g. Transaction ID">
                               </div>
   
                               <div class="form-group">
@@ -122,8 +126,10 @@ $invoice_id = $_GET['invoice_id'] ?? null;
                           </div>
   
                           <div class="card-footer">
-                              <button type="submit" class="btn btn-primary">Record Payment</button>
+                            <div class="form-group float-end">
                               <a href="../invoice?id=<?= $invoice['id'] ?>" class="btn btn-default">Cancel</a>
+                              <button type="submit" class="btn btn-primary">Record Payment</button>
+                            </div>
                           </div>
                       </form>
                     </div>

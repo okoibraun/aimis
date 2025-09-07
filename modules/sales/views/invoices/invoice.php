@@ -96,17 +96,38 @@ if (!$invoice) exit("Invoice not found.");
 
                         <dt>Due Date</dt>
                         <dd><?= $invoice['due_date'] ?></dd>
-                      </dl>
-                    </div>
 
-                    <div class="col">
-                      <dl class="dl-horizontal">
                         <dt>Status</dt>
                         <dd>
                           <span class="">
                             <?= ucfirst($invoice['status']) ?>
                           </span>
                         </dd>
+                      </dl>
+                    </div>
+
+                    <div class="col">
+                      <dl class="dl-horizontal">
+    
+                        <?php if (!empty($invoice['order_number'])): ?>
+                        <dt>Linked Order</dt>
+                        <dd>#<?= $invoice['order_number'] ?> (Total: N<?= number_format($invoice['order_total'], 2) ?>)</dd>
+                        <?php endif; ?>
+
+                        <?php if (!empty($invoice['quote_number'])): ?>
+                        <dt>Linked Quotation</dt>
+                        <dd>#<?= $invoice['quote_number'] ?> (Total: N<?= number_format($invoice['quote_total'], 2) ?>)</dd>
+                        <?php endif; ?>
+    
+                        <dt>Total Amount</dt>
+                        <dd><strong>N<?= number_format($invoice['total_amount'], 2) ?></strong></dd>
+    
+                        <dt>Amount Received</dt>
+                        <dd>N<?= number_format($invoice['payment_received'], 2) ?></dd>
+
+                        <dt>Balance</dt>
+                        <?php $balance_neg = $invoice['total_amount'] - $invoice['payment_received']; $balance = $invoice['payment_received'] - $invoice['total_amount']; ?> 
+                        <dd>N<?= number_format($balance_neg, 2) ?> (N<?= number_format($balance, 2) ?>)</dd>
                       </dl>
                     </div>
                     <div class="col">
@@ -152,25 +173,6 @@ if (!$invoice) exit("Invoice not found.");
                       </dl>
                     </div>
                     <div class="col">
-                      
-                      <dl class="dl-horizontal">
-    
-                        <?php if (!empty($invoice['order_number'])): ?>
-                        <dt>Linked Order</dt>
-                        <dd>#<?= $invoice['order_number'] ?> (Total: N<?= number_format($invoice['order_total'], 2) ?>)</dd>
-                        <?php endif; ?>
-
-                        <?php if (!empty($invoice['quote_number'])): ?>
-                        <dt>Linked Quotation</dt>
-                        <dd>#<?= $invoice['quote_number'] ?> (Total: N<?= number_format($invoice['quote_total'], 2) ?>)</dd>
-                        <?php endif; ?>
-    
-                        <dt>Total Amount</dt>
-                        <dd><strong>N<?= number_format($invoice['total_amount'], 2) ?></strong></dd>
-    
-                        <dt>Amount Received</dt>
-                        <dd>N<?= number_format($invoice['payment_received'], 2) ?></dd>
-                      </dl>
                     </div>
                   </div>
 
