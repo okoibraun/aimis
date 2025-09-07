@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="form-group">
                           <label for="lead_id">Lead (Optional)</label>
                           <select name="lead_id" id="lead_id" class="form-control select2">
-                              <option value="<?= intval("0"); ?>">-- Select Order --</option>
+                              <option value="<?= intval("0"); ?>">-- Select Lead --</option>
                               <?php foreach ($leads as $lead): ?>
                               <option value="<?= $lead['id'] ?>"><?= $lead['title'] ?></option>
                               <?php endforeach; ?>
@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="form-group">
                             <label for="quotation_id">Linked Quotation (Optional)</label>
                             <select name="quotation_id" id="selectQuotation" class="form-control select2" onchange="getQuoteValues()" required>
-                                <option value="<?= intval("0"); ?>" selected>-- Select Customer --</option>
+                                <option value="<?= intval("0"); ?>" selected>-- Select Quotation --</option>
                                 <?php foreach ($quotations as $quotation): ?>
                                 <option value="<?= $quotation['id'] ?>" data-tax="<?= $quotation['tax']; ?>" data-total="<?= $quotation['total']; ?>"><?= $quotation['quote_number'] ?></option>
                                 <?php endforeach; ?>

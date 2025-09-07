@@ -2,7 +2,6 @@
 config/
 themes/
 adminlte.io/
-permissions
 extension
 git_status.log
 git_status.txt

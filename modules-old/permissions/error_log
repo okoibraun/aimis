@@ -1,0 +1,8 @@
+[08-Aug-2025 09:18:26 UTC] PHP Fatal error:  Uncaught TypeError: Cannot access offset of type string on string in /home/legalass/public_html/aimiscloud/modules/permissions/manage.php:132
+Stack trace:
+#0 {main}
+  thrown in /home/legalass/public_html/aimiscloud/modules/permissions/manage.php on line 132
+[08-Aug-2025 09:19:03 UTC] PHP Fatal error:  Uncaught TypeError: Cannot access offset of type string on string in /home/legalass/public_html/aimiscloud/modules/permissions/manage.php:132
+Stack trace:
+#0 {main}
+  thrown in /home/legalass/public_html/aimiscloud/modules/permissions/manage.php on line 132
