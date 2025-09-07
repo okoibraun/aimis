@@ -1,7 +1,7 @@
 # local directories not for live or production
 config/
 themes/
-aadminlte.io/
+adminlte.io/
 permissions
 extension
 git_status.log
