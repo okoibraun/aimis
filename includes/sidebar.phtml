@@ -1,0 +1,1633 @@
+<?php $user_role = $_SESSION['user_role']; ?>
+<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+    <!--begin::Sidebar Brand-->
+    <div class="sidebar-brand">
+        <!--begin::Brand Link-->
+        <a href="/index.php" class="brand-link">
+            <!--begin::Brand Image-->
+            <img src="/assets/images/aimis_logo.png" alt="AIMIS Logo" class="brand-image opacity-75 shadow" />
+            <!--end::Brand Image-->
+            
+            <!--begin::Brand Text-->
+            <!-- <span class="brand-text fw-light">AIMIS</span> -->
+            <!--end::Brand Text-->
+        </a>
+        <!--end::Brand Link-->
+    </div>
+    <!--end::Sidebar Brand-->
+
+    <?php if($_SESSION['company_id'] != 0 || $_SESSION['company_id'] != null || $_SESSION['company_id'] != '' || !empty($_SESSION['company_id'])) { ?>
+    <!--begin::Sidebar Wrapper-->
+
+    <!-- begin Management Menu -->
+    <?php if($user_role == "management") { ?>
+    <div class="sidebar-wrapper">
+        <nav class="mt-2">
+            <!--begin::Sidebar Menu-->
+            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+                <li class="nav-item">
+                    <a href="/index.php" class="nav-link">
+                        <i class="nav-icon bi bi-palette"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <!-- Memo -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        Memos
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/memo/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Memos</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/memo/folders/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Folders</p>
+                            </a>
+                        </li>
+                        <!-- <li class="nav-item">
+                            <a href="/memo/version_history.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>History</p>
+                            </a>
+                        </li> -->
+                        <li class="nav-item">
+                            <a href="/memo/audit" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Audits</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Memo -->
+                
+                <!-- Documents -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-file"></i>
+                        DMS
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/dms/list.php" class="nav-link">
+                                <i class="nav-icon bi bi-file"></i>
+                                <span>Documents</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/dms/folders.php" class="nav-link">
+                                <i class="nav-icon bi bi-folder"></i>
+                                <span>Manage Folders</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Documents -->
+                
+                <!-- Reports -->
+                <!-- <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-bar-chart"></i>
+                        <span>Reports</span>
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/reports/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p> All Reports</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/modules/reports/builder.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p> Create Report</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/modules/reports/schedule_list.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                
+                                <p> My Scheduled Reports</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/reports/schedule.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p> Schedule New</p>
+                            </a>
+                        </li>
+                        
+                    </ul>
+                </li> -->
+                <!--end::Reports-->
+
+                <!-- Audit Trail Logs -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-receipt"></i>
+                        Activity & Audit Logs
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/logs/activity" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Activity Logs</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/logs/audit" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Audit Logs</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- / Audit Trail Logs -->
+            </ul>
+            <!--end::Sidebar Menu-->
+        </nav>
+    </div>
+    <?php } ?>
+    <!-- /end Management Menu -->
+
+    <!-- begin Accounts Menu -->
+    <?php if($user_role == "accounts") { ?>
+    <div class="sidebar-wrapper">
+        <nav class="mt-2">
+            <!--begin::Sidebar Menu-->
+            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+                <li class="nav-item">
+                    <a href="/index.php" class="nav-link">
+                        <i class="nav-icon bi bi-palette"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <!-- Memo -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        Memos
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/memo/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Memos</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/memo/folders/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Folders</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/memo/audit" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Audits</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Memo-->
+                
+                <!-- Accounts -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        Accounts
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <!-- <li class="nav-item">
+                            <a href="/accounts/charts_of_accounts/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Chart of Accounts</p>
+                            </a>
+                        </li> -->
+                        <li class="nav-item">
+                            <a href="/accounts/journal_entries/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Journal Entries</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/accounts/ledger/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>General Ledger</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/accounts/vendors/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Vendors</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/accounts/receivables/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Receivables</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/accounts/payables/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Payables</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/accounts/budgeting/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Budgeting</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/accounts/accruals_depreciation/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Accrual Depreciation</p>
+                            </a>
+                        </li>
+                        <!-- <li class="nav-item">
+                            <a href="/accounts/bank_reconciliation/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Bank Reconciliation</p>
+                            </a>
+                        </li> -->
+                        <li class="nav-item">
+                            <a href="/accounts/multi_currency/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Multi Currency</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Accounts-->
+                
+                <!-- Documents -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-file"></i>
+                        DMS
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/dms/list.php" class="nav-link">
+                                <i class="nav-icon bi bi-file"></i>
+                                <span>Documents</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/dms/folders.php" class="nav-link">
+                                <i class="nav-icon bi bi-folder"></i>
+                                <span>Manage Folders</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Documents-->
+            </ul>
+            <!--end::Sidebar Menu-->
+        </nav>
+    </div>
+    <?php } ?>
+    <!-- /end Accounts Menu -->
+
+    <!-- begin HR Menu -->
+    <?php if($user_role == "hr") { ?>
+    <div class="sidebar-wrapper">
+        <nav class="mt-2">
+            <!--begin::Sidebar Menu-->
+            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+                <li class="nav-item">
+                    <a href="/index.php" class="nav-link">
+                        <i class="nav-icon bi bi-palette"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <!-- Memo -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        Memos
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/memo/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Memos</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/memo/folders/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Folders</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/memo/audit" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Audits</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Memo-->
+                
+                <!-- Payroll -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        Payroll
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/payroll/employees/list_employees.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Employees</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/payroll/attendance/mark_attendance.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Mark Attendance</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/payroll/leave/leave_requests.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Leaves</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/payroll/contracts/view_contracts.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Contracts</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/payroll/payslips/generate_payslip.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Payslips</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/payroll/reports/payroll_summary.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Reports</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/payroll/compliance/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Compliance</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Payroll-->
+                
+                <!-- Documents -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-file"></i>
+                        DMS
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/dms/list.php" class="nav-link">
+                                <i class="nav-icon bi bi-file"></i>
+                                <span>Documents</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/dms/folders.php" class="nav-link">
+                                <i class="nav-icon bi bi-folder"></i>
+                                <span>Manage Folders</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Documents-->
+            </ul>
+            <!--end::Sidebar Menu-->
+        </nav>
+    </div>
+    <?php } ?>
+    <!-- /end HR Menu -->
+
+    <!-- begin Staffs Menu -->
+    <?php if($user_role == "staff") { ?>
+    <div class="sidebar-wrapper">
+        <nav class="mt-2">
+            <!--begin::Sidebar Menu-->
+            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+                <li class="nav-item">
+                    <a href="/index.php" class="nav-link">
+                        <i class="nav-icon bi bi-palette"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <!-- Memo -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        Memos
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/memo/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Memos</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/memo/folders/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Folders</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Memo-->
+                
+                <!-- Documents -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-file"></i>
+                        DMS
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/dms/list.php" class="nav-link">
+                                <i class="nav-icon bi bi-file"></i>
+                                <span>Documents</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/dms/folders.php" class="nav-link">
+                                <i class="nav-icon bi bi-folder"></i>
+                                <span>Manage Folders</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Documents-->
+            </ul>
+            <!--end::Sidebar Menu-->
+        </nav>
+    </div>
+    <?php } ?>
+    <!-- /end Staffs Menu -->
+
+    <!-- begin HR Director Menu -->
+    <?php if($user_role == "hrdirector") { ?>
+    <div class="sidebar-wrapper">
+        <nav class="mt-2">
+            <!--begin::Sidebar Menu-->
+            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+                <li class="nav-item">
+                    <a href="/index.php" class="nav-link">
+                        <i class="nav-icon bi bi-palette"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <!-- Memo -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        Memos
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/memo/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Memos</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/memo/folders/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Folders</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/memo/audit" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Audits</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Memo-->
+                
+                <!-- Payroll -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        Payroll
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/payroll/employees/list_employees.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Employees</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/payroll/attendance/mark_attendance.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Mark Attendance</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/payroll/leave/leave_requests.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Leaves</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/payroll/contracts/view_contracts.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Contracts</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/payroll/payslips/generate_payslip.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Payslips</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/payroll/reports/payroll_summary.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Reports</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/payroll/compliance/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Compliance</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Payroll-->
+                
+                <!-- Documents -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-file"></i>
+                        DMS
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/dms/list.php" class="nav-link">
+                                <i class="nav-icon bi bi-file"></i>
+                                <span>Documents</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/dms/folders.php" class="nav-link">
+                                <i class="nav-icon bi bi-folder"></i>
+                                <span>Manage Folders</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Documents-->
+                
+                <!-- Reports -->
+                <!-- <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-bar-chart"></i>
+                        <span>Reports</span>
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/reports/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p> All Reports</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/modules/reports/builder.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p> Create Report</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/modules/reports/schedule_list.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                
+                                <p> My Scheduled Reports</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/reports/schedule.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p> Schedule New</p>
+                            </a>
+                        </li>
+                        
+                    </ul>
+                </li> -->
+                <!--end::Reports-->
+
+            </ul>
+            <!--end::Sidebar Menu-->
+        </nav>
+    </div>
+    <?php } ?>
+    <!-- /end HR Director Menu -->
+
+    <!-- begin Sales Menu -->
+    <?php if($user_role == "sales") { ?>
+    <div class="sidebar-wrapper">
+        <nav class="mt-2">
+            <!--begin::Sidebar Menu-->
+            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+                <li class="nav-item">
+                    <a href="/index.php" class="nav-link">
+                        <i class="nav-icon bi bi-palette"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <!-- Memo -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        Memos
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/memo/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Memos</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/memo/folders/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Folders</p>
+                            </a>
+                        </li>
+                        <!-- <li class="nav-item">
+                            <a href="/memo/version_history.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>History</p>
+                            </a>
+                        </li> -->
+                        <li class="nav-item">
+                            <a href="/memo/audit" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Audits</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Memo-->
+                
+                <!-- Sales -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        Sales
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/sales/views/products/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Products</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/sales/views/customers/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Customers</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/sales/views/orders/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Orders</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/sales/views/leads/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Leads</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/sales/views/quotations/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Quotation</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/sales/views/invoices/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Invoices</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/sales/views/payments/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Payments</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/sales/views/performance/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Targets</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Sales-->
+                
+                <!-- CRM -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        CRM
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/crm/orders/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Orders</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/modules/crm/customers/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Customers</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/crm/leads/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Leads</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/crm/activities/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Activities</p>
+                            </a>
+                        </li>
+                        
+                        <!-- <li class="nav-item">
+                            <a href="/modules/crm/automation/list.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Automation</p>
+                            </a>
+                        </li> -->
+                        
+                        <li class="nav-item">
+                            <a href="/modules/crm/campaigns/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Campaigns</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/crm/segments/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Segments</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/crm/reminders/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Reminders</p>
+                            </a>
+                        </li>
+                        
+                        <!-- <li class="nav-item">
+                            <a href="/modules/crm/custom_fields/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Custom Fields</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/crm/tags/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Tags</p>
+                            </a>
+                        </li> -->
+                    </ul>
+                </li>
+                <!--end::CRM-->
+                
+                <!-- Production -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-gear-wide-connected"></i>
+                        Production
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <!-- <li class="nav-item">
+                            <a href="/modules/production/dashboard/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li> -->
+                        <li class="nav-item">
+                            <a href="/modules/production/bom/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>BOM</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/production/work_orders/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Work Orders</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/production/requisitions/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Requisitions</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/production/assignments/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Assignments</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/production/costing/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Costing</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/production/schedule/calendar.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Schedule</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/production/qc/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>QC</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/production/resources/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Resources</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/production/downtime/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Downtime</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/production/output/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Output</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Production-->
+                
+                <!-- Documents -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-file"></i>
+                        DMS
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/dms/list.php" class="nav-link">
+                                <i class="nav-icon bi bi-file"></i>
+                                <span>Documents</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/dms/folders.php" class="nav-link">
+                                <i class="nav-icon bi bi-folder"></i>
+                                <span>Manage Folders</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Documents-->
+
+            </ul>
+            <!--end::Sidebar Menu-->
+        </nav>
+    </div>
+    <?php } ?>
+    <!-- /end Sales Menu -->
+    
+
+    <?php if(in_array($user_role, ['system', 'superadmin', 'admin'])) { ?>
+    <div class="sidebar-wrapper">
+        <nav class="mt-2">
+            <!--begin::Sidebar Menu-->
+            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+                <li class="nav-item">
+                    <a href="/index.php" class="nav-link">
+                        <i class="nav-icon bi bi-palette"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <!-- Memo -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        Memos
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/memo/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Memos</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/memo/folders/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Folders</p>
+                            </a>
+                        </li>
+                        <!-- <li class="nav-item">
+                            <a href="/memo/version_history.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>History</p>
+                            </a>
+                        </li> -->
+                        <li class="nav-item">
+                            <a href="/memo/audit" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Audits</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Memo-->
+                
+                <!-- Accounts -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        Accounts
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/accounts/charts_of_accounts/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Chart of Accounts</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/accounts/journal_entries/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Journal Entries</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/accounts/ledger/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>General Ledger</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/accounts/vendors/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Vendors</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/accounts/receivables/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Receivables</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/accounts/payables/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Payables</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/accounts/budgeting/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Budgeting</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/accounts/accruals_depreciation/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Accrual Depreciation</p>
+                            </a>
+                        </li>
+                        <!-- <li class="nav-item">
+                            <a href="/accounts/bank_reconciliation/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Bank Reconciliation</p>
+                            </a>
+                        </li> -->
+                        <li class="nav-item">
+                            <a href="/accounts/multi_currency/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Multi Currency</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Accounts-->
+                
+                <!-- Payroll -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        Payroll
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/payroll/employees/list_employees.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Employees</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/payroll/attendance/mark_attendance.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Mark Attendance</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/payroll/leave/leave_requests.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Leaves</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/payroll/contracts/view_contracts.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Contracts</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/payroll/payslips/generate_payslip.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Payslips</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/payroll/reports/payroll_summary.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Reports</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/payroll/compliance/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Compliance</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Payroll-->
+                
+                <!-- Sales -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        Sales
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/sales/views/products/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Products</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/sales/views/customers/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Customers</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/sales/views/orders/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Orders</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/sales/views/leads/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Leads</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/sales/views/quotations/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Quotation</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/sales/views/invoices/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Invoices</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/sales/views/payments/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Payments</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/sales/views/performance/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Targets</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Sales-->
+                
+                <!-- CRM -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        CRM
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/crm/orders/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Orders</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/modules/crm/customers/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Customers</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/modules/crm/leads/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Leads</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/crm/activities/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Activities</p>
+                            </a>
+                        </li>
+                        
+                        <!-- <li class="nav-item">
+                            <a href="/modules/crm/automation/list.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Automation</p>
+                            </a>
+                        </li> -->
+                        
+                        <li class="nav-item">
+                            <a href="/modules/crm/campaigns/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Campaigns</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/crm/segments/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Segments</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/crm/reminders/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Reminders</p>
+                            </a>
+                        </li>
+                        
+                        <!-- <li class="nav-item">
+                            <a href="/modules/crm/custom_fields/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Custom Fields</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/crm/tags/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Tags</p>
+                            </a>
+                        </li> -->
+                    </ul>
+                </li>
+                <!--end::CRM-->
+                
+                <!-- Production -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-gear-wide-connected"></i>
+                        Production
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <!-- <li class="nav-item">
+                            <a href="/modules/production/dashboard/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li> -->
+                        <li class="nav-item">
+                            <a href="/modules/production/bom/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>BOM</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/production/work_orders/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Work Orders</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/production/requisitions/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Requisitions</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/production/assignments/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Assignments</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/production/costing/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Costing</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/production/schedule/calendar.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Schedule</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/production/qc/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>QC</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/production/resources/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Resources</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/production/downtime/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Downtime</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/production/output/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Output</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Production-->
+                
+                <!-- Tax -->
+                <li class="nav-item">
+                    <a href="/modules/tax/index.php" class="nav-link">
+                        <i class="nav-icon bi bi-kanban"></i>
+                        Tax
+                    </a>
+                </li>
+                <!--end::Tax-->
+                
+                <!-- AI -->
+                <li class="nav-item">
+                    <a href="/modules/ai/index.php" class="nav-link">
+                        <i class="nav-icon bi bi-robot"></i>
+                        AI
+                    </a>
+                </li>
+                <!--end::AI-->
+                
+                <!-- Documents -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-file"></i>
+                        DMS
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/dms/list.php" class="nav-link">
+                                <i class="nav-icon bi bi-file"></i>
+                                <span>Documents</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/dms/folders.php" class="nav-link">
+                                <i class="nav-icon bi bi-folder"></i>
+                                <span>Manage Folders</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!--end::Documents-->
+                
+                <!-- Reports -->
+                <!-- <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-bar-chart"></i>
+                        <span>Reports</span>
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/reports/index.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p> All Reports</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/modules/reports/builder.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p> Create Report</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="/modules/reports/schedule_list.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                
+                                <p> My Scheduled Reports</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/reports/schedule.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p> Schedule New</p>
+                            </a>
+                        </li>
+                        
+                    </ul>
+                </li> -->
+                <!--end::Reports-->
+                <?php $roles = ['admin', 'superadmin', 'system']; ?>
+                <?php if(in_array($_SESSION['role'], $roles)): ?>
+                <!-- Companies -->
+                <?php $system_roles = ['system']; ?>
+                <?php if(in_array($_SESSION['role'], $system_roles)): ?>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-house-gear-fill"></i>
+                        Manage Companies
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/company/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Companies</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/company/groups.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Company Groups</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <?php endif; ?>
+                <!-- /Companies -->
+
+                <!-- Users -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-person-fill-gear"></i>
+                        Manage Users
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/user/list.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Users</p>
+                            </a>
+                        </li>
+                        <?php if(in_array($_SESSION['role'], $system_roles)): ?>
+                        <li class="nav-item">
+                            <a href="/modules/roles/manage.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Roles</p>
+                            </a>
+                        </li>
+                        <?php endif; ?>
+                        <li class="nav-item">
+                            <a href="/modules/permissions/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Permissions</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- / Users -->
+                
+                <!-- Subscriptions -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-cash-stack"></i>
+                        Subscriptions
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/subscriptions/plans.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Plans</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/subscriptions/billing.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Billing</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/subscriptions/history.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>History</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- / Subscriptions -->
+
+                <!-- Settings -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-gear-fill"></i>
+                        Settings
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/settings/profile.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Profile</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/settings/company.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Company Settings</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- / Settings -->
+
+                <!-- Audit Trail Logs -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-receipt"></i>
+                        Activity & Audit Logs
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/logs/activity" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Activity Logs</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/modules/logs/audit" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Audit Logs</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- / Audit Trail Logs -->
+                <?php endif; ?>
+                <!-- </li> -->
+            </ul>
+            <!--end::Sidebar Menu-->
+        </nav>
+    </div>
+    <?php } ?>
+    <!--end::Sidebar Wrapper-->
+    <?php }  ?>
+    
+    <?php if($_SESSION['company_id'] == null || $_SESSION['company_id'] == '' || empty($_SESSION['company_id'])) { ?>
+    <!--begin::Onboard Sidebar Wrapper-->
+    <div class="sidebar-wrapper">
+        <nav class="mt-2">
+            <!--begin::Sidebar Menu-->
+            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+
+                <!-- Settings -->
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon bi bi-box-seam-fill"></i>
+                        Settings
+                        <i class="nav-arrow bi bi-chevron-right"></i>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="/modules/settings/profile.php" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p>Profile</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- / Settings -->
+            </ul>
+            <!--end::Sidebar Menu-->
+        </nav>
+    </div>
+    <!--end::Onboard Sidebar Wrapper-->
+    <?php } ?>
+</aside>

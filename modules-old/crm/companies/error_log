@@ -1,0 +1,2 @@
+[08-Aug-2025 10:06:54 UTC] PHP Warning:  Undefined variable $contact in /home/legalass/public_html/aimiscloud/modules/crm/companies/view.php on line 106
+[08-Aug-2025 10:06:54 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/legalass/public_html/aimiscloud/modules/crm/companies/view.php on line 106
