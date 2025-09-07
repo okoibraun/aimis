@@ -1,5 +1,5 @@
 ---
 deployment:
 tasks:
-- export DEPLOYPATH=/home/legalass/public_html/aimiscloud/
+- export DEPLOYPATH=/home/legalass/public_html/aimis/
 - /bin/cp -R * $DEPLOYPATH
