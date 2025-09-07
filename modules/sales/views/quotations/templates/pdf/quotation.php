@@ -11,6 +11,7 @@
   </style>
 </head>
 <body>
+  <img src="http://aimis.test/assets/images/aimis_logo.png" alt="AIMIS Cloud Logo" width="40%">
   <h2>Quotation #<?= $quotation['quote_number'] ?></h2>
   <p>Date: <?= $quotation['quotation_date'] ?></p>
   <p>Customer: <?= htmlspecialchars($customer['name']) ?></p>
