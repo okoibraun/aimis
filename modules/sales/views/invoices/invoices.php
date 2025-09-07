@@ -77,6 +77,13 @@ if ($action === 'pdf') {
     $pdf->SetMargins(15, 20, 15);
     $pdf->AddPage();
 
+    $logoPath = "../../../../assets/images/aimis_logo.png";
+    if (file_exists($logoPath)) {
+        // $pdf->Image($logoPath, 15, $pdf->GetY(), 40);
+        $pdf->Image($logoPath, 15, 15, 65);
+        $pdf->Ln(20);
+    }
+
     $customer_name = $invoice['customer_name'] ?? $invoice['lead_name'] ?? $invoice['order_cname'] ?? $invoice['quote_cname'] ?? $invoice['quote_lname'];
     $customer_email = $invoice['customer_email'] ?? $invoice['lead_email'] ?? $invoice['order_cemail'] ?? $invoice['quote_cemail'] ?? $invoice['quote_lemail'];
     $customer_phone = $invoice['customer_phone'] ?? $invoice['lead_phone'] ?? $invoice['order_cphone'] ?? $invoice['quote_cphone'] ?? $invoice['quote_lphone'];
@@ -121,11 +128,11 @@ if ($action === 'pdf') {
     ";
 
     // Add signature image if available
-    $signaturePath = "/public/assets/img/signature.png";
-    if (file_exists($signaturePath)) {
-        $pdf->Image($signaturePath, 15, $pdf->GetY(), 40);
-        $pdf->Ln(20);
-    }
+    // $signaturePath = "/public/assets/img/signature.png";
+    // if (file_exists($signaturePath)) {
+    //     $pdf->Image($signaturePath, 15, $pdf->GetY(), 40);
+    //     $pdf->Ln(20);
+    // }
 
     $pdf->writeHTML($signatureHTML, true, false, true, false, '');
 
