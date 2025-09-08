@@ -1,3 +1,0 @@
-[08-Aug-2025 10:10:39 UTC] PHP Warning:  Undefined array key "related_type" in /home/legalass/public_html/aimiscloud/modules/crm/communications/list.php on line 11
-[08-Aug-2025 10:10:39 UTC] PHP Warning:  Undefined array key "related_id" in /home/legalass/public_html/aimiscloud/modules/crm/communications/list.php on line 12
-[08-Aug-2025 10:10:39 UTC] PHP Deprecated:  ucfirst(): Passing null to parameter #1 ($string) of type string is deprecated in /home/legalass/public_html/aimiscloud/modules/crm/communications/list.php on line 65
