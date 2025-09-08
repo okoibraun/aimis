@@ -1,5 +1,0 @@
-[08-Aug-2025 10:10:28 UTC] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'c.first_name' in 'field list' in /home/legalass/public_html/aimiscloud/modules/crm/ai/analyze.php:5
-Stack trace:
-#0 /home/legalass/public_html/aimiscloud/modules/crm/ai/analyze.php(5): mysqli->query('\r\n  SELECT c.id...')
-#1 {main}
-  thrown in /home/legalass/public_html/aimiscloud/modules/crm/ai/analyze.php on line 5

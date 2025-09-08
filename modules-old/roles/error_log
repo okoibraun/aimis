@@ -1,6 +1,0 @@
-[08-Aug-2025 09:17:10 UTC] PHP Warning:  Undefined array key "role" in /home/legalass/public_html/aimiscloud/modules/roles/manage.php on line 138
-[08-Aug-2025 09:17:10 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/legalass/public_html/aimiscloud/modules/roles/manage.php on line 138
-[08-Aug-2025 09:18:09 UTC] PHP Warning:  Undefined array key "role" in /home/legalass/public_html/aimiscloud/modules/roles/manage.php on line 138
-[08-Aug-2025 09:18:09 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/legalass/public_html/aimiscloud/modules/roles/manage.php on line 138
-[08-Aug-2025 09:18:09 UTC] PHP Warning:  Undefined array key "role" in /home/legalass/public_html/aimiscloud/modules/roles/manage.php on line 138
-[08-Aug-2025 09:18:09 UTC] PHP Deprecated:  htmlspecialchars(): Passing null to parameter #1 ($string) of type string is deprecated in /home/legalass/public_html/aimiscloud/modules/roles/manage.php on line 138

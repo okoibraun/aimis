@@ -1,8 +1,0 @@
-[04-Aug-2025 19:11:56 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function phpsession_start() in /home/legalass/public_html/aimiscloud/modules/production/work_orders/index.php:1
-Stack trace:
-#0 {main}
-  thrown in /home/legalass/public_html/aimiscloud/modules/production/work_orders/index.php on line 1
-[07-Aug-2025 08:14:54 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function phpsession_start() in /home/legalass/public_html/aimiscloud/modules/production/work_orders/index.php:1
-Stack trace:
-#0 {main}
-  thrown in /home/legalass/public_html/aimiscloud/modules/production/work_orders/index.php on line 1

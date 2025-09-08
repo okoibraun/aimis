@@ -1,7 +1,0 @@
-# local directories not for live or production
-config/
-themes/
-adminlte.io/
-extension
-git_status.log
-git_status.txt
