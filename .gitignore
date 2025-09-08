@@ -1,0 +1,5 @@
+# local directories not for live or production
+/config/config.php
+/config/db.php
+/config/openai.php
+/config/secrets.php
