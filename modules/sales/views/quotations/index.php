@@ -78,7 +78,7 @@ if(in_array($_SESSION['user_role'], system_users())) {
                   </thead>
                   <tbody>
                     <?php foreach ($quotations as $quote): ?>
-                      <?php $customer = get_row_by_id('sales_customers', $quote['customer_id']); ?>
+                      <?php $customer = $conn->query("SELECT * FROM sales_customers WHERE id = {$quote['customer_id']}")->fetch_assoc(); //get_row_by_id('sales_customers', $quote['customer_id']); ?>
                       <tr>
                         <td><?= $quote['id'] ?></td>
                         <td><?= $quote['quote_number'] ?></td>
