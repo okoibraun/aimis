@@ -1,0 +1,16 @@
+{
+    "require": {
+        "openai-php/client": "^0.10.3",
+        "symfony/http-client": "^6.4",
+        "nyholm/psr7": "^1.8",
+        "tecnickcom/tcpdf": "^6.10",
+        "dompdf/dompdf": "^3.1",
+        "phpoffice/phpspreadsheet": "^4.4",
+        "phpmailer/phpmailer": "^6.10"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
+}
