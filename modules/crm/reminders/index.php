@@ -5,24 +5,18 @@ include("../../../functions/role_functions.php");
 
 //Check if a user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: ../../../login.php');
+    header('Location: /login.php');
     exit();
 }
 
 // Check User Permissions
 $page = "list";
-$user_permissions = get_user_permissions($_SESSION['user_id']);
+$user_permissions = get_user_permissions($user_id);
 
-// Get Super Roles
-$roles = super_roles();
-
-if (!in_array($_SESSION['role'], $roles) && !in_array($page, $user_permissions)) {
+if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
     exit;
 }
-
-$company_id = get_current_company_id();
-$user_id = get_current_user_id();
 
 $sql = "SELECT * FROM crm_reminders WHERE company_id = ? AND user_id = ? ORDER BY due_at ASC";
 $stmt = $conn->prepare($sql);
@@ -64,7 +58,7 @@ $result = $stmt->get_result();
                 </div>
                 <div class="col-lg-6 text-end">
                   <ol class="breadcrumb float-end">
-                    <li class="breadcrumb-item"><a href="../../../index.php"><i class="fa fa-home"></i> Home</a></li>
+                    <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i> Home</a></li>
                     <li class="breadcrumb-item"><a href="#">CRM</a></li>
                     <li class="breadcrumb-item active">Reminders</li>
                   </ol>
@@ -75,16 +69,11 @@ $result = $stmt->get_result();
             <section class="content">
               <div class="card">
                 <div class="card-header">
-                  <div class="row">
-                    <div class="col-lg-6">
-                      <h3 class="card-title">Reminders</h3>
-                    </div>
-                    <div class="col-lg-6 text-end">
-                      <!-- <a href="add.php" class="btn btn-success btn-sm">+ New Reminder</a> -->
-                    </div>
-                  </div>
+                  <h3 class="card-title">
+                    Reminders
+                  </h3>
                 </div>
-                <div class="card-body">
+                <div class="card-body table-responsive">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -100,15 +89,16 @@ $result = $stmt->get_result();
                             <tr class="<?= $reminder['is_done'] ? 'text-muted' : '' ?>">
                                 <td><?= date('Y-m-d H:i', strtotime($reminder['due_at'])) ?></td>
                                 <td><?= htmlspecialchars($reminder['reminder_text']) ?></td>
-                                <td><?= ucfirst($reminder['related_type']) ?> #<?= $reminder['related_id'] ?></td>
+                                  <?php $related_to = $conn->query("SELECT name, title, customer_type FROM sales_customers WHERE id={$reminder['related_id']}")->fetch_assoc(); ?>
+                                  <td><?= ucfirst($reminder['related_type']) ?> : <?= !empty($reminder['related_id']) ? ($related_to['customer_type'] == 'customer' ? $related_to['name'] : $related_to['title']) : 'none'; ?></td>
                                 <td>
-                                <?= $reminder['is_done'] ? '<span class="label label-success">Done</span>' : '<span class="label label-warning">Pending</span>' ?>
+                                  <?= $reminder['is_done'] ? '<span class="text text-success">Done</span>' : '<span class="text text-warning">Pending</span>' ?>
                                 </td>
                                 <td>
-                                <?php if (!$reminder['is_done']): ?>
+                                  <?php if (!$reminder['is_done']): ?>
                                     <a href="complete.php?id=<?= $reminder['id'] ?>" class="btn btn-xs btn-success">Mark Done</a>
-                                <?php endif; ?>
-                                <a href="delete.php?id=<?= $reminder['id'] ?>" class="btn btn-xs btn-danger" onclick="return confirm('Delete this reminder?')">Delete</a>
+                                  <?php endif; ?>
+                                  <a href="delete.php?id=<?= $reminder['id'] ?>" class="btn btn-xs btn-danger" onclick="return confirm('Delete this reminder?')">Delete</a>
                                 </td>
                             </tr>
                             <?php endwhile; ?>
@@ -132,11 +122,6 @@ $result = $stmt->get_result();
     <!--begin::Script-->
     <?php include("../../../includes/scripts.phtml"); ?>
     <!--end::Script-->
-    <script>
-      $(function () {
-        $('#leadsTable').DataTable();
-      });
-    </script>
   </body>
   <!--end::Body-->
 </html>

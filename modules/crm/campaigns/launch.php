@@ -18,16 +18,16 @@ $query = "SELECT id FROM $target_table WHERE company_id=?";
 $params = [$company_id];
 $types = 'i';
 
-if (!empty($filters['tag'])) {
-    $query .= " AND tags LIKE ?";
-    $params[] = '%' . $filters['tag'] . '%';
-    $types .= 's';
-}
-if (!empty($filters['status'])) {
-    $query .= " AND status = ?";
-    $params[] = $filters['status'];
-    $types .= 's';
-}
+// if (!empty($filters['tag'])) {
+//     $query .= " AND tags LIKE ?";
+//     $params[] = '%' . $filters['tag'] . '%';
+//     $types .= 's';
+// }
+// if (!empty($filters['status'])) {
+//     $query .= " AND status = ?";
+//     $params[] = $filters['status'];
+//     $types .= 's';
+// }
 
 $stmt = $conn->prepare($query);
 $stmt->bind_param($types, ...$params);
