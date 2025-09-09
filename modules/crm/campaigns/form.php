@@ -37,7 +37,7 @@
         <input type="datetime-local" name="scheduled_at" class="form-control" value="<?= isset($campaign['scheduled_at']) ? date('Y-m-d\TH:i', strtotime($campaign['scheduled_at'])) : '' ?>">
       </div>
     </div>
-    <?php if(isset($campaign['id'])) { ?>
+    <?php if(isset($id)) { ?>
     <div class="col">
       <div class="form-group">
         <label>Status</label>
