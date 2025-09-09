@@ -243,7 +243,7 @@ $user_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total F
               <div class="row">
                 <div class="col">
                   <?php $today = date('Y-m-d H:i', strtotime(date('Y-m-d H:i'))); ?>
-                  <?php $reminders = $conn->query("SELECT * FROM crm_reminders WHERE company_id = $company_id AND user_id = $user_id AND is_done = 0 ORDER BY due_at ASC"); ?>
+                  <?php $reminders = $conn->query("SELECT * FROM crm_reminders WHERE company_id = $company_id AND user_id = $user_id AND is_done = 0 ORDER BY due_at DESC"); ?>
                   <div class="card">
                     <div class="card-header">
                       <h3 class="card-title">
