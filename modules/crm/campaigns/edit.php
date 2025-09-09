@@ -19,10 +19,7 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
 }
 
 $id = isset($_GET['id']) ? $_GET['id'] : 0;
-$stmt = $conn->prepare("SELECT * FROM crm_campaigns WHERE id=? AND company_id=?");
-$stmt->bind_param("ii", $id, $company_id);
-$stmt->execute();
-$campaign = $stmt->get_result()->fetch_assoc();
+$campaign = $conn->query("SELECT * FROM crm_campaigns WHERE id = $id AND company_id = $company_id");
 ?>
 <!doctype html>
 <html lang="en">

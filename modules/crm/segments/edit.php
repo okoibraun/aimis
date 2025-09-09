@@ -13,22 +13,14 @@ if (!isset($_SESSION['user_id'])) {
 $page = "edit";
 $user_permissions = get_user_permissions($_SESSION['user_id']);
 
-// Get Super Roles
-$roles = super_roles();
-
-if (!in_array($_SESSION['role'], $roles) && !in_array($page, $user_permissions)) {
+if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
     exit;
 }
 
 $id = intval($_GET['id']);
-$company_id = get_current_company_id();
 
-$stmt = $conn->prepare("SELECT * FROM crm_segments WHERE id=? AND company_id=?");
-$stmt->bind_param("ii", $id, $company_id);
-$stmt->execute();
-$segment = $stmt->get_result()->fetch_assoc();
-
+$segment = $conn->query("SELECT * FROM crm_segments WHERE id = $id AND company_id = $company_id")->fetch_assoc();
 $filters = json_decode($segment['filters'], true);
 ?>
 <!doctype html>

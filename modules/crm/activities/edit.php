@@ -20,10 +20,7 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
 
 $id = intval($_GET['id']);
 
-$stmt = $conn->prepare("SELECT * FROM crm_activities WHERE id = ? AND company_id = ?");
-$stmt->bind_param("ii", $id, $company_id);
-$stmt->execute();
-$result = $stmt->get_result();
+$result = $conn->query("SELECT * FROM crm_activities WHERE id = $id AND company_id = $company_id");
 if ($result->num_rows === 0) die("Activity not found.");
 $activity = $result->fetch_assoc();
 ?>

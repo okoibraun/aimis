@@ -18,8 +18,6 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
     exit;
 }
 
-$company_id = get_current_company_id();
-
 // Prepare empty/default values for new campaign
 $campaign = [
     'id' => '',
