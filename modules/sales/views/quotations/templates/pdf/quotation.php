@@ -29,7 +29,7 @@
     </thead>
     <tbody>
       <?php foreach ($items as $index => $item):
-        $product = get_row_by_id('sales_products', $item['product_id']);
+        $product = $conn->query("SELECT * FROM sales_products WHERE id = {$item['product_id']}")->fetch_assoc();
         $subtotal = $item['quantity'] * $item['unit_price'] * (1 - $item['discount'] / 100);
       ?>
       <tr>

@@ -21,7 +21,7 @@ if (!in_array($_SESSION['role'], $roles) && !in_array($page, $user_permissions))
 }
 
 if(in_array($_SESSION['user_role'], system_users())) {
-  $quotations = get_all_rows('sales_quotations', 'quotation_date DESC');
+  $quotations = $conn->query("SELECT * FROM sales_quotations ORDER BY quotation_date DESC");
 } else {
   $quotations = $conn->query("SELECT * FROM sales_quotations WHERE company_id = $company_id ORDER BY quotation_date DESC");
 }

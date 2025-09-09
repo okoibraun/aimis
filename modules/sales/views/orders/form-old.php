@@ -15,7 +15,7 @@ $total_products = $products->num_rows;
 //    $products = $get_products->fetch_all();
 
 if ($id) {
-    $order = get_row_by_id('sales_orders', $id);
+    $order = $conn->query("SELECT * FROM sales_orders WHERE id = $id")->fetch_assoc();
     $items = $db->query("SELECT * FROM sales_order_items WHERE order_id = $id");
 }
 ?>
