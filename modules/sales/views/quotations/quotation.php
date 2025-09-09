@@ -23,8 +23,8 @@ if (!$id) {
   exit;
 }
 
-$quotation = get_row_by_id('sales_quotations', $id);
-$customer = get_row_by_id('sales_customers', $quotation['customer_id']);
+$quotation = $conn->query("SELECT * FROM sales_quotations WHERE id = $id")->fetch_assoc();
+$customer = $conn->query("SELECT * FROM sales_customers WHERE id = {$quotation['customer_id']}")->fetch_assoc();
 $items = $conn->query("SELECT * FROM sales_quotation_items WHERE quotation_id = $id");
 ?>
 <!doctype html>
