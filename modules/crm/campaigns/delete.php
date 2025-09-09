@@ -5,28 +5,24 @@ include("../../../functions/role_functions.php");
 
 //Check if a user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: ../../../login.php');
+    header('Location: /login.php');
     exit();
 }
 
 // Check User Permissions
 $page = "delete";
-$user_permissions = get_user_permissions($_SESSION['user_id']);
+$user_permissions = get_user_permissions($user_id);
 
-// Get Super Roles
-$roles = super_roles();
-
-if (!in_array($_SESSION['role'], $roles) && !in_array($page, $user_permissions)) {
+if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
     exit;
 }
 
 $id = intval($_GET['id']);
-$company_id = get_current_company_id();
 
-$stmt = $conn->prepare("DELETE FROM crm_campaigns WHERE id=? AND company_id=?");
-$stmt->bind_param("ii", $id, $company_id);
-$stmt->execute();
+$stmt = $conn->query("DELETE FROM crm_campaigns WHERE id = $id AND company_id = $company_id");
 
-header("Location: list.php");
-exit;
+if($stmt) {
+    header("Location: ./");
+    exit;
+}

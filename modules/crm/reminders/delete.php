@@ -5,7 +5,7 @@ include("../../../functions/role_functions.php");
 
 //Check if a user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: ../../../login.php');
+    header('Location: /login.php');
     exit();
 }
 
@@ -20,9 +20,9 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
 
 $id = intval($_GET['id']);
 
-$stmt = $conn->prepare("DELETE FROM crm_reminders WHERE id = ? AND company_id = ? AND user_id = ?");
-$stmt->bind_param("iii", $id, $company_id, $user_id);
-$stmt->execute();
+$stmt = $conn->query("DELETE FROM crm_reminders WHERE id = $id AND company_id = $company_id AND user_id = $user_id");
 
-header("Location: ./");
-exit;
+if($stmt) {
+    header("Location: ./");
+    exit;
+}

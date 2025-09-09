@@ -86,9 +86,8 @@ $result = $conn->query("SELECT * FROM crm_segments WHERE company_id = $company_i
                             <td><?= ucfirst($row['target_type']) ?></td>
                             <td><?= $row['created_at'] ?></td>
                             <td>
-                            <a href="view.php?id=<?= $row['id'] ?>" class="btn btn-xs btn-info">View</a>
-                            <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-xs btn-warning">Edit</a>
-                            <a href="delete.php?id=<?= $row['id'] ?>" class="btn btn-xs btn-danger" onclick="return confirm('Delete segment?')">Delete</a>
+                            <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-xs btn-info"><i class="fas fa-eye"></i></a>
+                            <a href="delete.php?id=<?= $row['id'] ?>" class="btn btn-xs btn-danger" onclick="return confirm('Delete segment?')"><i class="fas fa-trash"></i></a>
                             </td>
                         </tr>
                         <?php endwhile; ?>
