@@ -10,6 +10,7 @@ $description = $_POST['description'];
 $target_segment_id      = intval($_POST['target_segment_id']);
 $target_type          = trim($_POST['target_type']); // lead or customer
 $scheduled_at    = !empty($_POST['scheduled_at']) ? date('Y-m-d H:i:s', strtotime($_POST['scheduled_at'])) : null;
+$status = $_POST['status'];
 
 if ($campaign_id > 0) {
     // UPDATE existing campaign
