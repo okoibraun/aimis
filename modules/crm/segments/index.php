@@ -11,17 +11,13 @@ if (!isset($_SESSION['user_id'])) {
 
 // Check User Permissions
 $page = "list";
-$user_permissions = get_user_permissions($_SESSION['user_id']);
+$user_permissions = get_user_permissions($user_id);
 
-// Get Super Roles
-$roles = super_roles();
-
-if (!in_array($_SESSION['role'], $roles) && !in_array($page, $user_permissions)) {
+if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
     exit;
 }
 
-$company_id = get_current_company_id();
 $result = $conn->query("SELECT * FROM crm_segments WHERE company_id = $company_id");
 ?>
 <!doctype html>

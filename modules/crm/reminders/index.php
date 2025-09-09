@@ -18,11 +18,7 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
     exit;
 }
 
-$sql = "SELECT * FROM crm_reminders WHERE company_id = ? AND user_id = ? ORDER BY due_at ASC";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("ii", $company_id, $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
+$reminders = $conn->query("SELECT * FROM crm_reminders WHERE company_id = $company_id AND user_id = $user_id ORDER BY due_at ASC");
 ?>
 <!doctype html>
 <html lang="en">
@@ -85,7 +81,7 @@ $result = $stmt->get_result();
                             </tr>
                         </thead>
                         <tbody>
-                            <?php while ($reminder = $result->fetch_assoc()): ?>
+                            <?php foreach ($reminders as $reminder): ?>
                             <tr class="<?= $reminder['is_done'] ? 'text-muted' : '' ?>">
                                 <td><?= date('Y-m-d H:i', strtotime($reminder['due_at'])) ?></td>
                                 <td><?= htmlspecialchars($reminder['reminder_text']) ?></td>
@@ -101,7 +97,7 @@ $result = $stmt->get_result();
                                   <a href="delete.php?id=<?= $reminder['id'] ?>" class="btn btn-xs btn-danger" onclick="return confirm('Delete this reminder?')">Delete</a>
                                 </td>
                             </tr>
-                            <?php endwhile; ?>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
