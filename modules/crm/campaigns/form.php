@@ -43,7 +43,7 @@
         <label>Status</label>
         <select name="status" id="" class="form-control">
           <?php foreach(['draft','active','completed','archived'] as $status) { ?>
-          <option value="<?= $status ?>" <?= isset($campaign['id']) && $campaign['status'] == $status ? 'selected' : '' ?>><?= ucfirst($status) ?></option>
+          <option value="<?= $status ?>" <?= isset($id) && $campaign['status'] == $status ? 'selected' : '' ?>><?= ucfirst($status) ?></option>
           <?php } ?>
         </select>
       </div>
