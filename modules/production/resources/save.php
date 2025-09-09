@@ -5,7 +5,7 @@ if ($_POST['action'] === 'create') {
     $stmt = mysqli_prepare($conn, "INSERT INTO production_resources (name, code, type, status) VALUES (?, ?, ?, ?)");
     mysqli_stmt_bind_param($stmt, 'ssss', $_POST['name'], $_POST['code'], $_POST['type'], $_POST['status']);
     mysqli_stmt_execute($stmt);
-    header("Location: index.php");
+    header("Location: ./");
     exit;
 }
 
@@ -13,7 +13,7 @@ if ($_POST['action'] === 'update') {
     $stmt = mysqli_prepare($conn, "UPDATE production_resources SET name=?, code=?, type=?, status=? WHERE id=?");
     mysqli_stmt_bind_param($stmt, 'ssssi', $_POST['name'], $_POST['code'], $_POST['type'], $_POST['status'], $_POST['id']);
     mysqli_stmt_execute($stmt);
-    header("Location: index.php");
+    header("Location: ./");
     exit;
 }
 
@@ -37,6 +37,6 @@ if ($_POST['action'] === 'delete') {
     $stmt = mysqli_prepare($conn, "DELETE FROM production_resources WHERE id=?");
     mysqli_stmt_bind_param($stmt, 'i', $_POST['id']);
     mysqli_stmt_execute($stmt);
-    header("Location: index.php");
+    header("Location: ./");
     exit;
 }

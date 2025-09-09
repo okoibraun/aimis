@@ -1,4 +1,5 @@
-<?phpsession_start();
+<?php
+session_start();
 // Include database connection and header
 // This file should be included at the top of your PHP files to establish a database connection and include common header elements.
 include('../../../config/db.php');
@@ -6,7 +7,7 @@ include("../../../functions/role_functions.php");
 
 //Check if a user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: ../../../login.php');
+    header('Location: /login.php');
     exit();
 }
 
@@ -23,7 +24,7 @@ if (!in_array($_SESSION['role'], $roles) && !in_array($page, $user_permissions))
 }
 
 $products_tbl = 'inventory_products' ?? 'sales_products';
-$$products = $conn->query("SELECT id, name FROM $products_tbl");
+$products = $conn->query("SELECT id, name FROM $products_tbl");
 $boms = $conn->query("SELECT id, version FROM production_bom");
 ?>
 <!doctype html>

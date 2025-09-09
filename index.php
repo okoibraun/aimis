@@ -239,6 +239,53 @@ $user_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total F
               <?php } ?>
             </div>
             <!--end::Row-->
+            <?php if(in_array($_SESSION['user_role'], super_roles()) || in_array($_SESSION['user_role'], ['sales'])) { ?>
+              <div class="row">
+                <div class="col">
+                  <?php $today = date('Y-m-d H:i', strtotime(date('Y-m-d H:i'))); ?>
+                  <?php $reminders = $conn->query("SELECT * FROM crm_reminders WHERE company_id = $company_id AND user_id = $user_id AND is_done = 0 AND due_at = '$today' ORDER BY due_at ASC"); ?>
+                  <div class="card">
+                    <div class="card-header">
+                      <h3 class="card-title">
+                        Reminders
+                      </h3>
+                    </div>
+                    <div class="card-body table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                <th>Due Date</th>
+                                <th>Reminder</th>
+                                <th>Linked To</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($reminders as $reminder): ?>
+                                <tr class="<?= $reminder['is_done'] ? 'text-muted' : '' ?>">
+                                    <td><?= date('Y-m-d H:i', strtotime($reminder['due_at'])) ?></td>
+                                    <td><?= htmlspecialchars($reminder['reminder_text']) ?></td>
+                                      <?php $related_to = $conn->query("SELECT name, title, customer_type FROM sales_customers WHERE id={$reminder['related_id']}")->fetch_assoc(); ?>
+                                      <td><?= ucfirst($reminder['related_type']) ?> : <?= !empty($reminder['related_id']) ? ($related_to['customer_type'] == 'customer' ? $related_to['name'] : $related_to['title']) : 'none'; ?></td>
+                                    <td>
+                                      <?= $reminder['is_done'] ? '<span class="text text-success">Done</span>' : '<span class="text text-warning">Pending</span>' ?>
+                                    </td>
+                                    <td>
+                                      <?php if (!$reminder['is_done']): ?>
+                                        <a href="complete.php?id=<?= $reminder['id'] ?>" class="btn btn-xs btn-success">Mark Done</a>
+                                      <?php endif; ?>
+                                      <a href="delete.php?id=<?= $reminder['id'] ?>" class="btn btn-xs btn-danger" onclick="return confirm('Delete this reminder?')">Delete</a>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <?php } ?>
           </div>
           <!--end::Container-->
         </div>

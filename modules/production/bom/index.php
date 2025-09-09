@@ -15,10 +15,7 @@ if (!isset($_SESSION['user_id'])) {
 $page = "list";
 $user_permissions = get_user_permissions($_SESSION['user_id']);
 
-// Get Super Roles
-$roles = super_roles();
-
-if (!in_array($_SESSION['role'], $roles) && !in_array($page, $user_permissions)) {
+if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
     exit;
 }

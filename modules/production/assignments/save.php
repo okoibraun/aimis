@@ -14,4 +14,4 @@ mysqli_query($conn, "
     VALUES ($work_order_id, $resource_id, '$start', '$end', '$shift', '$remarks')
 ");
 
-header("Location: index.php");
+header("Location: ./");
