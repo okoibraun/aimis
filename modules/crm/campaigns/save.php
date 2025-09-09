@@ -15,12 +15,12 @@ if ($campaign_id > 0) {
     // UPDATE existing campaign
     $stmt = $conn->prepare("
         UPDATE crm_campaigns
-        SET campaign_name = ?, description = ?, target_segment_id = ?, target_type = ?, scheduled_at = ?
+        SET campaign_name = ?, description = ?, target_segment_id = ?, target_type = ?, scheduled_at = ?, status = ?
         WHERE id = ? AND company_id = ?
     ");
     $stmt->bind_param(
-        "ssissii",
-        $campaign_name, $description, $target_segment_id, $target_type, $scheduled_at, $campaign_id, $company_id
+        "ssisssii",
+        $campaign_name, $description, $target_segment_id, $target_type, $scheduled_at, $status, $campaign_id, $company_id
     );
 } else {
     // INSERT new campaign
