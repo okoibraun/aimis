@@ -95,10 +95,8 @@ $result = $conn->query("SELECT * FROM crm_campaigns WHERE company_id = $company_
                                 <td><?= ucfirst($row['status']) ?></td>
                                 <td><?= $row['scheduled_at'] ?? '—' ?></td>
                                 <td>
-                                    <a href="view.php?id=<?= $row['id'] ?>" class="btn btn-xs btn-info">View</a>
-                                    <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-xs btn-warning">Edit</a>
-                                    <a href="launch.php?id=<?= $row['id'] ?>" class="btn btn-xs btn-primary" onclick="return confirm('Launch this campaign?')">Launch</a>
-                                    <a href="delete.php?id=<?= $row['id'] ?>" class="btn btn-xs btn-danger" onclick="return confirm('Delete campaign?')">Delete</a>
+                                    <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-info"><i class="fas fa-eye"></i></a>
+                                    <a href="delete.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete campaign?')"><i class="fas fa-trash"></i></a>
                                 </td>
                             </tr>
                             <?php endwhile; ?>

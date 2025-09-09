@@ -11,12 +11,9 @@ if (!isset($_SESSION['user_id'])) {
 
 // Check User Permissions
 $page = "view";
-$user_permissions = get_user_permissions($_SESSION['user_id']);
+$user_permissions = get_user_permissions($user_id);
 
-// Get Super Roles
-$roles = super_roles();
-
-if (!in_array($_SESSION['role'], $roles) && !in_array($page, $user_permissions)) {
+if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
     exit;
 }
@@ -60,7 +57,7 @@ $activity = $result->fetch_assoc();
             <section class="content-header">
               <h1>Activity: <?= htmlspecialchars($activity['subject']) ?></h1>
               <a href="edit.php?id=<?= $activity['id'] ?>" class="btn btn-warning btn-sm">Edit</a>
-              <a href="list.php" class="btn btn-default btn-sm">Back</a>
+              <a href="./" class="btn btn-default btn-sm">Back</a>
             </section>
 
             <section class="content">
@@ -71,7 +68,7 @@ $activity = $result->fetch_assoc();
                   <p><strong>Related To:</strong> <?= ucfirst($activity['related_type']) ?> #<?= $activity['related_id'] ?></p>
                   <p><strong>Status:</strong> <?= ucfirst($activity['status']) ?></p>
                   <p><strong>Assigned To:</strong> User #<?= $activity['assigned_to'] ?></p>
-                  <p><strong>Notes:</strong><br><?= nl2br(htmlspecialchars($activity['notes'])) ?></p>
+                  <p><strong>Notes:</strong><br><?= nl2br(htmlspecialchars($activity['description'])) ?></p>
                 </div>
               </div>
             </section>

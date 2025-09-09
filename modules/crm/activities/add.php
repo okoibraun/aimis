@@ -5,18 +5,15 @@ include("../../../functions/role_functions.php");
 
 //Check if a user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: ../../../login.php');
+    header('Location: /login.php');
     exit();
 }
 
 // Check User Permissions
 $page = "add";
-$user_permissions = get_user_permissions($_SESSION['user_id']);
+$user_permissions = get_user_permissions($user_id);
 
-// Get Super Roles
-$roles = super_roles();
-
-if (!in_array($_SESSION['role'], $roles) && !in_array($page, $user_permissions)) {
+if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
     exit;
 }
@@ -43,24 +40,26 @@ if (!in_array($_SESSION['role'], $roles) && !in_array($page, $user_permissions))
       <!--end::Sidebar-->
       <!--begin::App Main-->
       <main class="app-main">
-      <div class="app-content">
-        <div class="container-fluid">
-          
+        <div class="app-content">
+          <div class="container-fluid">
+            
+            <div class="content-wrapper">
+              <section class="content-header mt-3 mb-3">
+                <h1>Add New Activity</h1>
+              </section>
 
-          <div class="content-wrapper">
-            <section class="content-header"><h1>Add New Activity</h1></section>
-            <section class="content">
-              <div class="box box-primary">
-                <div class="box-body">
-                  <?php include 'form.php'; ?>
+              <section class="content">
+                <div class="card">
+                  <div class="card-body">
+                    <?php include 'form.php'; ?>
+                  </div>
                 </div>
-              </div>
-            </section>
-          </div>
-          
+              </section>
+            </div>
+            
 
+          </div>
         </div>
-      </div>
       </main>
       <!--end::App Main-->
       <!--begin::Footer-->
@@ -71,11 +70,6 @@ if (!in_array($_SESSION['role'], $roles) && !in_array($page, $user_permissions))
     <!--begin::Script-->
     <?php include("../../../includes/scripts.phtml"); ?>
     <!--end::Script-->
-    <script>
-      $(function () {
-        $('#leadsTable').DataTable();
-      });
-    </script>
   </body>
   <!--end::Body-->
 </html>

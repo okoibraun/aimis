@@ -98,15 +98,19 @@ $activities = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
                       <?php foreach ($activities as $a): ?>
                       <tr>
                         <td><?= ucfirst($a['type']) ?></td>
-                        <td><?= htmlspecialchars($a['subject']) ?></td>
-                        <td><?= ucfirst($a['related_type']) ?> #<?= $a['related_id'] ?></td>
-                        <td><?= htmlspecialchars($a['due_date']) ?></td>
+                        <td><?= $a['subject'] ?></td>
+                        <?php $related_to = $conn->query("SELECT name, title, customer_type FROM sales_customers WHERE id={$a['related_id']}")->fetch_assoc(); ?>
+                        <td><?= ucfirst($a['related_type']) ?> : <?= !empty($a['related_id']) ? ($related_to['customer_type'] == 'customer' ? $related_to['name'] : $related_to['title']) : 'none'; ?></td>
+                        <td><?= $a['due_date'] ?></td>
                         <td><?= ucfirst($a['status']) ?></td>
-                        <td><?php $uname = $conn->query("SELECT name FROM users WHERE id={$a['assigned_to']}")->fetch_assoc(); echo $uname['name']; ?></td>
+                        <td><?= $uname = !empty($a['assigned_to']) ? $conn->query("SELECT name FROM users WHERE id={$a['assigned_to']}")->fetch_assoc()['name'] : 'none'; ?></td>
                         <td>
-                          <a href="view.php?id=<?= $a['id'] ?>" class="btn btn-xs btn-info">View</a>
-                          <a href="edit.php?id=<?= $a['id'] ?>" class="btn btn-xs btn-warning">Edit</a>
-                          <a href="delete.php?id=<?= $a['id'] ?>" class="btn btn-xs btn-danger" onclick="return confirm('Delete this activity?')">Delete</a>
+                          <a href="edit.php?id=<?= $a['id'] ?>" class="btn btn-sm btn-info">
+                            <i class="fas fa-eye"></i>
+                          </a>
+                          <a href="delete.php?id=<?= $a['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this activity?')">
+                            <i class="fas fa-trash"></i>
+                          </a>
                         </td>
                       </tr>
                       <?php endforeach; ?>
