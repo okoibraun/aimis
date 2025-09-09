@@ -5,7 +5,7 @@ $product = ['name'=>'','description'=>'','price'=>'','discount_type'=>'none','di
 $is_edit = isset($_GET['id']);
 
 if ($is_edit) {
-    $product = get_row_by_id('sales_products', $_GET['id']);
+    $product = $conn->query("SELECT * FROM sales_products WHERE id = {$_GET['id']}")->fetch_assoc();
 }
 ?>
 <!doctype html>

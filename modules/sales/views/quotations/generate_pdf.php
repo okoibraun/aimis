@@ -32,14 +32,14 @@ if (!$type || !$id) {
 
 require_once '../../../../vendor/tecnickcom/tcpdf/tcpdf.php';
 
-$quotation = get_row_by_id('sales_quotations', $id);
-$customer = get_row_by_id('sales_customers', $quotation['customer_id']);
+$quotation = $conn->query("SELECT * FROM sales_quotations WHERE id = $id")->fetch_assoc();
+$customer = $conn->query("SELECT * FROM sales_customers WHERE id = {$quotation['customer_id']}")->fetch_assoc();
 $items = $conn->query("SELECT * FROM sales_quotation_items WHERE quotation_id = $id");
 
 $product_item = "";
 
 foreach ($items as $index => $item) {
-  $product = get_row_by_id('sales_products', $item['product_id']);
+  $product = $conn->query("SELECT * FROM sales_products WHERE id = {$item['product_id']}")->fetch_assoc();
   $subtotal = $item['quantity'] * $item['unit_price'] * (1 - $item['discount'] / 100);
   $sub_total = number_format($subtotal, 2);
   $unit_price = number_format($item['unit_price'], 2);

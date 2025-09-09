@@ -10,7 +10,7 @@ $customer = ['company_name'=>'','email'=>'','phone'=>'','address'=>'','city'=>''
 $is_edit = isset($_GET['id']);
 
 if ($is_edit) {
-    $customer = get_row_by_id('sales_customers', $_GET['id']);
+    $customer = $conn->query("SELECT * FROM sales_customers WHERE id = {$_GET['id']} AND customer_type = 'customer'")->fetch_assoc();
 }
 ?>
 <!doctype html>

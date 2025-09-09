@@ -21,7 +21,7 @@ if (!in_array($_SESSION['role'], $roles) && !in_array($page, $user_permissions))
 }
 
 $id = $_GET['id'] ?? null;
-$customer = get_row_by_id('sales_customers', $id);
+$customer = $conn->query("SELECT * FROM sales_customers WHERE id = {$_GET['id']} AND customer_type = 'customer'")->fetch_assoc();
 $message = '';
 if (!$customer) {
     $message = "<div class='alert alert-danger'>Customer not found.</div>";
