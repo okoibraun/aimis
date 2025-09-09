@@ -26,7 +26,7 @@ if (!in_array($_SESSION['role'], $roles) && !in_array($page, $user_permissions))
 $id = $_GET['id'];
 $products_tbl = 'inventory_products' ?? 'sales_products';
 $bom = $conn->query("SELECT * FROM production_bom WHERE id=$id")->fetch_assoc();
-$products = $conn->query("SELECT id, name FROM $products_");
+$products = $conn->query("SELECT id, name FROM $products_tbl");
 
 $materials = $conn->query("SELECT id, name FROM $products_tbl WHERE is_raw_material=1");
 $bom_items = $conn->query("SELECT * FROM production_bom_items WHERE bom_id = $id");

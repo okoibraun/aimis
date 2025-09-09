@@ -1,7 +1,7 @@
 <?php
-require_once '../../../config/db.php';
 session_start();
-$user_id = $_SESSION['user_id'] ?? 1;
+require_once '../../../config/db.php';
+include("../../../functions/role_functions.php");
 
 // if ($_POST['action'] === 'create') {
 //     $sql = "INSERT INTO production_bom (product_id, version, description, created_by) 

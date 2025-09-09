@@ -1,6 +1,6 @@
 <?php
-require_once '../../../config/db.php';
 session_start();
+require_once '../../../config/db.php';
 $user_id = $_SESSION['user_id'] ?? 1;
 
 if ($_POST['action'] === 'create') {

@@ -26,4 +26,4 @@ $stmt = mysqli_prepare($conn, "UPDATE production_work_orders SET estimated_cost 
 mysqli_stmt_bind_param($stmt, 'ddi', $total_est, $total_actual, $wo_id);
 mysqli_stmt_execute($stmt);
 
-header("Location: index.php");
+header("Location: ./");

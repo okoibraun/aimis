@@ -1,6 +1,6 @@
 <?php
-require_once '../../../config/db.php';
 session_start();
+require_once '../../../config/db.php';
 $user_id = $_SESSION['user_id'] ?? 1;
 
 if ($_POST['action'] === 'create') {
@@ -19,7 +19,7 @@ if ($_POST['action'] === 'create') {
         $user_id
     );
     mysqli_stmt_execute($stmt);
-    header("Location: index.php");
+    header("Location: ./");
     exit;
 }
 
@@ -40,7 +40,7 @@ if ($_POST['action'] === 'update') {
         $_POST['id']
     );
     mysqli_stmt_execute($stmt);
-    header("Location: index.php");
+    header("Location: ./");
     exit;
 }
 

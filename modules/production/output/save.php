@@ -1,6 +1,7 @@
 <?php
-require_once '../../../config/db.php';
 session_start();
+require_once '../../../config/db.php';
+
 $user_id = $_SESSION['user_id'] ?? 1;
 $products_tbl = "inventory_products" ?? "sales_products";
 
