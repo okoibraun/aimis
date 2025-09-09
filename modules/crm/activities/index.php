@@ -11,22 +11,14 @@ if (!isset($_SESSION['user_id'])) {
 
 // Check User Permissions
 $page = "view";
-$user_permissions = get_user_permissions($_SESSION['user_id']);
+$user_permissions = get_user_permissions($user_id);
 
-// Get Super Roles
-$roles = super_roles();
-
-if (!in_array($_SESSION['role'], $roles) && !in_array($page, $user_permissions)) {
+if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
     exit;
 }
 
-$company_id = get_current_company_id();
-
-$stmt = $conn->prepare("SELECT * FROM crm_activities WHERE company_id = ? ORDER BY due_date DESC");
-$stmt->bind_param("i", $company_id);
-$stmt->execute();
-$activities = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+$activities = $conn->query("SELECT * FROM crm_activities WHERE company_id = $company_id ORDER BY due_date DESC");
 ?>
 <!doctype html>
 <html lang="en">
