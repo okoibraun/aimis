@@ -28,7 +28,7 @@
     </select>
   </div>
 
-  <input type="hidden" name="target_type" id="targetType">
+  <input type="hidden" name="target_type" id="targetType" value="<?= isset($id) ? $campaign['target_type'] : '' ?>">
 
   <div class="row">
     <div class="col">
