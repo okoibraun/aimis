@@ -29,7 +29,7 @@ $success = false;
 // }
 
 $available_roles = get_available_roles_for_user($_SESSION);
-$companies = (in_array($_SESSION['user_role'], system_users())) ? get_all_companies() : [];
+$companies = (in_array($_SESSION['user_role'], system_users())) ? $conn->query("SELECT * FROM companies") : [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $full_name = sanitize_input($_POST['full_name']);
@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   <div class="col-auto">
                     <ol class="breadcrumb float-end">
                       <li class="breadcrumb-item"><a href="../../index.php"><i class="fa fa-home"></i> Home</a></li>
-                      <li class="breadcrumb-item"><a href="list.php">Users</a></li>
+                      <li class="breadcrumb-item"><a href="./">Users</a></li>
                     </ol>
                   </div>
                 </div>
@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                           </h3>
                           <?php if($success) { ?>
                           <div class="card-tools">
-                            <a href="list.php" class="btn btn-danger">X</a>
+                            <a href="./" class="btn btn-danger">X</a>
                           </div>
                           <?php } ?>
                         </div>
@@ -183,7 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                               </div>
                             </div>
                             <div class="form-group float-end">
-                              <a href="list.php" class="btn btn-danger btn-sm">X Cancel</a>
+                              <a href="./" class="btn btn-danger btn-sm">X Cancel</a>
                               <button type="submit" class="btn btn-primary">Update User</button>
                             </div>
                           </form>

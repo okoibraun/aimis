@@ -25,7 +25,7 @@ $errors = [];
 $success = false;
 
 // Superadmin can assign users to any company
-$companies = (in_array($_SESSION['role'], system_users())) ? get_all_companies() : [get_company_by_id($company_id)];
+$companies = (in_array($_SESSION['role'], system_users())) ? $conn->query("SELECT * FROM companies") : $conn->query("SELECT * FROM companies WHERE id = $company_id");
 
 // Get roles based on current user's permission scope
 $available_roles = get_available_roles_for_user($_SESSION);
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = "Passwords do not match.";
     }
 
-    if (!user_can_manage_company($_SESSION, get_company_by_id($company_id))) {
+    if (!user_can_manage_company($_SESSION, $conn->query("SELECT * FROM companies WHERE id = $company_id"))) {
         $errors[] = "You are not allowed to assign users to this company.";
     }
 
@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <h3 class="card-title">New User Details</h3>
                             <?php if($success) { ?>
                             <div class="card-tools">
-                              <a href="list.php" class="btn btn-danger"> x </a>
+                              <a href="./" class="btn btn-danger"> x </a>
                             </div>
                             <?php } ?>
                           </div>
@@ -156,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                           </div>
                           <div class="card-footer">
                             <div class="form-group float-end">
-                              <a href="list.php" class="btn btn-danger">Cancel</a>
+                              <a href="./" class="btn btn-danger">Cancel</a>
                               <button type="submit" class="btn btn-primary">Create User</button>
                             </div>
                           </div>

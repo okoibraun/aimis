@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = "All fields are required.";
     }
 
-    if (!user_can_manage_company($_SESSION, get_company_by_id($company_id))) {
+    if (!user_can_manage_company($_SESSION, $conn->query("SELECT * FROM companies WHERE id = $company_id"))) {
         $errors[] = "You are not authorized to invite users to this company.";
     }
 
@@ -165,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="card-header">
                           <h4 class="card-title">Invitations List</h4>
                           <div class="card-tools">
-                            <a href="list.php" class="btn btn-sm btn-secondary">List All Users</a>
+                            <a href="./" class="btn btn-sm btn-secondary">List All Users</a>
                           </div>
                         </div>
                         <div class="card-body table-responsive">
