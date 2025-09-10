@@ -54,7 +54,7 @@ if(isset($action, $token)) {
                   <?php if ($success): ?>
                     <div class="alert alert-success">
                         <p><?= $message; ?></p>
-                      Registration complete. <a href="../../login.php">Login here</a>.
+                      Registration complete. <a href="/login.php">Login here</a>.
                     </div>
                   <?php endif; ?>
 

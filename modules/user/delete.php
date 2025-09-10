@@ -32,7 +32,7 @@ if (!$user || !user_can_manage_company($_SESSION, ['id' => $user['company_id']])
 }
 
 if (delete_user($user_id)) {
-    redirect('list.php');
+    redirect('./');
 } else {
     die('Failed to delete user.');
 }
