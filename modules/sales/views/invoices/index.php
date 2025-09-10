@@ -71,6 +71,8 @@ if(in_array($_SESSION['user_role'], system_users())) {
             </section>
 
             <section class="content">
+              <?php include("../../../../includes/alert.phtml"); ?>
+              
               <div class="card">
                 <div class="card-header with-border">
                     <div class="row">
