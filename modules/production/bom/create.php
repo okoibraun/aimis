@@ -20,8 +20,8 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
     exit;
 }
 
-$products_tbl = 'inventory_products' ?? 'sales_products';
-$products = $conn->query("SELECT id, name FROM $products_tbl");
+$products = $conn->query("SELECT * FROM sales_products WHERE company_id = $company_id");
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -48,68 +48,77 @@ $products = $conn->query("SELECT id, name FROM $products_tbl");
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header"><h1>Create BOM</h1></section>
+                <section class="content-header mt-3 mb-3">
+                    <h1>Create BOM</h1>
+                </section>
+
                 <section class="content">
-                    <form action="save.php" method="post">
-                        <div class="form-group">
-                            <label>Product</label>
-                            <select name="product_id" class="form-control" required>
-                                <option value="">Select Product</option>
-                                <?php while($p = mysqli_fetch_assoc($products)): ?>
-                                    <option value="<?= $p['id'] ?>"><?= $p['name'] ?></option>
-                                <?php endwhile; ?>
-                            </select>
+                    <form action="save.php" method="post" class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Product</label>
+    
+                                <select name="product_id" class="form-control" required>
+                                    <option value="">Select Product</option>
+                                    <?php foreach($products as $p): ?>
+                                        <option value="<?= $p['id'] ?>"><?= $p['name'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Version</label>
+                                <input type="text" name="version" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea name="description" id="summernote" class="form-control"></textarea>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Materials</h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-secondary btn-sm" onclick="addRow()">+ Add Material</button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <!-- BOM Materials -->
+                                    <table class="table table-bordered" id="materials-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Material</th>
+                                                <th>Qty</th>
+                                                <th>UOM</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Injected by JS -->
+                                        </tbody>
+                                    </table>
+
+                                    <script>
+                                        function addRow() {
+                                            const row = `<tr>
+                                                <td><input type="text" name="material[]" class="form-control" required></td>
+                                                <td><input type="number" name="material_qty[]" class="form-control" step="0.01" required></td>
+                                                <td><input type="text" name="material_uom[]" class="form-control" required></td>
+                                                <td><button type="button" onclick="this.closest('tr').remove()" class="btn btn-danger btn-sm">Remove</button></td>
+                                            </tr>`;
+                                            document.querySelector('#materials-table tbody').insertAdjacentHTML('beforeend', row);
+                                        }
+                                    </script>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Version</label>
-                            <input type="text" name="version" class="form-control" required>
+
+                        <div class="card-footer">
+                            <div class="form-group float-end">
+                                <a href="./" class="btn btn-default">Cancel</a>
+                                <button type="submit" name="action" value="create" class="btn btn-success">Save BOM</button>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea name="description" class="form-control"></textarea>
-                        </div>
-
-                        <!-- Inside the <form> tag, after BOM fields -->
-                        <h4 class="mt-3">Materials</h4>
-                        <table class="mb-3" id="materials-table">
-                            <thead>
-                                <tr>
-                                    <th>Material</th>
-                                    <th>Qty</th>
-                                    <th>UOM</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-
-                            </tbody>
-                        </table>
-                        <button type="button" class="btn btn-secondary" onclick="addRow()">+ Add Material</button>
-
-                        <script>
-                            function addRow() {
-                                const row = `<tr>
-                                    <td>
-                                        <select name="material_id[]" class="form-control" required>
-                                            <option value="">Select</option>
-                                            <?php
-                                            $materials = mysqli_query($conn, "SELECT id, name FROM inventory_products WHERE is_raw_material=1");
-                                            while($m = mysqli_fetch_assoc($materials)):
-                                            ?>
-                                                <option value="<?= $m['id'] ?>"><?= $m['name'] ?></option>
-                                            <?php endwhile; ?>
-                                        </select>
-                                    </td>
-                                    <td><input type="number" name="material_qty[]" class="form-control" step="0.01" required></td>
-                                    <td><input type="text" name="material_uom[]" class="form-control" required></td>
-                                    <td><button type="button" onclick="this.closest('tr').remove()" class="btn btn-danger btn-sm">Remove</button></td>
-                                </tr>`;
-                                document.querySelector('#materials-table tbody').insertAdjacentHTML('beforeend', row);
-                            }
-                        </script>
-
                         
-                        <button type="submit" name="action" value="create" class="btn btn-success">Save BOM</button>
                     </form>
                 </section>
             </div>

@@ -101,7 +101,7 @@ $reminders = $conn->query("SELECT * FROM crm_reminders WHERE company_id = $compa
                         </tbody>
                     </table>
                 </div>
-                </div>
+              </div>
             </section>
           </div>
           

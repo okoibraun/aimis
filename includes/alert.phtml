@@ -1,0 +1,21 @@
+<?php session_start(); ?>
+<div class="container">
+
+  <?php if (isset($_SESSION['success'])) { ?>
+    <div class="alert alert-success">
+        <?= $_SESSION['success']; unset($_SESSION['success']); ?>
+    </div>
+  <?php } ?>
+
+  <?php if (isset($_SESSION['message'])) { ?>
+    <div class="alert alert-info">
+        <?= $_SESSION['message']; unset($_SESSION['message']); ?>
+    </div>
+  <?php } ?>
+
+  <?php if(isset($_SESSION['error'])) { ?>
+    <div class="alert alert-danger">
+        <?= $_SESSION['error']; unset($_SESSION['error']); ?>
+    </div>
+  <?php } ?>
+</div>

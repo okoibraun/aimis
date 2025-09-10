@@ -68,19 +68,7 @@ $companies = in_array($_SESSION['role'], system_users()) ? get_all_companies() :
 
               <section class="content">
 
-                <div class="">
-                  <?php if (isset($_SESSION['success'])) { ?>
-                    <div class="alert alert-success"><?= $_SESSION['success']; unset($_SESSION['success']); ?></div>
-                  <?php } ?>
-
-                  <?php if (isset($_SESSION['message'])) { ?>
-                    <div class="alert alert-info"><?= $_SESSION['message']; unset($_SESSION['message']); ?></div>
-                  <?php } ?>
-
-                  <?php if(isset($_SESSION['error'])) { ?>
-                    <div class="alert alert-danger"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
-                  <?php } ?>
-                </div>
+                <?php include("../../includes/alert.phtml"); ?>
                 
                 <div class="card">
                   <div class="card-header">
