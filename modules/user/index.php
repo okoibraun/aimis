@@ -24,8 +24,8 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
 //$company_id_filter = $_SESSION['role'] === 'superadmin' ? ($_GET['company_id'] ?? null) : $_SESSION['company_id'];
 $company_id_filter = (in_array($_SESSION['role'], system_users())) ? ($_GET['company_id'] ?? null) : $company_id;
 
-$users = get_users_by_company($company_id_filter);
-$companies = in_array($_SESSION['role'], system_users()) ? get_all_companies() : [];
+$users = $conn->query("SELECT * FROM users WHERE company_id = $company_id_filter");
+$companies = in_array($_SESSION['role'], system_users()) ? $conn->query("SELECT * FROM companies") : [];
 ?>
 <!doctype html>
 <html lang="en">
