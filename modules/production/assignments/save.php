@@ -1,5 +1,7 @@
 <?php
+session_start();
 require_once '../../../config/db.php';
+include("../../../functions/role_functions.php");
 
 $work_order_id = $_POST['work_order_id'];
 $resource_id = $_POST['resource_id'];
@@ -8,10 +10,10 @@ $end = $_POST['assigned_end'];
 $shift = $_POST['shift'];
 $remarks = $_POST['remarks'];
 
-mysqli_query($conn, "
-    INSERT INTO production_resource_assignments
-    (work_order_id, resource_id, assigned_start, assigned_end, shift, remarks)
-    VALUES ($work_order_id, $resource_id, '$start', '$end', '$shift', '$remarks')
-");
+$stmt = $conn->prepare("INSERT INTO production_resource_assignments
+    (company_id, user_id, employee_id, work_order_id, resource_id, assigned_start, assigned_end, shift, remarks)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+$stmt->bind_param("iiiiissss", $company_id, $user_id, $employee_id, $work_order_id, $resource_id, $start, $end, $shift, $remarks);
+$insert = $stmt->execute();
 
-header("Location: ./");
+if($insert) header("Location: ./");

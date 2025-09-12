@@ -3,21 +3,16 @@ session_start();
 // Include database connection and header
 // This file should be included at the top of your PHP files to establish a database connection and include common header elements.
 include('../../../config/db.php');
+include("../../../functions/role_functions.php");
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: /login.php');
     exit();
 }
 
-
 $req_id = $_GET['id'];
 
-$items = mysqli_query($conn, "
-    SELECT pri.*, ip.name, ip.current_stock
-    FROM production_requisition_items pri
-    JOIN inventory_products ip ON pri.material_id = ip.id
-    WHERE requisition_id = $req_id
-");
+$items = $conn->query("SELECT * FROM production_requisition_items WHERE requisition_id = $req_id AND company_id = $company_id");
 ?>
 <!doctype html>
 <html lang="en">
@@ -44,32 +39,45 @@ $items = mysqli_query($conn, "
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header">
-                    <h1>Issue Materials - Requisition #<?= $req_id ?></h1>
+                <section class="content-header mt-3 mb-3">
+                    <h1>Issue Materials - For Requisition #<?= $conn->query("SELECT requisition_code FROM production_requisitions WHERE id = $req_id")->fetch_assoc()['requisition_code'] ?></h1>
                 </section>
+
                 <section class="content">
-                    <form action="issue_save.php" method="post">
-                        <input type="hidden" name="requisition_id" value="<?= $req_id ?>">
+                    <form action="issue_save.php" method="post" class="card">
+                        <div class="card-body">
+                            <input type="hidden" name="requisition_id" value="<?= $req_id ?>">
+    
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Material</th>
+                                        <th>Requested</th>
+                                        <th>Qty to Issue</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($items as $item): ?>
+                                    <tr>
+                                        <input type="hidden" name="item_id[]" value="<?= $item['id'] ?>">
+                                        <td><?= $item['material'] ?></td>
+                                        <td><?= $item['qty_requested'] ?></td>
+                                        <td>
+                                            <input type="number" step="0.01" name="qty_issued[]" class="form-control" value="<?= $item['qty_requested'] ?>">
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
 
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr><th>Material</th><th>Requested</th><th>Available</th><th>Qty to Issue</th></tr>
-                            </thead>
-                            <tbody>
-                                <?php while($item = mysqli_fetch_assoc($items)): ?>
-                                <tr>
-                                    <td><?= $item['name'] ?></td>
-                                    <td><?= $item['qty_requested'] ?></td>
-                                    <td><?= $item['current_stock'] ?></td>
-                                    <td>
-                                        <input type="number" step="0.01" name="issued[<?= $item['id'] ?>]" max="<?= $item['current_stock'] ?>" class="form-control" value="<?= $item['qty_requested'] ?>">
-                                    </td>
-                                </tr>
-                                <?php endwhile; ?>
-                            </tbody>
-                        </table>
+                        <div class="card-footer">
+                            <div class="form-group float-end">
+                                <a href="./" class="btn btn-default">Cancel</a>
+                                <button type="submit" class="btn btn-success">Confirm Issue</button>
+                            </div>
+                        </div>
 
-                        <button type="submit" class="btn btn-success">Confirm Issue & Deduct Stock</button>
                     </form>
                 </section>
             </div>

@@ -54,7 +54,7 @@ while ($row = mysqli_fetch_assoc($res)) {
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header">
+                <section class="content-header mt-3 mb-3">
                     <h1>Historical Performance Trends</h1>
                 </section>
 
@@ -75,9 +75,21 @@ while ($row = mysqli_fetch_assoc($res)) {
                 </section>
             </div>
 
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script>
-            <?php
+
+        </div>
+      </div>
+      </main>
+      <!--end::App Main-->
+      <!--begin::Footer-->
+      <?php include("../../../includes/footer.phtml"); ?>
+      <!--end::Footer-->
+    </div>
+    <!--end::App Wrapper-->
+    <!--begin::Script-->
+    <?php include("../../../includes/scripts.phtml"); ?>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        <?php
             $labels = $produced = $defective = $oee_values = [];
 
             $ideal_cycle_time = 1; // min/unit
@@ -106,58 +118,43 @@ while ($row = mysqli_fetch_assoc($res)) {
                 $oee = $availability * $performance * $quality * 100;
                 $oee_values[] = round($oee, 2);
             }
-            ?>
+        ?>
 
-            const outputCtx = document.getElementById('outputChart').getContext('2d');
-            new Chart(outputCtx, {
-                type: 'bar',
-                data: {
-                    labels: <?= json_encode(array_reverse($labels)) ?>,
-                    datasets: [
-                        {
-                            label: 'Produced',
-                            backgroundColor: 'rgba(40,167,69,0.7)',
-                            data: <?= json_encode(array_reverse($produced)) ?>
-                        },
-                        {
-                            label: 'Defective',
-                            backgroundColor: 'rgba(220,53,69,0.7)',
-                            data: <?= json_encode(array_reverse($defective)) ?>
-                        }
-                    ]
-                }
-            });
+        const outputCtx = document.getElementById('outputChart').getContext('2d');
+        new Chart(outputCtx, {
+            type: 'bar',
+            data: {
+                labels: <?= json_encode(array_reverse($labels)) ?>,
+                datasets: [
+                    {
+                        label: 'Produced',
+                        backgroundColor: 'rgba(40,167,69,0.7)',
+                        data: <?= json_encode(array_reverse($produced)) ?>
+                    },
+                    {
+                        label: 'Defective',
+                        backgroundColor: 'rgba(220,53,69,0.7)',
+                        data: <?= json_encode(array_reverse($defective)) ?>
+                    }
+                ]
+            }
+        });
 
-            const oeeCtx = document.getElementById('oeeChart').getContext('2d');
-            new Chart(oeeCtx, {
-                type: 'line',
-                data: {
-                    labels: <?= json_encode(array_reverse($labels)) ?>,
-                    datasets: [{
-                        label: 'OEE (%)',
-                        backgroundColor: 'rgba(0,123,255,0.4)',
-                        borderColor: 'rgba(0,123,255,1)',
-                        data: <?= json_encode(array_reverse($oee_values)) ?>,
-                        fill: true
-                    }]
-                }
-            });
-            </script>
-
-            <?php require_once '../../../templates/footer.php'; ?>
-
-
-        </div>
-      </div>
-      </main>
-      <!--end::App Main-->
-      <!--begin::Footer-->
-      <?php include("../../../includes/footer.phtml"); ?>
-      <!--end::Footer-->
-    </div>
-    <!--end::App Wrapper-->
-    <!--begin::Script-->
-    <?php include("../../../includes/scripts.phtml"); ?>
+        const oeeCtx = document.getElementById('oeeChart').getContext('2d');
+        new Chart(oeeCtx, {
+            type: 'line',
+            data: {
+                labels: <?= json_encode(array_reverse($labels)) ?>,
+                datasets: [{
+                    label: 'OEE (%)',
+                    backgroundColor: 'rgba(0,123,255,0.4)',
+                    borderColor: 'rgba(0,123,255,1)',
+                    data: <?= json_encode(array_reverse($oee_values)) ?>,
+                    fill: true
+                }]
+            }
+        });
+    </script>
     <!--end::Script-->
   </body>
   <!--end::Body-->

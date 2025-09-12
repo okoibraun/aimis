@@ -20,9 +20,8 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
     exit;
 }
 
-
-$work_orders = $conn->query("SELECT id, order_code FROM production_work_orders ORDER BY id DESC");
-$resources = $conn->query("SELECT id, name FROM production_resources ORDER BY name");
+$work_orders = $conn->query("SELECT id, order_code FROM production_work_orders WHERE company_id = $company_id ORDER BY id DESC");
+$resources = $conn->query("SELECT id, name FROM production_resources WHERE company_id = $company_id ORDER BY name");
 ?>
 <!doctype html>
 <html lang="en">
@@ -49,52 +48,73 @@ $resources = $conn->query("SELECT id, name FROM production_resources ORDER BY na
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header"><h1>Log Downtime</h1></section>
+                <section class="content-header mt-3 mb-3">
+                    <h1>Log Downtime</h1>
+                </section>
+
                 <section class="content">
-                    <form action="save.php" method="post">
-                        <input type="hidden" name="action" value="create">
-
-                        <div class="form-group">
-                            <label>Work Order</label>
-                            <select name="work_order_id" class="form-control" required>
-                                <option value="">Select</option>
-                                <?php while($w = mysqli_fetch_assoc($work_orders)): ?>
-                                    <option value="<?= $w['id'] ?>"><?= $w['order_code'] ?></option>
-                                <?php endwhile; ?>
-                            </select>
+                    <form action="save.php" method="post" class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">New Downtime Details</h3>
+                            <div class="card-tools">
+                                <a href="./" class="btn btn-danger btn-sm">X</a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Work Order</label>
+                                <select name="work_order_id" class="form-control" required>
+                                    <option value="">Select</option>
+                                    <?php while($w = mysqli_fetch_assoc($work_orders)): ?>
+                                        <option value="<?= $w['id'] ?>"><?= $w['order_code'] ?></option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+    
+                            <div class="form-group">
+                                <label>Resource (optional)</label>
+                                <select name="resource_id" class="form-control">
+                                    <option value="">None</option>
+                                    <?php while($r = mysqli_fetch_assoc($resources)): ?>
+                                        <option value="<?= $r['id'] ?>"><?= $r['name'] ?></option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Reason</label>
+                                <input type="text" name="downtime_reason" class="form-control" required>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Start Time</label>
+                                        <input type="datetime-local" name="start_time" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>End Time</label>
+                                        <input type="datetime-local" name="end_time" class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+    
+                            <div class="form-group">
+                                <label>Remarks</label>
+                                <textarea name="remarks" class="form-control"></textarea>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label>Resource (optional)</label>
-                            <select name="resource_id" class="form-control">
-                                <option value="">None</option>
-                                <?php while($r = mysqli_fetch_assoc($resources)): ?>
-                                    <option value="<?= $r['id'] ?>"><?= $r['name'] ?></option>
-                                <?php endwhile; ?>
-                            </select>
+                        <div class="card-footer">
+                            <div class="form-group float-end">
+                                <a href="./" class="btn btn-default">Cancel</a>
+                                <button type="submit" name="action" value="create" class="btn btn-success">Save Log</button>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label>Reason</label>
-                            <input type="text" name="downtime_reason" class="form-control" required>
-                        </div>
 
-                        <div class="form-group">
-                            <label>Start Time</label>
-                            <input type="datetime-local" name="start_time" class="form-control" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>End Time</label>
-                            <input type="datetime-local" name="end_time" class="form-control" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Remarks</label>
-                            <textarea name="remarks" class="form-control"></textarea>
-                        </div>
-
-                        <button type="submit" class="btn btn-success">Save Log</button>
                     </form>
                 </section>
             </div>

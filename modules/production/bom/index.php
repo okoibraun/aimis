@@ -7,23 +7,24 @@ include("../../../functions/role_functions.php");
 
 //Check if a user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: ../../../login.php');
+    header('Location: /login.php');
     exit();
 }
 
 // Check User Permissions
 $page = "list";
-$user_permissions = get_user_permissions($_SESSION['user_id']);
+$user_permissions = get_user_permissions($user_id);
 
 if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
     exit;
 }
 
-$products_tbl = 'inventory_products' ?? 'sales_products';
-$result = $conn->query("SELECT pb.id, ip.name AS product_name, pb.version, pb.created_at
+$result = $conn->query("SELECT pb.id, p.name AS product_name, pb.version, pb.created_at
         FROM production_bom pb
-        JOIN $products_tbl ip ON pb.product_id = ip.id");
+        JOIN sales_products p ON pb.product_id = p.id
+        WHERE pb.company_id = $company_id AND p.company_id = $company_id
+    ");
 ?>
 <!doctype html>
 <html lang="en">
@@ -50,34 +51,46 @@ $result = $conn->query("SELECT pb.id, ip.name AS product_name, pb.version, pb.cr
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header">
-                    <h1>Bill of Materials</h1>
-                    <a href="create.php" class="btn btn-primary">Add New BOM</a>
+                <section class="content-header mt-3 mb-3">
+                    <h1>Production BOM</h1>
                 </section>
                 <section class="content">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>#</th><th>Product</th><th>Version</th><th>Created At</th><th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php while($row = mysqli_fetch_assoc($result)): ?>
-                                <tr>
-                                    <td><?= $row['id'] ?></td>
-                                    <td><?= $row['product_name'] ?></td>
-                                    <td><?= $row['version'] ?></td>
-                                    <td><?= $row['created_at'] ?></td>
-                                    <td>
-                                        <a href="view.php?id=<?= $row['id'] ?>" class="btn btn-info btn-sm">View</a>
-                                        <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm">Edit</a>
-                                        <a href="delete.php?id=<?= $row['id'] ?>" class="btn btn-danger btn-sm"
-                                          onclick="return confirm('Delete this BOM?')">Delete</a>
-                                    </td>
-                                </tr>
-                            <?php endwhile; ?>
-                        </tbody>
-                    </table>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Bill of Materials</h3>
+                            <div class="card-tools">
+                                <a href="create.php" class="btn btn-primary">Add New BOM</a>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="table table-bordered DataTable">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Product</th>
+                                        <th>Version</th>
+                                        <th>Created At</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($result as $row): ?>
+                                        <tr>
+                                            <td><?= $row['id'] ?></td>
+                                            <td><?= $row['product_name'] ?></td>
+                                            <td><?= $row['version'] ?></td>
+                                            <td><?= $row['created_at'] ?></td>
+                                            <td>
+                                                <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
+                                                <a href="delete.php?id=<?= $row['id'] ?>" class="btn btn-danger btn-sm"
+                                                  onclick="return confirm('Delete this BOM?')"><i class="fas fa-trash"></i></a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </section>
             </div>
 

@@ -20,14 +20,13 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
     exit;
 }
 
-$products_tbl = "inventory_products" ?? "sales_products";
+$products_tbl = "sales_products";
 $wo_id = $_GET['id'];
-$wo = $conn->query("SELECT * FROM production_work_orders WHERE id = $wo_id")->fetch_assoc();
+$wo = $conn->query("SELECT * FROM production_work_orders WHERE id = $wo_id AND company_id = $company_id")->fetch_assoc();
 
 $materials = mysqli_query($conn, "
     SELECT pri.*, ip.name, ip.standard_cost, (pri.qty_issued * ip.standard_cost) AS cost
     FROM production_requisition_items pri
-    JOIN {$products_tbl} ip ON pri.material_id = ip.id
     WHERE requisition_id IN (
         SELECT id FROM production_requisitions WHERE work_order_id = $wo_id
     )
@@ -69,7 +68,7 @@ $material_total = 0;
                             <?php while($m = mysqli_fetch_assoc($materials)): 
                                 $material_total += $m['cost']; ?>
                                 <tr>
-                                    <td><?= $m['name'] ?></td>
+                                    <td><?= $m['material'] ?></td>
                                     <td><?= $m['qty_issued'] ?></td>
                                     <td><?= number_format($m['standard_cost'], 2) ?></td>
                                     <td><?= number_format($m['cost'], 2) ?></td>

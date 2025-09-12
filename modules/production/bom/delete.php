@@ -19,7 +19,7 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
 
 $id = $_GET['id'];
 
-$conn->query("DELETE FROM production_bom_items WHERE bom_id = $id");
-$conn->query("DELETE FROM production_bom WHERE id = $id");
+$conn->query("DELETE FROM production_bom_items WHERE bom_id = $id AND company_id = $company_id");
+$conn->query("DELETE FROM production_bom WHERE id = $id AND company_id = $company_id");
 header("Location: ./");
 exit;

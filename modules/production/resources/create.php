@@ -6,14 +6,14 @@ include('../../../config/db.php');
 include("../../../functions/role_functions.php");
 
 //Check if a user is logged in
-if (!isset($_SESSION['user_id'])) {
+if (!isset($user_id)) {
     header('Location: /login.php');
     exit();
 }
 
 // Check User Permissions
 $page = "add";
-$user_permissions = get_user_permissions($_SESSION['user_id']);
+$user_permissions = get_user_permissions($user_id);
 
 if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
@@ -47,34 +47,57 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header"><h1>Add Resource</h1></section>
+                <section class="content-header mt-3 mb-3">
+                    <h1>Add Resource</h1>
+                </section>
+
                 <section class="content">
-                    <form action="save.php" method="post">
-                        <div class="form-group">
-                            <label>Resource Name</label>
-                            <input type="text" name="name" class="form-control" required>
+                    <form action="save.php" method="post" class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Resource Details</h3>
+                            <div class="card-tools">
+                                <a href="./" class="btn btn-danger btn-sm">X</a>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Code</label>
-                            <input type="text" name="code" class="form-control">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Code</label>
+                                <input type="text" name="code" class="form-control" value="<?= "RES-". time() ?>" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Resource Name</label>
+                                <input type="text" name="name" class="form-control" required>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Type</label>
+                                        <select name="type" class="form-control" required>
+                                            <option value="">Select</option>
+                                            <option value="Manpower">Manpower</option>
+                                            <option value="Machine">Machine</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Status</label>
+                                        <select name="status" class="form-control">
+                                            <option value="Available">Available</option>
+                                            <option value="In Use">In Use</option>
+                                            <option value="Maintenance">Maintenance</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Type</label>
-                            <select name="type" class="form-control" required>
-                                <option value="">Select</option>
-                                <option value="Manpower">Manpower</option>
-                                <option value="Machine">Machine</option>
-                            </select>
+                        <div class="card-footer">
+                            <div class="form-group float-end">
+                                <a href="./" class="btn btn-default">Cancel</a>
+                                <button type="submit" name="action" value="create" class="btn btn-success">Save Resource</button>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Status</label>
-                            <select name="status" class="form-control">
-                                <option value="Available">Available</option>
-                                <option value="In Use">In Use</option>
-                                <option value="Maintenance">Maintenance</option>
-                            </select>
-                        </div>
-                        <button type="submit" name="action" value="create" class="btn btn-success">Save</button>
                     </form>
                 </section>
             </div>

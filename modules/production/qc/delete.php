@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once '../../../config/db.php';
 include("../../../functions/role_functions.php");
 
@@ -18,5 +19,5 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
 }
 
 $id = $_GET['id'];
-mysqli_query($conn, "DELETE FROM production_qc_checkpoints WHERE id = $id");
-header("Location: index.php");
+$delete_qc = $conn->query("DELETE FROM production_qc_checkpoints WHERE id = $id AND company_id = $company_id");
+if($delete_qc) header("Location: index.php");

@@ -3,21 +3,24 @@ session_start();
 // Include database connection and header
 // This file should be included at the top of your PHP files to establish a database connection and include common header elements.
 include('../../../config/db.php');
+include("../../../functions/role_functions.php");
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($user_id)) {
     header('Location: /login.php');
     exit();
 }
 
 $events = [];
-$rows = mysqli_query($conn, "
+$rows = $conn->query("
     SELECT pr.name AS resource, pwo.order_code, pra.*
     FROM production_resource_assignments pra
     JOIN production_resources pr ON pra.resource_id = pr.id
     JOIN production_work_orders pwo ON pra.work_order_id = pwo.id
+    WHERE pra.company_id = $company_id AND pr.company_id = pra.company_id AND pwo.company_id = pra.company_id
+
 ");
 
-while ($r = mysqli_fetch_assoc($rows)) {
+foreach ($rows as $r) {
     $events[] = [
         'title' => $r['order_code'] . ' - ' . $r['resource'],
         'start' => $r['assigned_start'],
@@ -33,6 +36,7 @@ while ($r = mysqli_fetch_assoc($rows)) {
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>AIMIS | Production - Schedule</title>
     <?php include_once("../../../includes/head.phtml"); ?>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/main.min.css" rel="stylesheet">
   </head>
   <!--end::Head-->
   <!--begin::Body-->
@@ -51,32 +55,21 @@ while ($r = mysqli_fetch_assoc($rows)) {
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header"><h1>Job Scheduling Calendar</h1></section>
+                <section class="content-header mt-3 mb-3">
+                    <h1>Production - Schedules</h1>
+                </section>
+
                 <section class="content">
-                    <div id="calendar"></div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Job Scheduling Calendar</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="calendar"></div>
+                        </div>
+                    </div>
                 </section>
             </div>
-
-            <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/main.min.css" rel="stylesheet">
-            <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/main.min.js"></script>
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    const calendarEl = document.getElementById('calendar');
-                    const calendar = new FullCalendar.Calendar(calendarEl, {
-                        initialView: 'timeGridWeek',
-                        headerToolbar: {
-                            left: 'prev,next today',
-                            center: 'title',
-                            right: 'timeGridWeek,timeGridDay'
-                        },
-                        events: <?= json_encode($events) ?>,
-                        eventClick: function(info) {
-                            alert(info.event.title + "\n" + info.event.extendedProps.description);
-                        }
-                    });
-                    calendar.render();
-                });
-            </script>
 
         </div>
       </div>
@@ -89,6 +82,25 @@ while ($r = mysqli_fetch_assoc($rows)) {
     <!--end::App Wrapper-->
     <!--begin::Script-->
     <?php include("../../../includes/scripts.phtml"); ?>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/main.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'timeGridWeek',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'timeGridWeek,timeGridDay'
+                },
+                events: <?= json_encode($events) ?>,
+                eventClick: function(info) {
+                    alert(info.event.title + "\n" + info.event.extendedProps.description);
+                }
+            });
+            calendar.render();
+        });
+    </script>
     <!--end::Script-->
   </body>
   <!--end::Body-->
