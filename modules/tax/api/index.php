@@ -1,0 +1,152 @@
+<?php
+session_start();
+// Include database connection and header
+// This file should be included at the top of your PHP files to establish a database connection and include common header elements.
+include('../../../config/db.php');
+include("../../../functions/role_functions.php");
+
+if (!isset($user_id)) {
+    header('Location: /login.php');
+    exit();
+}
+
+if (!in_array($_SESSION['role'], super_roles())) {
+    die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
+    exit;
+}
+
+$configs = $conn->query("SELECT * FROM tax_api_config WHERE company_id = $company_id");
+?>
+<!doctype html>
+<html lang="en">
+  <!--begin::Head-->
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>AIMIS | Tax - API Config</title>
+    <?php include_once("../../../includes/head.phtml"); ?>
+  </head>
+  <!--end::Head-->
+  <!--begin::Body-->
+  <body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+    <!--begin::App Wrapper-->
+    <div class="app-wrapper">
+      <!--begin::Header-->
+      <?php include_once("../../../includes/header.phtml"); ?>
+      <!--end::Header-->
+      <!--begin::Sidebar-->
+      <?php include_once("../../../includes/sidebar.phtml"); ?>
+      <!--end::Sidebar-->
+      <!--begin::App Main-->
+      <main class="app-main">
+      <div class="app-content">
+        <div class="container-fluid">
+
+            <div class="content-wrapper">
+              <section class="content-header mt-4 mb-4">
+                <h1><i class="fas fa-cogs"></i> Country-Specific Tax API Configurations</h1>
+              </section>
+
+              <section class="content">
+                <div class="card">
+                  <div class="card-header">
+                    <div class="card-tools">
+                      <a href="../" class="btn btn-secondary btn-sm">Back</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="card mt-3">
+                  <div class="card-body">
+                    <form method="POST" action="save.php" class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">
+                          New API Config
+                        </h3>
+                      </div>
+                      <div class="card-body">
+                        <div class="row">
+                          <div class="form-group col">
+                            <label>Country</label>
+                            <input name="country" class="form-control" required>
+                          </div>
+                          <div class="form-group col">
+                            <label>Authority</label>
+                            <input name="authority_name" class="form-control">
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="form-group col">
+                            <label>API Endpoint</label>
+                            <input name="api_endpoint" class="form-control">
+                          </div>
+                          <div class="form-group col">
+                            <label>API Token</label>
+                            <input name="api_token" class="form-control">
+                          </div>
+                          <div class="form-group col">
+                            <label>Environment</label>
+                            <select name="environment" class="form-control">
+                              <option value="sandbox">Sandbox</option>
+                              <option value="production">Production</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-footer">
+                        <div class="form-group float-end">
+                          <a href="../" class="btn btn-default">Cancel</a>
+                          <button class="btn btn-primary"><i class="fas fa-save"></i> Save Configuration</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+
+                <div class="card mt-4">
+                  <div class="card-header">
+                    <h3 class="card-title">Existing API Configs</h3>
+                  </div>
+                  <div class="card-body table-responsive">
+                    <table class="table table-striped DataTable">
+                      <thead>
+                        <tr>
+                          <th>Country</th>
+                          <th>Authority</th>
+                          <th>API URL</th>
+                          <th>Token</th>
+                          <th>Env</th>
+                          <th>Last Update</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <?php foreach ($configs as $c): ?>
+                          <tr>
+                            <td><?= $c['country'] ?></td>
+                            <td><?= $c['authority_name'] ?></td>
+                            <td><?= $c['api_endpoint'] ?></td>
+                            <td><?= substr($c['api_token'], 0, 10) ?>...</td>
+                            <td><?= $c['environment'] ?></td>
+                            <td><?= $c['updated_at'] ?></td>
+                          </tr>
+                        <?php endforeach ?>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+        </div>
+      </div>
+      </main>
+      <!--end::App Main-->
+      <!--begin::Footer-->
+      <?php include("../../../includes/footer.phtml"); ?>
+      <!--end::Footer-->
+    </div>
+    <!--end::App Wrapper-->
+    <!--begin::Script-->
+    <?php include("../../../includes/scripts.phtml"); ?>
+    <!--end::Script-->
+  </body>
+  <!--end::Body-->
+</html>

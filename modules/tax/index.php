@@ -49,9 +49,9 @@ if (!isset($_SESSION['user_id'])) {
                       <div class="card-body">
                         <h4 class="">Public Sector</h4>
                         <p class="card-text">Fund accounting, grants, IPSAS, budget encumbrance.</p>
-                        <a href="funds.php" class="btn btn-outline-primary btn-sm">Manage Funds</a>
-                        <a href="grants.php" class="btn btn-outline-primary btn-sm">Grants</a>
-                        <a href="budget.php" class="btn btn-outline-primary btn-sm">Encumbrance</a>
+                        <a href="funds/" class="btn btn-outline-primary btn-sm">Manage Funds</a>
+                        <a href="grants/" class="btn btn-outline-primary btn-sm">Grants</a>
+                        <a href="encumbrance/" class="btn btn-outline-primary btn-sm">Encumbrance</a>
                       </div>
                     </div>
                   </div>
@@ -61,10 +61,10 @@ if (!isset($_SESSION['user_id'])) {
                     <div class="card bg-gradient-success">
                       <div class="card-body">
                         <h4 class="">Private Sector</h4>
-                        <p class="card-text">VAT, GST, WHT, tax reports, e-filing support. <br>&nbsp;</p>
-                        <a href="setup.php" class="btn btn-outline-primary btn-sm">Configure Taxes</a>
-                        <a href="reports.php" class="btn btn-outline-primary btn-sm">Tax Reports</a>
-                        <a href="logs.php" class="btn btn-outline-primary btn-sm">Audit Logs</a>
+                        <p class="card-text">VAT, GST, WHT, tax reports <!--e-filing support-->. <br>&nbsp;</p>
+                        <a href="setup/" class="btn btn-outline-primary btn-sm">Configure Taxes</a>
+                        <a href="reports/" class="btn btn-outline-primary btn-sm">Tax Reports</a>
+                        <a href="logs/" class="btn btn-outline-primary btn-sm">Audit Logs</a>
                       </div>
                     </div>
                   </div>
@@ -75,9 +75,9 @@ if (!isset($_SESSION['user_id'])) {
                       <div class="card-body">
                         <h4 class="">International</h4>
                         <p class="card-text">OECD BEPS, currency compliance, country templates.</p>
-                        <a href="rules.php" class="btn btn-outline-primary btn-sm">Tax Rules</a>
-                        <a href="updates.php" class="btn btn-outline-primary btn-sm">Update Rates</a>
-                        <a href="#" class="btn btn-outline-primary btn-sm">Country Settings</a>
+                        <a href="rules/" class="btn btn-outline-primary btn-sm">Tax Rules</a>
+                        <a href="updates/" class="btn btn-outline-primary btn-sm">Update Rates</a>
+                        <a href="api/" class="btn btn-outline-primary btn-sm">Country Settings</a>
                       </div>
                     </div>
                   </div>
