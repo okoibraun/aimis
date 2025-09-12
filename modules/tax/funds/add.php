@@ -58,7 +58,7 @@ $funds = $conn->prepare("SELECT * FROM tax_funds WHERE company_id = $company_id"
                         <div class="card-header">
                             <h5 class="card-title">New Fund Details</h5>
                             <div class="card-tools">
-                                <a href="funds.php" class="btn btn-danger btn-sm">&times;</a>
+                                <a href="./" class="btn btn-danger btn-sm">&times;</a>
                             </div>
                         </div>
                         <div class="card-body">
@@ -77,7 +77,7 @@ $funds = $conn->prepare("SELECT * FROM tax_funds WHERE company_id = $company_id"
                         </div>
                         <div class="card-footer">
                             <div class="form-group float-end">
-                                <a href="funds.php" class="btn btn-default">Cancel</a>
+                                <a href="./" class="btn btn-default">Cancel</a>
                                 <button type="submit" class="btn btn-success">Save Fund</button>
                             </div>
                         </div>
