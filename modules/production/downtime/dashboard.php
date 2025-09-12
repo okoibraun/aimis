@@ -3,6 +3,7 @@ session_start();
 // Include database connection and header
 // This file should be included at the top of your PHP files to establish a database connection and include common header elements.
 include('../../../config/db.php');
+include("../../../functions/role_functions.php");
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: /login.php');
@@ -10,15 +11,18 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 
+// Dashboard Records
 // Summary totals
 $total_downtime = mysqli_fetch_assoc(mysqli_query($conn, "
     SELECT SUM(duration_minutes) AS total FROM production_downtime_logs
+    WHERE company_id = $company_id
 "))['total'] ?? 0;
 
 $top_resources = mysqli_query($conn, "
     SELECT pr.name AS resource_name, SUM(dl.duration_minutes) AS total
     FROM production_downtime_logs dl
     LEFT JOIN production_resources pr ON dl.resource_id = pr.id
+    WHERE dl.company_id = $company_id AND pr.company_id = dl.company_id
     GROUP BY dl.resource_id
     ORDER BY total DESC LIMIT 5
 ");
@@ -26,6 +30,7 @@ $top_resources = mysqli_query($conn, "
 $top_reasons = mysqli_query($conn, "
     SELECT downtime_reason, SUM(duration_minutes) AS total
     FROM production_downtime_logs
+    WHERE company_id = $company_id
     GROUP BY downtime_reason
     ORDER BY total DESC LIMIT 5
 ");
@@ -34,7 +39,7 @@ $top_reasons = mysqli_query($conn, "
 $daily_breakdown = mysqli_query($conn, "
     SELECT DATE(start_time) AS day, SUM(duration_minutes) AS total
     FROM production_downtime_logs
-    WHERE start_time >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+    WHERE start_time >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) AND company_id = $company_id
     GROUP BY day ORDER BY day
 ");
 ?>
@@ -107,28 +112,6 @@ $daily_breakdown = mysqli_query($conn, "
                 </section>
             </div>
 
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script>
-                const ctx = document.getElementById('downtimeChart').getContext('2d');
-                const chart = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: [<?php
-                            mysqli_data_seek($daily_breakdown, 0);
-                            while ($row = mysqli_fetch_assoc($daily_breakdown)) echo "'" . $row['day'] . "',";
-                        ?>],
-                        datasets: [{
-                            label: 'Downtime (minutes)',
-                            data: [<?php
-                                mysqli_data_seek($daily_breakdown, 0);
-                                while ($row = mysqli_fetch_assoc($daily_breakdown)) echo $row['total'] . ",";
-                            ?>],
-                            backgroundColor: 'rgba(255, 99, 132, 0.7)'
-                        }]
-                    }
-                });
-            </script>
-
         </div>
       </div>
       </main>
@@ -140,6 +123,27 @@ $daily_breakdown = mysqli_query($conn, "
     <!--end::App Wrapper-->
     <!--begin::Script-->
     <?php include("../../../includes/scripts.phtml"); ?>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('downtimeChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [<?php
+                    mysqli_data_seek($daily_breakdown, 0);
+                    while ($row = mysqli_fetch_assoc($daily_breakdown)) echo "'" . $row['day'] . "',";
+                ?>],
+                datasets: [{
+                    label: 'Downtime (minutes)',
+                    data: [<?php
+                        mysqli_data_seek($daily_breakdown, 0);
+                        while ($row = mysqli_fetch_assoc($daily_breakdown)) echo $row['total'] . ",";
+                    ?>],
+                    backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                }]
+            }
+        });
+    </script>
     <!--end::Script-->
   </body>
   <!--end::Body-->

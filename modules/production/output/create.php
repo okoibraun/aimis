@@ -21,8 +21,8 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
 }
 
 $products_tbl = 'inventory_products' ?? 'sales_products';
-$orders = mysqli_query($conn, "SELECT id, order_code FROM production_work_orders ORDER BY id DESC");
-$products = mysqli_query($conn, "SELECT id, name FROM {$products_tbl} ORDER BY name");
+$orders = mysqli_query($conn, "SELECT id, order_code FROM production_work_orders WHERE company_id = $company_id ORDER BY id DESC");
+$products = mysqli_query($conn, "SELECT id, name FROM sales_products WHERE company_id = $company_id ORDER BY name");
 ?>
 <!doctype html>
 <html lang="en">
@@ -49,50 +49,67 @@ $products = mysqli_query($conn, "SELECT id, name FROM {$products_tbl} ORDER BY n
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header"><h1>Log Production Output</h1></section>
+                <section class="content-header mt-3 mb-3">
+                    <h1>Log Production Output</h1>
+                </section>
+
                 <section class="content">
-                    <form action="save.php" method="post">
-                        <div class="form-group">
-                            <label>Work Order</label>
-                            <select name="work_order_id" class="form-control" required>
-                                <option value="">Select</option>
-                                <?php while($o = mysqli_fetch_assoc($orders)): ?>
-                                    <option value="<?= $o['id'] ?>"><?= $o['order_code'] ?></option>
-                                <?php endwhile; ?>
-                            </select>
+                    <form action="save.php" method="post" class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">New Output Log Details</h3>
+                            <div class="card-tools">
+                                <a href="./" class="btn btn-danger btn-sm">X</a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Work Order</label>
+                                <select name="work_order_id" class="form-control" required>
+                                    <option value="">Select</option>
+                                    <?php while($o = mysqli_fetch_assoc($orders)): ?>
+                                        <option value="<?= $o['id'] ?>"><?= $o['order_code'] ?></option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+    
+                            <div class="form-group">
+                                <label>Finished Product</label>
+                                <select name="product_id" class="form-control" required>
+                                    <option value="">Select</option>
+                                    <?php while($p = mysqli_fetch_assoc($products)): ?>
+                                        <option value="<?= $p['id'] ?>"><?= $p['name'] ?></option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+    
+                            <div class="form-group">
+                                <label>Quantity Produced</label>
+                                <input type="number" name="quantity_produced" step="0.01" class="form-control" required>
+                            </div>
+    
+                            <div class="form-group">
+                                <label>Quantity Defective</label>
+                                <input type="number" name="quantity_defective" step="0.01" class="form-control" value="0">
+                            </div>
+    
+                            <div class="form-group">
+                                <label>Batch Number</label>
+                                <input type="text" name="batch_number" class="form-control">
+                            </div>
+    
+                            <div class="form-group">
+                                <label>Remarks</label>
+                                <textarea name="remarks" class="form-control"></textarea>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label>Finished Product</label>
-                            <select name="product_id" class="form-control" required>
-                                <option value="">Select</option>
-                                <?php while($p = mysqli_fetch_assoc($products)): ?>
-                                    <option value="<?= $p['id'] ?>"><?= $p['name'] ?></option>
-                                <?php endwhile; ?>
-                            </select>
+                        <div class="card-footer">
+                            <div class="form-group float-end">
+                                <a href="./" class="btn btn-default">Cancel</a>
+                                <button type="submit" class="btn btn-success">Log Output</button>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label>Quantity Produced</label>
-                            <input type="number" name="quantity_produced" step="0.01" class="form-control" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Quantity Defective</label>
-                            <input type="number" name="quantity_defective" step="0.01" class="form-control" value="0">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Batch Number</label>
-                            <input type="text" name="batch_number" class="form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Remarks</label>
-                            <textarea name="remarks" class="form-control"></textarea>
-                        </div>
-
-                        <button type="submit" class="btn btn-success">Log Output</button>
                     </form>
                 </section>
             </div>

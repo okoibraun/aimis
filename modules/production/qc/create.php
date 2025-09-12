@@ -20,9 +20,8 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
     exit;
 }
 
-$products_tbl = 'inventory_products' ?? 'sales_products';
-$work_orders = $conn->query("SELECT id, order_code FROM production_work_orders ORDER BY id DESC");
-$materials = $conn->query("SELECT id, name FROM {$products_tbl} WHERE is_raw_material = 1");
+$work_orders = $conn->query("SELECT id, order_code FROM production_work_orders WHERE company_id = $company_id ORDER BY id DESC");
+$materials = $conn->query("SELECT id, material FROM production_bom_items WHERE company_id = $company_id");
 ?>
 <!doctype html>
 <html lang="en">
@@ -49,65 +48,75 @@ $materials = $conn->query("SELECT id, name FROM {$products_tbl} WHERE is_raw_mat
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header"><h1>New QC Checkpoint</h1></section>
+                <section class="content-header mt-3 mb-3">
+                    <h1>Add QC Checkpoint</h1>
+                </section>
+
                 <section class="content">
-                    <form action="save.php" method="post">
-                        <div class="form-group">
-                            <label>Work Order</label>
-                            <select name="work_order_id" class="form-control" required>
-                                <option value="">Select</option>
-                                <?php while($w = mysqli_fetch_assoc($work_orders)): ?>
-                                    <option value="<?= $w['id'] ?>"><?= $w['order_code'] ?></option>
-                                <?php endwhile; ?>
-                            </select>
+                    <form action="save.php" method="post" class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">New QC Checkpoint Details</h3>
+                            <div class="card-tools">
+                                <a href="./" class="btn btn-danger btn-sm">X</a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Work Order</label>
+                                <select name="work_order_id" class="form-control" required>
+                                    <option value="">Select</option>
+                                    <?php foreach($work_orders as $w): ?>
+                                        <option value="<?= $w['id'] ?>"><?= $w['order_code'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+    
+                            <div class="form-group">
+                                <label>Checkpoint Type</label>
+                                <select name="checkpoint_type" class="form-control" id="typeSelect" required>
+                                    <option selected>-- Select --</option>
+                                    <option value="Incoming">Incoming</option>
+                                    <option value="In-Process">In-Process</option>
+                                    <option value="Final">Final</option>
+                                </select>
+                            </div>
+    
+                            <div class="form-group" id="materialGroup">
+                                <label>Material (Incoming only)</label>
+                                <select name="material_id" class="form-control select2">
+                                    <option value="">Select</option>
+                                    <?php foreach($materials as $m): ?>
+                                        <option value="<?= $m['id'] ?>"><?= $m['material'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+    
+                            <div class="form-group">
+                                <label>Description / Process</label>
+                                <input type="text" name="description" class="form-control" required>
+                            </div>
+    
+                            <div class="form-group">
+                                <label>Result</label>
+                                <select name="result" class="form-control" required>
+                                    <option value="Pass">Pass</option>
+                                    <option value="Fail">Fail</option>
+                                </select>
+                            </div>
+    
+                            <div class="form-group">
+                                <label>Remarks</label>
+                                <textarea name="remarks" class="form-control"></textarea>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label>Checkpoint Type</label>
-                            <select name="checkpoint_type" class="form-control" id="type-select" required>
-                                <option value="Incoming">Incoming</option>
-                                <option value="In-Process">In-Process</option>
-                                <option value="Final">Final</option>
-                            </select>
+                        <div class="card-footer">
+                            <div class="form-group float-end">
+                                <a href="./" class="btn btn-default">Cancel</a>
+                                <button type="submit" name="action" value="create" class="btn btn-success">Save</button>
+                            </div>
                         </div>
-
-                        <div class="form-group" id="material-group">
-                            <label>Material (Incoming only)</label>
-                            <select name="material_id" class="form-control">
-                                <option value="">Select</option>
-                                <?php while($m = mysqli_fetch_assoc($materials)): ?>
-                                    <option value="<?= $m['id'] ?>"><?= $m['name'] ?></option>
-                                <?php endwhile; ?>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Description / Process</label>
-                            <input type="text" name="description" class="form-control" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Result</label>
-                            <select name="result" class="form-control" required>
-                                <option value="Pass">Pass</option>
-                                <option value="Fail">Fail</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Remarks</label>
-                            <textarea name="remarks" class="form-control"></textarea>
-                        </div>
-
-                        <button type="submit" name="action" value="create" class="btn btn-success">Save</button>
                     </form>
-
-                    <script>
-                    document.getElementById('type-select').addEventListener('change', function () {
-                        const materialGroup = document.getElementById('material-group');
-                        materialGroup.style.display = this.value === 'Incoming' ? 'block' : 'none';
-                    });
-                    </script>
                 </section>
             </div>
 
@@ -122,6 +131,16 @@ $materials = $conn->query("SELECT id, name FROM {$products_tbl} WHERE is_raw_mat
     <!--end::App Wrapper-->
     <!--begin::Script-->
     <?php include("../../../includes/scripts.phtml"); ?>
+    <script>
+        const typeSelect = document.querySelector('#typeSelect');
+        const materialGroup = document.querySelector('#materialGroup');
+
+        materialGroup.style.display = typeSelect.value === 'Incoming' ? 'block' : 'none';
+        
+        typeSelect.addEventListener('change', function () {
+            materialGroup.style.display = this.value === 'Incoming' ? 'block' : 'none';
+        });
+    </script>
     <!--end::Script-->
   </body>
   <!--end::Body-->

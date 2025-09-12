@@ -273,9 +273,8 @@ $user_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total F
                                     </td>
                                     <td>
                                       <?php if (!$reminder['is_done']): ?>
-                                        <a href="complete.php?id=<?= $reminder['id'] ?>" class="btn btn-xs btn-success">Mark Done</a>
+                                        <a href="/modules/crm/reminders/complete.php?id=<?= $reminder['id'] ?>&reflink=home" class="btn btn-xs btn-success">Mark Done</a>
                                       <?php endif; ?>
-                                      <a href="delete.php?id=<?= $reminder['id'] ?>" class="btn btn-xs btn-danger" onclick="return confirm('Delete this reminder?')">Delete</a>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>

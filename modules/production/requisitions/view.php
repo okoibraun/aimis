@@ -6,7 +6,7 @@ include('../../../config/db.php');
 include("../../../functions/role_functions.php");
 
 //Check if a user is logged in
-if (!isset($_SESSION['user_id'])) {
+if (!$user_id) {
     header('Location: /login.php');
     exit();
 }
@@ -21,19 +21,12 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
 }
 
 $id = $_GET['id'];
-$req = mysqli_fetch_assoc(mysqli_query($conn, "
-    SELECT pr.*, pwo.order_code 
-    FROM production_requisitions pr
+$req = $conn->query(" SELECT pr.*, pwo.order_code FROM production_requisitions pr
     JOIN production_work_orders pwo ON pr.work_order_id = pwo.id
     WHERE pr.id = $id
-"));
+")->fetch_assoc();
 
-$items = mysqli_query($conn, "
-    SELECT pri.*, ip.name AS material_name 
-    FROM production_requisition_items pri
-    JOIN inventory_products ip ON pri.material_id = ip.id
-    WHERE requisition_id = $id
-");
+$items = $conn->query("SELECT * FROM production_requisition_items WHERE requisition_id = $id");
 ?>
 <!doctype html>
 <html lang="en">
@@ -60,28 +53,64 @@ $items = mysqli_query($conn, "
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header"><h1>View Requisition</h1></section>
-                <section class="content">
-                    <table class="table table-bordered">
-                        <tr><th>Requisition Code</th><td><?= $req['requisition_code'] ?></td></tr>
-                        <tr><th>Work Order</th><td><?= $req['order_code'] ?></td></tr>
-                        <tr><th>Created At</th><td><?= $req['created_at'] ?></td></tr>
-                    </table>
+                <section class="content-header mt-3 mb-3">
+                    <h1>View Requisition</h1>
+                </section>
 
-                    <h4>Material Details</h4>
-                    <table class="table table-striped">
-                        <thead><tr><th>Material</th><th>Requested</th><th>Issued</th><th>Consumed</th></tr></thead>
-                        <tbody>
-                            <?php while ($i = mysqli_fetch_assoc($items)): ?>
-                            <tr>
-                                <td><?= $i['material_name'] ?></td>
-                                <td><?= $i['qty_requested'] ?></td>
-                                <td><?= $i['qty_issued'] ?></td>
-                                <td><?= $i['qty_consumed'] ?></td>
-                            </tr>
-                            <?php endwhile; ?>
-                        </tbody>
-                    </table>
+                <section class="content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Requisition</h3>
+                            <div class="card-tools">
+                                <a href="./" class="btn btn-secondary">All Requisitions</a>
+                                <a href="issue.php?id=<?= $req['id'] ?>" class="btn btn-primary">Issue</a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Requisition Code</th>
+                                    <td><?= $req['requisition_code'] ?></td>
+                                </tr>
+                                <tr>
+                                    <th>Work Order</th>
+                                    <td><?= $req['order_code'] ?></td>
+                                </tr>
+                                <tr>
+                                    <th>Created At</th>
+                                    <td><?= $req['created_at'] ?></td>
+                                </tr>
+                            </table>
+        
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Material Details</h3>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Material</th>
+                                                <th>Requested</th>
+                                                <th>Issued</th>
+                                                <th>Consumed</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($items as $i): ?>
+                                            <tr>
+                                                <td><?= $i['material'] ?></td>
+                                                <td><?= $i['qty_requested'] ?></td>
+                                                <td><?= $i['qty_issued'] ?></td>
+                                                <td><?= $i['qty_consumed'] ?></td>
+                                            </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </section>
             </div>
 

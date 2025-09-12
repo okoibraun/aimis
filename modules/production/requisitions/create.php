@@ -13,16 +13,15 @@ if (!isset($_SESSION['user_id'])) {
 
 // Check User Permissions
 $page = "add";
-$user_permissions = get_user_permissions($_SESSION['user_id']);
+$user_permissions = get_user_permissions($user_id);
 
 if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
     exit;
 }
 
-$products_tbl = "inventory_products" ?? "sales_products";
-$work_orders = mysqli_query($conn, "SELECT id, order_code FROM production_work_orders");
-$materials = mysqli_query($conn, "SELECT id, name FROM $products_tbl WHERE is_raw_material = 1");
+$work_orders = $conn->query("SELECT id, order_code FROM production_work_orders WHERE company_id = $company_id");
+//$materials = $conn->query("SELECT id, name FROM sales_products WHERE is_raw_material = 1");
 ?>
 <!doctype html>
 <html lang="en">
@@ -49,61 +48,69 @@ $materials = mysqli_query($conn, "SELECT id, name FROM $products_tbl WHERE is_ra
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header">
+                <section class="content-header mt-3 mb-3">
                     <h1>New Material Requisition</h1>
                 </section>
                 <section class="content">
-                    <form action="save.php" method="post">
-                        <div class="form-group">
-                            <label>Requisition Code</label>
-                            <input type="text" name="requisition_code" class="form-control" required>
+                    <form action="save.php" method="post" class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Requisition Code</label>
+                                <input type="text" name="requisition_code" class="form-control" value="<?= "R-".time() ?>" required readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Work Order</label>
+                                <select name="work_order_id" class="form-control" required>
+                                    <option value="">Select</option>
+                                    <?php while($w = mysqli_fetch_assoc($work_orders)): ?>
+                                        <option value="<?= $w['id'] ?>"><?= $w['order_code'] ?></option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">Materials Requested</h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-secondary btn-sm" onclick="addRow()">+ Add Material</button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table" id="material-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Material</th>
+                                                <th>Requested Qty</th>
+                                                <th>Issued Qty</th>
+                                                <th>Consumed Qty</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+
+                                    <script>
+                                        function addRow() {
+                                            const row = `<tr>
+                                                <td><input type="text" name="material[]" class="form-control" required></td>
+                                                <td><input type="number" step="0.01" name="qty_requested[]" class="form-control" required></td>
+                                                <td><input type="number" step="0.01" name="qty_issued[]" class="form-control"></td>
+                                                <td><input type="number" step="0.01" name="qty_consumed[]" class="form-control"></td>
+                                                <td><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">Remove</button></td>
+                                            </tr>`;
+                                            document.querySelector('#material-table tbody').insertAdjacentHTML('beforeend', row);
+                                        }
+                                    </script>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Work Order</label>
-                            <select name="work_order_id" class="form-control" required>
-                                <option value="">Select</option>
-                                <?php while($w = mysqli_fetch_assoc($work_orders)): ?>
-                                    <option value="<?= $w['id'] ?>"><?= $w['order_code'] ?></option>
-                                <?php endwhile; ?>
-                            </select>
+
+                        <div class="card-footer">
+                            <div class="form-group float-end">
+                                <a href="./" class="btn btn-default">Cancel</a>
+                                <button type="submit" name="action" value="create" class="btn btn-success">Save Requisition</button>
+                            </div>
                         </div>
-
-                        <h4>Materials Requested</h4>
-                        <table class="table" id="material-table">
-                            <thead>
-                                <tr>
-                                    <th>Material</th>
-                                    <th>Requested Qty</th>
-                                    <th>Issued Qty</th>
-                                    <th>Consumed Qty</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                        <button type="button" class="btn btn-secondary" onclick="addRow()">+ Add Material</button>
-
-                        <script>
-                        function addRow() {
-                            const row = `<tr>
-                                <td>
-                                    <select name="material_id[]" class="form-control" required>
-                                        <option value="">Select</option>
-                                        <?php mysqli_data_seek($materials, 0); while($m = mysqli_fetch_assoc($materials)): ?>
-                                            <option value="<?= $m['id'] ?>"><?= $m['name'] ?></option>
-                                        <?php endwhile; ?>
-                                    </select>
-                                </td>
-                                <td><input type="number" step="0.01" name="qty_requested[]" class="form-control" required></td>
-                                <td><input type="number" step="0.01" name="qty_issued[]" class="form-control"></td>
-                                <td><input type="number" step="0.01" name="qty_consumed[]" class="form-control"></td>
-                                <td><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove()">Remove</button></td>
-                            </tr>`;
-                            document.querySelector('#material-table tbody').insertAdjacentHTML('beforeend', row);
-                        }
-                        </script>
-
-                        <button type="submit" name="action" value="create" class="btn btn-success">Save Requisition</button>
                     </form>
                 </section>
             </div>

@@ -6,21 +6,21 @@ include('../../../config/db.php');
 include("../../../functions/role_functions.php");
 
 //Check if a user is logged in
-if (!isset($_SESSION['user_id'])) {
+if (!isset($user_id)) {
     header('Location: /login.php');
     exit();
 }
 
 // Check User Permissions
 $page = "list";
-$user_permissions = get_user_permissions($_SESSION['user_id']);
+$user_permissions = get_user_permissions($user_id);
 
 if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
     exit;
 }
 
-$result = $conn->query("SELECT * FROM production_resources ORDER BY name ASC");
+$result = $conn->query("SELECT * FROM production_resources WHERE company_id = $company_id ORDER BY name ASC");
 ?>
 <!doctype html>
 <html lang="en">
@@ -47,28 +47,47 @@ $result = $conn->query("SELECT * FROM production_resources ORDER BY name ASC");
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header">
+                <section class="content-header mt-3 mb-3">
                     <h1>Production Resources</h1>
-                    <a href="create.php" class="btn btn-primary">Add Resource</a>
+                    
                 </section>
+
                 <section class="content">
-                    <table class="table table-bordered">
-                        <thead><tr><th>Name</th><th>Type</th><th>Code</th><th>Status</th><th>Actions</th></tr></thead>
-                        <tbody>
-                            <?php foreach($result as $r): ?>
+                  <div class="card">
+                    <div class="card-header">
+                      <h3 class="card-title">Resources</h3>
+                      <div class="card-tools">
+                        <a href="create.php" class="btn btn-primary">Add Resource</a>
+                      </div>
+                    </div>
+                    <div class="card-body table-responsive">
+                      <table class="table table-bordered DataTable">
+                          <thead>
                             <tr>
-                                <td><?= $r['name'] ?></td>
-                                <td><?= $r['type'] ?></td>
-                                <td><?= $r['code'] ?></td>
-                                <td><?= $r['status'] ?></td>
-                                <td>
-                                    <a href="edit.php?id=<?= $r['id'] ?>" class="btn btn-warning btn-sm">Edit</a>
-                                    <a href="delete.php?id=<?= $r['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Delete this resource?')">Delete</a>
-                                </td>
+                              <th>Name</th>
+                              <th>Type</th>
+                              <th>Code</th>
+                              <th>Status</th>
+                              <th>Actions</th>
                             </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                          </thead>
+                          <tbody>
+                              <?php foreach($result as $r): ?>
+                              <tr>
+                                  <td><?= $r['name'] ?></td>
+                                  <td><?= $r['type'] ?></td>
+                                  <td><?= $r['code'] ?></td>
+                                  <td><?= $r['status'] ?></td>
+                                  <td>
+                                      <a href="edit.php?id=<?= $r['id'] ?>" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
+                                      <a href="delete.php?id=<?= $r['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Delete this resource?')"><i class="fas fa-trash"></i></a>
+                                  </td>
+                              </tr>
+                              <?php endforeach; ?>
+                          </tbody>
+                      </table>
+                    </div>
+                  </div>
                 </section>
             </div>
 

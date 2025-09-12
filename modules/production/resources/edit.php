@@ -6,14 +6,14 @@ include('../../../config/db.php');
 include("../../../functions/role_functions.php");
 
 //Check if a user is logged in
-if (!isset($_SESSION['user_id'])) {
+if (!isset($user_id)) {
     header('Location: /login.php');
     exit();
 }
 
 // Check User Permissions
 $page = "edit";
-$user_permissions = get_user_permissions($_SESSION['user_id']);
+$user_permissions = get_user_permissions($user_id);
 
 if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
@@ -21,7 +21,7 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
 }
 
 $id = $_GET['id'];
-$res = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM production_resources WHERE id = $id"));
+$res = $conn->query("SELECT * FROM production_resources WHERE id = $id")->fetch_assoc();
 ?>
 <!doctype html>
 <html lang="en">
@@ -48,34 +48,58 @@ $res = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM production_resource
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header"><h1>Edit Resource</h1></section>
+                <section class="content-header mt-3 mb-3">
+                    <h1>Edit Resource</h1>
+                </section>
+
                 <section class="content">
-                    <form action="save.php" method="post">
-                        <input type="hidden" name="id" value="<?= $res['id'] ?>">
-                        <div class="form-group">
-                            <label>Resource Name</label>
-                            <input type="text" name="name" class="form-control" value="<?= $res['name'] ?>" required>
+                    <form action="save.php" method="post" class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Resource Details</h3>
+                            <div class="card-tools">
+                                <a href="./" class="btn btn-danger btn-sm">X</a>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Code</label>
-                            <input type="text" name="code" class="form-control" value="<?= $res['code'] ?>">
+                        <div class="card-body">
+                            <input type="hidden" name="id" value="<?= $res['id'] ?>">
+                            <div class="form-group">
+                                <label>Code</label>
+                                <input type="text" name="code" class="form-control" value="<?= $res['code'] ?>" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Resource Name</label>
+                                <input type="text" name="name" class="form-control" value="<?= $res['name'] ?>" required>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Type</label>
+                                        <select name="type" class="form-control" required>
+                                            <option value="Manpower" <?= $res['type'] === 'Manpower' ? 'selected' : '' ?>>Manpower</option>
+                                            <option value="Machine" <?= $res['type'] === 'Machine' ? 'selected' : '' ?>>Machine</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Status</label>
+                                        <select name="status" class="form-control">
+                                            <option value="Available" <?= $res['status'] === 'Available' ? 'selected' : '' ?>>Available</option>
+                                            <option value="In Use" <?= $res['status'] === 'In Use' ? 'selected' : '' ?>>In Use</option>
+                                            <option value="Maintenance" <?= $res['status'] === 'Maintenance' ? 'selected' : '' ?>>Maintenance</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Type</label>
-                            <select name="type" class="form-control" required>
-                                <option value="Manpower" <?= $res['type'] === 'Manpower' ? 'selected' : '' ?>>Manpower</option>
-                                <option value="Machine" <?= $res['type'] === 'Machine' ? 'selected' : '' ?>>Machine</option>
-                            </select>
+
+                        <div class="card-footer">
+                            <div class="form-group float-end">
+                                <a href="./" class="btn btn-default">Cancel</a>
+                                <button type="submit" name="action" value="update" class="btn btn-success">Update</button>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Status</label>
-                            <select name="status" class="form-control">
-                                <option value="Available" <?= $res['status'] === 'Available' ? 'selected' : '' ?>>Available</option>
-                                <option value="In Use" <?= $res['status'] === 'In Use' ? 'selected' : '' ?>>In Use</option>
-                                <option value="Maintenance" <?= $res['status'] === 'Maintenance' ? 'selected' : '' ?>>Maintenance</option>
-                            </select>
-                        </div>
-                        <button type="submit" name="action" value="update" class="btn btn-success">Update</button>
                     </form>
                 </section>
             </div>

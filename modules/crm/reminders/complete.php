@@ -10,5 +10,10 @@ $stmt = $conn->prepare("UPDATE crm_reminders SET is_done = 1 WHERE id = ? AND co
 $stmt->bind_param("iii", $id, $company_id, $user_id);
 $stmt->execute();
 
-header("Location: ./");
-exit;
+if(isset($_GET['reflink']) && $_GET['reflink'] == "home") {
+    header("Location: /");
+    exit;
+} else {
+    header("Location: ./");
+    exit;
+}

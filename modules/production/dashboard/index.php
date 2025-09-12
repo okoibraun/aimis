@@ -65,7 +65,10 @@ $oee = $availability * $performance * $quality * 100;
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header"><h1>Production KPI Dashboard</h1></section>
+                <section class="content-header mt-3 mb-3">
+                    <h1>Production KPI Dashboard</h1>
+                </section>
+
                 <section class="content">
                     <div class="row">
                         <!-- OEE -->
@@ -123,9 +126,20 @@ $oee = $availability * $performance * $quality * 100;
                 </section>
             </div>
 
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script>
-            <?php
+        </div>
+      </div>
+      </main>
+      <!--end::App Main-->
+      <!--begin::Footer-->
+      <?php include("../../../includes/footer.phtml"); ?>
+      <!--end::Footer-->
+    </div>
+    <!--end::App Wrapper-->
+    <!--begin::Script-->
+    <?php include("../../../includes/scripts.phtml"); ?>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        <?php
             $trend = mysqli_query($conn, "
                 SELECT DATE(produced_at) AS day, 
                     SUM(quantity_produced) AS produced, 
@@ -139,40 +153,28 @@ $oee = $availability * $performance * $quality * 100;
                 $produced[] = $t['produced'];
                 $defective[] = $t['defective'];
             }
-            ?>
+        ?>
 
-            const ctx = document.getElementById('outputChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: <?= json_encode(array_reverse($labels)) ?>,
-                    datasets: [
-                        {
-                            label: 'Produced',
-                            data: <?= json_encode(array_reverse($produced)) ?>,
-                            backgroundColor: 'rgba(54, 162, 235, 0.8)'
-                        },
-                        {
-                            label: 'Defective',
-                            data: <?= json_encode(array_reverse($defective)) ?>,
-                            backgroundColor: 'rgba(255, 99, 132, 0.7)'
-                        }
-                    ]
-                }
-            });
-            </script>
-
-        </div>
-      </div>
-      </main>
-      <!--end::App Main-->
-      <!--begin::Footer-->
-      <?php include("../../../includes/footer.phtml"); ?>
-      <!--end::Footer-->
-    </div>
-    <!--end::App Wrapper-->
-    <!--begin::Script-->
-    <?php include("../../../includes/scripts.phtml"); ?>
+        const ctx = document.getElementById('outputChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: <?= json_encode(array_reverse($labels)) ?>,
+                datasets: [
+                    {
+                        label: 'Produced',
+                        data: <?= json_encode(array_reverse($produced)) ?>,
+                        backgroundColor: 'rgba(54, 162, 235, 0.8)'
+                    },
+                    {
+                        label: 'Defective',
+                        data: <?= json_encode(array_reverse($defective)) ?>,
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                    }
+                ]
+            }
+        });
+    </script>
     <!--end::Script-->
   </body>
   <!--end::Body-->

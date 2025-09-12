@@ -7,29 +7,24 @@ include("../../../functions/role_functions.php");
 
 //Check if a user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: ../../../login.php');
+    header('Location: /login.php');
     exit();
 }
 
 // Check User Permissions
 $page = "edit";
-$user_permissions = get_user_permissions($_SESSION['user_id']);
+$user_permissions = get_user_permissions($user_id);
 
-// Get Super Roles
-$roles = super_roles();
-
-if (!in_array($_SESSION['role'], $roles) && !in_array($page, $user_permissions)) {
+if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
     exit;
 }
 
 $id = $_GET['id'];
-$products_tbl = 'inventory_products' ?? 'sales_products';
-$bom = $conn->query("SELECT * FROM production_bom WHERE id=$id")->fetch_assoc();
-$products = $conn->query("SELECT id, name FROM $products_tbl");
+$bom = $conn->query("SELECT * FROM production_bom WHERE id=$id AND company_id = $company_id")->fetch_assoc();
+$products = $conn->query("SELECT id, name FROM sales_products WHERE company_id = $company_id");
 
-$materials = $conn->query("SELECT id, name FROM $products_tbl WHERE is_raw_material=1");
-$bom_items = $conn->query("SELECT * FROM production_bom_items WHERE bom_id = $id");
+$bom_items = $conn->query("SELECT * FROM production_bom_items WHERE bom_id = $id AND company_id = $company_id");
 
 ?>
 <!doctype html>
@@ -57,60 +52,69 @@ $bom_items = $conn->query("SELECT * FROM production_bom_items WHERE bom_id = $id
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header"><h1>Edit BOM</h1></section>
+                <section class="content-header mt-3 mb-3">
+                    <h1>Edit BOM</h1>
+                </section>
+
                 <section class="content">
-                    <form action="save.php" method="post">
-                        <input type="hidden" name="id" value="<?= $bom['id'] ?>">
-                        <div class="form-group">
-                            <label>Product</label>
-                            <select name="product_id" class="form-control">
-                                <?php while($p = mysqli_fetch_assoc($products)): ?>
-                                    <option value="<?= $p['id'] ?>" <?= $p['id'] == $bom['product_id'] ? 'selected' : '' ?>>
-                                        <?= $p['name'] ?>
-                                    </option>
-                                <?php endwhile; ?>
-                            </select>
+                    <form action="save.php" method="post" class="card">
+                        <div class="card-body">
+                            <input type="hidden" name="id" value="<?= $bom['id'] ?>">
+                            <div class="form-group">
+                                <label>Product</label>
+                                <select name="product_id" class="form-control">
+                                    <?php while($p = mysqli_fetch_assoc($products)): ?>
+                                        <option value="<?= $p['id'] ?>" <?= $p['id'] == $bom['product_id'] ? 'selected' : '' ?>>
+                                            <?= $p['name'] ?>
+                                        </option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Version</label>
+                                <input type="text" name="version" class="form-control" value="<?= $bom['version'] ?>">
+                            </div>
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea name="description" class="form-control"><?= $bom['description'] ?></textarea>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        Materials
+                                    </h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-secondary btn-sm" onclick="addRow()">+ Add Material</button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table" id="materials-table">
+                                        <thead><tr><th>Material</th><th>Qty</th><th>UOM</th><th>Action</th></tr></thead>
+                                        <tbody>
+                                            <?php foreach($bom_items as $item) { ?>
+                                            <tr>
+                                                <td><input type="text" name="material[]" class="form-control" value="<?= $item['material'] ?>" required></td>
+                                                <td><input type="number" name="material_qty[]" class="form-control" step="0.01" value="<?= $item['quantity'] ?>" required></td>
+                                                <td><input type="text" name="material_uom[]" class="form-control" value="<?= $item['uom'] ?>" required></td>
+                                                <td><button type="button" onclick="this.closest('tr').remove()" class="btn btn-danger btn-sm">Remove</button></td>
+                                            </tr>
+                                            <?php } ?>
+                                        </tbody>
+                                    </table>
+                                    <script><?= file_get_contents('create_row.js'); ?></script> <!-- optional externalize -->
+                                </div>
+                            </div>
+
                         </div>
-                        <div class="form-group">
-                            <label>Version</label>
-                            <input type="text" name="version" class="form-control" value="<?= $bom['version'] ?>">
-                        </div>
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea name="description" class="form-control"><?= $bom['description'] ?></textarea>
+                        
+                        <div class="card-footer">
+                            <div class="form-group float-end">
+                                <a href="./" class="btn btn-default">Cancel</a>
+                                <button type="submit" name="action" value="update" class="btn btn-success">Update BOM</button>
+                            </div>
                         </div>
 
-                        <h4>Materials</h4>
-                        <table class="table" id="materials-table">
-                            <thead><tr><th>Material</th><th>Qty</th><th>UOM</th><th>Action</th></tr></thead>
-                            <tbody>
-                                <?php foreach($bom_items as $item) { ?>
-                                <tr>
-                                    <td>
-                                        <select name="material_id[]" class="form-control" required>
-                                            <option value="">Select</option>
-                                            <?php
-                                            mysqli_data_seek($materials, 0);
-                                            while($m = mysqli_fetch_assoc($materials)):
-                                            ?>
-                                                <option value="<?= $m['id'] ?>" <?= $m['id'] == $item['material_id'] ? 'selected' : '' ?>>
-                                                    <?= $m['name'] ?>
-                                                </option>
-                                            <?php endwhile; ?>
-                                        </select>
-                                    </td>
-                                    <td><input type="number" name="material_qty[]" class="form-control" step="0.01" value="<?= $item['quantity'] ?>" required></td>
-                                    <td><input type="text" name="material_uom[]" class="form-control" value="<?= $item['uom'] ?>" required></td>
-                                    <td><button type="button" onclick="this.closest('tr').remove()" class="btn btn-danger btn-sm">Remove</button></td>
-                                </tr>
-                                <?php } ?>
-                            </tbody>
-                        </table>
-                        <button type="button" class="btn btn-secondary" onclick="addRow()">+ Add Material</button>
-
-                        <script><?= file_get_contents('create_row.js'); ?></script> <!-- optional externalize -->
-
-                        <button type="submit" name="action" value="update" class="btn btn-success">Update BOM</button>
                     </form>
                 </section>
             </div>

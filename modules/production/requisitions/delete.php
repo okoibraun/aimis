@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once '../../../config/db.php';
 include("../../../functions/role_functions.php");
 
@@ -10,7 +11,7 @@ if (!isset($_SESSION['user_id'])) {
 
 // Check User Permissions
 $page = "delete";
-$user_permissions = get_user_permissions($_SESSION['user_id']);
+$user_permissions = get_user_permissions($user_id);
 
 if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
@@ -18,7 +19,7 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
 }
 
 $id = $_GET['id'];
-mysqli_query($conn, "DELETE FROM production_requisition_items WHERE requisition_id = $id");
-mysqli_query($conn, "DELETE FROM production_requisitions WHERE id = $id");
+$conn->query("DELETE FROM production_requisition_items WHERE requisition_id = $id AND company_id = $company_id");
+$conn->query("DELETE FROM production_requisitions WHERE id = $id AND company_id = $company_id");
 header("Location: ./");
 exit;

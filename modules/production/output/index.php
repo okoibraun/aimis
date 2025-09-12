@@ -20,12 +20,12 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
     exit;
 }
 
-$products_tbl = 'inventory_products' ?? 'sales_products';
-$logs = mysqli_query($conn, "
-    SELECT po.*, pwo.order_code, ip.name AS product
+$logs = $conn->query("
+    SELECT po.*, pwo.order_code, sp.name AS product
     FROM production_output_logs po
     JOIN production_work_orders pwo ON po.work_order_id = pwo.id
-    JOIN {$products_tbl} ip ON po.product_id = ip.id
+    JOIN sales_products sp ON po.product_id = sp.id
+    WHERE po.company_id = $company_id AND pwo.company_id = po.company_id AND sp.company_id = po.company_id
     ORDER BY po.produced_at DESC
 ");
 ?>
@@ -34,7 +34,7 @@ $logs = mysqli_query($conn, "
   <!--begin::Head-->
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>AIMIS | Production - BOM</title>
+    <title>AIMIS | Production - Output</title>
     <?php include_once("../../../includes/head.phtml"); ?>
   </head>
   <!--end::Head-->
@@ -54,38 +54,49 @@ $logs = mysqli_query($conn, "
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header">
-                    <h1>Production Output Logs</h1>
-                    <a href="create.php" class="btn btn-primary">Log Output</a>
+                <section class="content-header mt-3 mb-3">
+                    <h1>Production Output</h1>
                 </section>
 
                 <section class="content">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Work Order</th>
-                                <th>Product</th>
-                                <th>Produced</th>
-                                <th>Defective</th>
-                                <th>Batch</th>
-                                <th>Date</th>
-                                <th>Remarks</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php while($l = mysqli_fetch_assoc($logs)): ?>
-                                <tr>
-                                    <td><?= $l['order_code'] ?></td>
-                                    <td><?= $l['product'] ?></td>
-                                    <td><?= $l['quantity_produced'] ?></td>
-                                    <td><?= $l['quantity_defective'] ?></td>
-                                    <td><?= $l['batch_number'] ?></td>
-                                    <td><?= date('Y-m-d H:i', strtotime($l['produced_at'])) ?></td>
-                                    <td><?= $l['remarks'] ?></td>
-                                </tr>
-                            <?php endwhile; ?>
-                        </tbody>
-                    </table>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                Output Logs
+                            </h3>
+                            <div class="card-tools">
+                                <a href="create.php" class="btn btn-primary">Log Output</a>
+                            </div>
+                        </div>
+                        <div class="card-header table-responsive">
+                            <table class="table table-bordered DataTable">
+                                <thead>
+                                    <tr>
+                                        <th>Work Order</th>
+                                        <th>Product</th>
+                                        <th>Produced</th>
+                                        <th>Defective</th>
+                                        <th>Batch</th>
+                                        <th>Date</th>
+                                        <th>Remarks</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php while($l = mysqli_fetch_assoc($logs)): ?>
+                                        <tr>
+                                            <td><?= $l['order_code'] ?></td>
+                                            <td><?= $l['product'] ?></td>
+                                            <td><?= $l['quantity_produced'] ?></td>
+                                            <td><?= $l['quantity_defective'] ?></td>
+                                            <td><?= $l['batch_number'] ?></td>
+                                            <td><?= date('Y-m-d H:i', strtotime($l['produced_at'])) ?></td>
+                                            <td><?= $l['remarks'] ?></td>
+                                        </tr>
+                                    <?php endwhile; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </section>
             </div>
 

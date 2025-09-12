@@ -13,19 +13,15 @@ if (!isset($_SESSION['user_id'])) {
 
 // Check User Permissions
 $page = "add";
-$user_permissions = get_user_permissions($_SESSION['user_id']);
+$user_permissions = get_user_permissions($user_id);
 
-// Get Super Roles
-$roles = super_roles();
-
-if (!in_array($_SESSION['role'], $roles) && !in_array($page, $user_permissions)) {
+if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
     exit;
 }
 
-$products_tbl = 'inventory_products' ?? 'sales_products';
-$products = $conn->query("SELECT id, name FROM $products_tbl");
-$boms = $conn->query("SELECT id, version FROM production_bom");
+$products = $conn->query("SELECT id, name FROM sales_products WHERE company_id = $company_id");
+$boms = $conn->query("SELECT b.id, b.version, p.name FROM production_bom b JOIN sales_products p ON b.product_id = p.id WHERE b.company_id = $company_id AND p.company_id = $company_id");
 ?>
 <!doctype html>
 <html lang="en">
@@ -52,44 +48,62 @@ $boms = $conn->query("SELECT id, version FROM production_bom");
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header"><h1>Create Work Order</h1></section>
+                <section class="content-header mt-3 mb-3">
+                    <h1>Create Work Order</h1>
+                </section>
                 <section class="content">
-                    <form action="save.php" method="post">
-                        <div class="form-group">
-                            <label>Order Code</label>
-                            <input type="text" name="order_code" class="form-control" required>
+                    <form action="save.php" method="post" class="card">
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Order Code</label>
+                                <input type="text" name="order_code" class="form-control" value="<?= "WO-".time() ?>" required readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Product</label>
+                                <select name="product_id" class="form-control" required>
+                                    <option value="">Select Product</option>
+                                    <?php foreach($products as $p): ?>
+                                        <option value="<?= $p['id'] ?>"><?= $p['name'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>BOM Version</label>
+                                <select name="bom_id" class="form-control">
+                                    <option value="">Select BOM (optional)</option>
+                                    <?php foreach($boms as $b): ?>
+                                        <option value="<?= $b['id'] ?>">BOM - <?= $b['name'] ?> - <?= $b['version'] ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Quantity to Produce</label>
+                                        <input type="number" name="quantity" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Scheduled Start</label>
+                                        <input type="datetime-local" name="scheduled_start" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Scheduled End</label>
+                                        <input type="datetime-local" name="scheduled_end" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Product</label>
-                            <select name="product_id" class="form-control" required>
-                                <option value="">Select Product</option>
-                                <?php while($p = mysqli_fetch_assoc($products)): ?>
-                                    <option value="<?= $p['id'] ?>"><?= $p['name'] ?></option>
-                                <?php endwhile; ?>
-                            </select>
+                        <div class="card-footer">
+                            <div class="form-group float-end">
+                                <a href="./" class="btn btn-default">Cancel</a>
+                                <button type="submit" name="action" value="create" class="btn btn-success">Create Work Order</button>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>BOM Version</label>
-                            <select name="bom_id" class="form-control">
-                                <option value="">Select BOM (optional)</option>
-                                <?php while($b = mysqli_fetch_assoc($boms)): ?>
-                                    <option value="<?= $b['id'] ?>">BOM #<?= $b['id'] ?> - <?= $b['version'] ?></option>
-                                <?php endwhile; ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Quantity to Produce</label>
-                            <input type="number" name="quantity" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Scheduled Start</label>
-                            <input type="datetime-local" name="scheduled_start" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label>Scheduled End</label>
-                            <input type="datetime-local" name="scheduled_end" class="form-control">
-                        </div>
-                        <button type="submit" name="action" value="create" class="btn btn-success">Create Work Order</button>
                     </form>
                 </section>
             </div>

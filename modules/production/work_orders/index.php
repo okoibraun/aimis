@@ -20,10 +20,10 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
     exit;
 }
 
-$products_tbl = 'inventory_products' ?? 'sales_products';
 $result = $conn->query("SELECT pwo.*, ip.name AS product_name
           FROM production_work_orders pwo
-          JOIN $products_tbl ip ON pwo.product_id = ip.id
+          JOIN sales_products ip ON pwo.product_id = ip.id
+          WHERE pwo.company_id = $company_id AND ip.company_id = $company_id
           ORDER BY pwo.created_at DESC");
 ?>
 <!doctype html>
@@ -51,37 +51,53 @@ $result = $conn->query("SELECT pwo.*, ip.name AS product_name
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header">
-                    <h1>Work Orders</h1>
-                    <a href="create.php" class="btn btn-primary">Create Work Order</a>
+                <section class="content-header mt-3 mb-3">
+                    <h1>Production Work Orders</h1>
                 </section>
 
                 <section class="content">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Order Code</th><th>Product</th><th>Qty</th>
-                                <th>Status</th><th>Start</th><th>End</th><th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php while($row = mysqli_fetch_assoc($result)): ?>
-                            <tr>
-                                <td><?= $row['order_code'] ?></td>
-                                <td><?= $row['product_name'] ?></td>
-                                <td><?= $row['quantity'] ?></td>
-                                <td><?= $row['status'] ?></td>
-                                <td><?= $row['scheduled_start'] ?></td>
-                                <td><?= $row['scheduled_end'] ?></td>
-                                <td>
-                                    <a href="view.php?id=<?= $row['id'] ?>" class="btn btn-info btn-sm">View</a>
-                                    <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-warning btn-sm">Edit</a>
-                                    <a href="delete.php?id=<?= $row['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Delete this work order?')">Delete</a>
-                                </td>
-                            </tr>
-                            <?php endwhile; ?>
-                        </tbody>
-                    </table>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                Work Orders
+                            </h3>
+                            <div class="card-tools">
+                                <a href="create.php" class="btn btn-primary btn-md">Create Work Order</a>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="table table-bordered DataTable">
+                                <thead>
+                                    <tr>
+                                        <th>Order Code</th>
+                                        <th>Product</th>
+                                        <th>Qty</th>
+                                        <th>Status</th>
+                                        <th>Start</th>
+                                        <th>End</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($result as $row): ?>
+                                    <tr>
+                                        <td><?= $row['order_code'] ?></td>
+                                        <td><?= $row['product_name'] ?></td>
+                                        <td><?= $row['quantity'] ?></td>
+                                        <td><?= $row['status'] ?></td>
+                                        <td><?= $row['scheduled_start'] ?></td>
+                                        <td><?= $row['scheduled_end'] ?></td>
+                                        <td>
+                                            <a href="view.php?id=<?= $row['id'] ?>" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a>
+                                            <a href="edit.php?id=<?= $row['id'] ?>" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
+                                            <a href="delete.php?id=<?= $row['id'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Delete this work order?')"><i class="fas fa-trash"></i></a>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </section>
             </div>
 
@@ -100,4 +116,3 @@ $result = $conn->query("SELECT pwo.*, ip.name AS product_name
   </body>
   <!--end::Body-->
 </html>
-.php'; ?>

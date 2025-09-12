@@ -6,22 +6,22 @@ include('../../../config/db.php');
 include("../../../functions/role_functions.php");
 
 //Check if a user is logged in
-if (!isset($_SESSION['user_id'])) {
+if (!isset($user_id)) {
     header('Location: /login.php');
     exit();
 }
 
 // Check User Permissions
 $page = "add";
-$user_permissions = get_user_permissions($_SESSION['user_id']);
+$user_permissions = get_user_permissions($user_id);
 
 if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
     exit;
 }
 
-$work_orders = $conn->query("SELECT id, order_code FROM production_work_orders ORDER BY id DESC");
-$resources = $conn->query("SELECT id, name FROM production_resources ORDER BY name");
+$work_orders = $conn->query("SELECT id, order_code FROM production_work_orders WHERE company_id = $company_id ORDER BY id DESC");
+$resources = $conn->query("SELECT id, name FROM production_resources WHERE company_id = $company_id ORDER BY name");
 ?>
 <!doctype html>
 <html lang="en">
@@ -48,50 +48,79 @@ $resources = $conn->query("SELECT id, name FROM production_resources ORDER BY na
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header"><h1>Assign Resources to Work Order</h1></section>
+                <section class="content-header mt-3 mb-3">
+                    <h1>Assign Resources to Work Order</h1>
+                </section>
+
                 <section class="content">
-                    <form action="save.php" method="post">
-                        <div class="form-group">
-                            <label>Work Order</label>
-                            <select name="work_order_id" class="form-control" required>
-                                <option value="">Select Work Order</option>
-                                <?php while($w = mysqli_fetch_assoc($work_orders)): ?>
-                                    <option value="<?= $w['id'] ?>"><?= $w['order_code'] ?></option>
-                                <?php endwhile; ?>
-                            </select>
+                    <form action="save.php" method="post" class="card">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">New Assignment</h3>
+                                <div class="card-tools">
+                                    <a href="./" class="btn btn-danger btn-sm">X</a>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>Work Order</label>
+                                    <select name="work_order_id" class="form-control" required>
+                                        <option value="">Select Work Order</option>
+                                        <?php while($w = mysqli_fetch_assoc($work_orders)): ?>
+                                            <option value="<?= $w['id'] ?>"><?= $w['order_code'] ?></option>
+                                        <?php endwhile; ?>
+                                    </select>
+                                </div>
+        
+                                <div class="form-group">
+                                    <label>Resource</label>
+                                    <select name="resource_id" class="form-control" required>
+                                        <option value="">Select Resource</option>
+                                        <?php while($r = mysqli_fetch_assoc($resources)): ?>
+                                            <option value="<?= $r['id'] ?>"><?= $r['name'] ?></option>
+                                        <?php endwhile; ?>
+                                    </select>
+                                </div>
+        
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label>Assigned Start Time</label>
+                                            <input type="datetime-local" name="assigned_start" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label>Assigned End Time</label>
+                                            <input type="datetime-local" name="assigned_end" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label>Shift</label>
+                                            <select name="shift" id="" class="form-control">
+                                                <option>-- Select --</option>
+                                                <?php foreach(['morning', 'afternoon', 'night'] as $shift) { ?>
+                                                    <option value="<?= $shift ?>"><?= ucfirst($shift) ?></option>
+                                                <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+        
+                                <div class="form-group">
+                                    <label>Remarks</label>
+                                    <textarea name="remarks" id="summernote" class="form-control"></textarea>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label>Resource</label>
-                            <select name="resource_id" class="form-control" required>
-                                <option value="">Select Resource</option>
-                                <?php while($r = mysqli_fetch_assoc($resources)): ?>
-                                    <option value="<?= $r['id'] ?>"><?= $r['name'] ?></option>
-                                <?php endwhile; ?>
-                            </select>
+                        <div class="card-footer">
+                            <div class="form-group float-end">
+                                <a href="./" class="btn btn-default">Cancel</a>
+                                <button type="submit" class="btn btn-primary">Assign Resource</button>
+                            </div>
                         </div>
-
-                        <div class="form-group">
-                            <label>Assigned Start Time</label>
-                            <input type="datetime-local" name="assigned_start" class="form-control" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Assigned End Time</label>
-                            <input type="datetime-local" name="assigned_end" class="form-control" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Shift</label>
-                            <input type="text" name="shift" class="form-control" placeholder="e.g. Morning, Night" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Remarks</label>
-                            <textarea name="remarks" class="form-control"></textarea>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Assign Resource</button>
                     </form>
                 </section>
             </div>

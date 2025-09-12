@@ -1,8 +1,7 @@
 <?php
 session_start();
-
 require_once '../../../config/db.php';
-$user_id = $_SESSION['user_id'] ?? 1;
+include("../../../functions/role_functions.php");
 
 $work_order_id = $_POST['work_order_id'];
 $resource_id = $_POST['resource_id'] ?: null;
@@ -12,29 +11,29 @@ $end = $_POST['end_time'];
 $remarks = $_POST['remarks'];
 
 if ($_POST['action'] === 'create') {
-    $stmt = mysqli_prepare($conn, "
+    $stmt = $conn->prepare("
         INSERT INTO production_downtime_logs
-        (work_order_id, resource_id, downtime_reason, start_time, end_time, remarks, logged_by)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        (company_id, user_id, employee_id, work_order_id, resource_id, downtime_reason, start_time, end_time, remarks, logged_by)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
-    mysqli_stmt_bind_param($stmt, 'isssssi',
-        $work_order_id, $resource_id, $reason, $start, $end, $remarks, $user_id
+    $stmt->bind_param('iiiisssssi',
+        $company_id, $user_id, $employee_id, $work_order_id, $resource_id, $reason, $start, $end, $remarks, $user_id
     );
-    mysqli_stmt_execute($stmt);
+    $stmt->execute();
 }
 
 if ($_POST['action'] === 'update') {
     $id = $_POST['id'];
-    $stmt = mysqli_prepare($conn, "
+    $stmt = $conn->prepare("
         UPDATE production_downtime_logs SET 
         work_order_id = ?, resource_id = ?, downtime_reason = ?, 
         start_time = ?, end_time = ?, remarks = ?
         WHERE id = ?
     ");
-    mysqli_stmt_bind_param($stmt, 'isssssi',
+    $stmt->bind_param('isssssi',
         $work_order_id, $resource_id, $reason, $start, $end, $remarks, $id
     );
-    mysqli_stmt_execute($stmt);
+    $stmt->execute();
 }
 
 header("Location: index.php");
