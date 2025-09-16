@@ -90,7 +90,7 @@ generate_pdf($html, strtoupper($type) . "_$id.pdf");
 //   <p>Date: {$quotation['quotation_date']}</p>
 //   <p>Customer: {$customer['name']}</p>
 
-//   <table class='table table-stripped'>
+//   <table class='table table-striped'>
 //     <thead>
 //       <tr>
 //         <th>#</th>

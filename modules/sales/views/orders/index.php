@@ -22,7 +22,7 @@ if(in_array($_SESSION['user_role'], system_users())) {
     SELECT o.*, c.company_id, c.name
     FROM sales_orders o 
     JOIN sales_customers c ON o.customer_id = c.id
-    ORDER BY o.order_date DESC
+    ORDER BY o.order_date ASC
   ");
 } else {
   $orders = $db->query("
@@ -30,7 +30,7 @@ if(in_array($_SESSION['user_role'], system_users())) {
     FROM sales_orders o 
     JOIN sales_customers c ON o.customer_id = c.id
     WHERE o.company_id = $company_id
-    ORDER BY o.order_date DESC
+    ORDER BY o.order_date ASC
   ");
 }
 ?>
@@ -71,9 +71,9 @@ if(in_array($_SESSION['user_role'], system_users())) {
                   <table class="table table-bordered table-striped DataTable">
                     <thead>
                       <tr>
+                        <th>Order Date</th>
                         <th>Order #</th>
                         <th>Customer</th>
-                        <th>Order Date</th>
                         <th>Status</th>
                         <th>Total (N)</th>
                         <th>Actions</th>
@@ -82,10 +82,17 @@ if(in_array($_SESSION['user_role'], system_users())) {
                     <tbody>
                       <?php foreach ($orders as $order): ?>
                       <tr>
-                        <td><?= htmlspecialchars($order['order_number']) ?></td>
-                        <td><?= htmlspecialchars($order['name']) ?></td>
                         <td><?= $order['order_date'] ?></td>
-                        <td><?= ucfirst($order['status']) ?></td>
+                        <td><?= $order['order_number'] ?></td>
+                        <td><?= $order['name'] ?></td>
+                        <td class="text text-<?= 
+                        match($order['status']) {
+                          'pending' => 'info',
+                          'confirmed' => 'success',
+                          'shipped' => 'primary',
+                          'cancelled' => 'danger',
+                          default => 'warning'
+                        } ?>"><?= ucfirst($order['status']) ?></td>
                         <td><?= number_format($order['total_amount'], 2) ?></td>
                         <td>
                           <a href="order?id=<?= $order['id']; ?>" class="btn btn-info btn-xs">
