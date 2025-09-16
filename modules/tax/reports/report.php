@@ -137,6 +137,11 @@ if($report_type == "VAT") {
         localStorage.setItem('date_to', "<?= $to ?>");
     </script>
     <?php include("../../../includes/scripts.phtml"); ?>
+    <script>
+        $(document.body).find('section.content div.row div.card')
+            .after(`<div class="row mt-3"><div class="col-5 offset-7"><strong>Total Invoice Amount: </strong>${localStorage.getItem('total_amount')}</div></div>`)
+            .after(`<div class="row mt-4"><div class="col-5 offset-7"><strong>Total Tax Amount: </strong>${localStorage.getItem('total_tax_amount')}</div></div>`);
+    </script>
     <!--end::Script-->
   </body>
   <!--end::Body-->
