@@ -89,7 +89,7 @@ $emp = $conn->query("SELECT * FROM employees WHERE company_id = $company_id AND 
                         <div class="card mt-4 mb-4">
                             <div class="card-header">Employee Bonuses</div>
                             <div class="card-body">
-                                <table class="table table-stripped">
+                                <table class="table table-striped">
                                     <thead>
                                         <tr>
                                             <th>Month</th>
@@ -115,7 +115,7 @@ $emp = $conn->query("SELECT * FROM employees WHERE company_id = $company_id AND 
                         <div class="card mt-4 mb-4">
                             <div class="card-header">Employee Bank Accounts</div>
                             <div class="card-body">
-                                <table class="table table-stripped">
+                                <table class="table table-striped">
                                     <thead>
                                         <tr>
                                             <th>Bank</th>

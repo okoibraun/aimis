@@ -92,7 +92,7 @@
                 "sSearchPlaceholder": "Search...",
                 "sLengthMenu": " Show:&nbsp;&nbsp;_MENU_ &nbsp;Records per Page",
             },
-            "responsive": true, "autoWidth": false, "buttons": ["copy", "csv", "excel", "pdf", "print"],
+            // "responsive": true, "autoWidth": false, "buttons": ["copy", "csv", "excel", "pdf", "print"],
             "stripeClasses": [],
             "lengthMenu": [7, 10, 20, 50],
             "pageLength": 7
@@ -101,7 +101,29 @@
         // new DataTable('.DataTable', { layout: { topStart: { buttons: ['copy', 'excel', 'pdf'] } } });
 
         $(".ReportTable").DataTable({
-          "responsive": false, "lengthChange": false, "autoWidth": false, "searching": false, "buttons": ["copy", "csv", "excel", "pdf", "print"]
+          "responsive": false, "lengthChange": false, "autoWidth": false, "searching": false, "buttons": ["copy", "csv", "excel", "pdf",
+                {
+                    extend: 'print',
+                    customize: function (win) {
+                        // $(win.document.body)
+                        //     .css('font-size', '10pt')
+                        //     .prepend(
+                        //         '<img src="http://datatables.net/media/images/logo-fade.png" style="position:absolute; top:0; left:0;" />'
+                        //     );
+ 
+                        $(win.document.body)
+                            .find('table')
+                            .addClass('compact')
+                            .css('font-size', 'inherit');
+
+                        $(win.document.body)
+                        .find('h1').after(`<p>Generated Report From: ${localStorage.getItem('date_from')} To: ${localStorage.getItem('date_to')}</p>`);
+
+                        $(win.document.body).find('table')
+                        .after(`<div class="row mt-3"><div class="col-5 offset-7"><strong>Total Invoice Amount: </strong>${localStorage.getItem('total_amount')}</div></div>`)
+                        .after(`<div class="row mt-4"><div class="col-5 offset-7"><strong>Total Tax Amount: </strong>${localStorage.getItem('total_tax_amount')}</div></div>`);
+                    }
+                }]
         }).buttons().container().appendTo('.tableButtons');
         
         $(document).ready(function() {

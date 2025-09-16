@@ -110,8 +110,9 @@ ORDER BY generated_at DESC");
 
                   <!-- Existing Reports -->
                   <div class="col">
-                    <div class="card card-info">
-                      <div class="card-header"><h3 class="card-title">Generated Reports</h3>
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">Generated Reports</h3>
                       <div class="card-tools tableToolbar"></div>
                     </div>
                       <div class="card-body table-responsive">

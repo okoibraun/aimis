@@ -297,7 +297,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['addAllowancesFormBtn'])
                                 <div class="card-body">
                                     <?php if($num_rows > 0) { ?>
                                     <div class="table-responsive">
-                                        <table class="table table-stripped table-hover">
+                                        <table class="table table-striped table-hover">
                                             <thead>
                                                 <tr>
                                                     <th>Name</th>
@@ -386,7 +386,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['addAllowancesFormBtn'])
                                     <div class="row">
                                         <div class="col-md-12">
                                             <?php if($bonuses->num_rows == 0) { echo 'No Bonus record for this month'; } else { ?>
-                                            <table class="table table-stripped">
+                                            <table class="table table-striped">
                                                 <thead>
                                                     <tr>
                                                         <th>Month</th>
@@ -473,7 +473,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['addAllowancesFormBtn'])
                                     <div class="row">
                                         <div class="col-md-12">
                                             <?php if($deductions->num_rows == 0) { echo '<span class="text-center">No Deduction record for this month</span>'; } else { ?>
-                                            <table class="table table-stripped">
+                                            <table class="table table-striped">
                                                 <thead>
                                                     <tr>
                                                         <th>Month</th>
@@ -551,7 +551,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['addAllowancesFormBtn'])
                                     <div class="row">
                                         <div class="col-md-12">
                                             <?php if($allowances->num_rows == 0) { echo '<span class="text-center">No Allowance record for this month</span>'; } else { ?>
-                                            <table class="table table-stripped">
+                                            <table class="table table-striped">
                                                 <thead>
                                                     <tr>
                                                         <th>Month</th>

@@ -16,7 +16,7 @@
   <p>Date: <?= $quotation['quotation_date'] ?></p>
   <p>Customer: <?= htmlspecialchars($customer['name']) ?></p>
 
-  <table class="table table-stripped">
+  <table class="table table-striped">
     <thead>
       <tr>
         <th>#</th>

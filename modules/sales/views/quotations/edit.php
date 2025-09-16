@@ -197,7 +197,7 @@ $form_action = 'form?action=save';
                                             <div class="col">
                                                 <div class="form-check form-switch">
                                                     <label for="priceIncludesTax" class="form-check-label">Has WHT</label>
-                                                    <input type="checkbox" class="form-check-input" id="enableWHT">
+                                                    <input type="checkbox" class="form-check-input" id="enableWHT" <?= $quotation['wht_tax_amount'] ? 'checked' : '' ?>>
                                                 </div>
                                             </div>
                                             <div class="col">
@@ -306,7 +306,7 @@ $form_action = 'form?action=save';
                                                 $tax_type = $conn->query("SELECT * FROM tax_config WHERE tax_type = 'WHT' AND company_id = $company_id");
                                                 foreach($tax_type as $tax) {
                                             ?>
-                                                <option value="<?= $tax['id'] ?>" data-whtrate="<?= $tax['rate'] ?>" <?= ($order['wht_tax_id'] ?? '') == $tax['id'] ? 'selected' : '' ?>>
+                                                <option value="<?= $tax['id'] ?>" data-whtrate="<?= $tax['rate'] ?>" <?= ($quotation['wht_tax_id'] ?? '') == $tax['id'] ? 'selected' : '' ?>>
                                                 <?= $tax['tax_type'] ?> - <?= $tax['description'] ?>
                                                 </option>
                                             <?php } ?>
@@ -316,7 +316,7 @@ $form_action = 'form?action=save';
                                     <div class="col-md-5">
                                         <div class="form-group">
                                             <label for="wht_tax_amount">WHT Tax Amount (N)(%)</label>
-                                            <input type="number" name="wht_tax_amount" id="whtRate" class="form-control" readonly>
+                                            <input type="number" name="wht_tax_amount" id="whtRate" class="form-control" value="<?= $quotation['wht_tax_amount'] ?? '' ?>" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -372,13 +372,19 @@ $form_action = 'form?action=save';
         function recalcTotal() {
             let total = 0;
             let item_tax_rate = 0;
+            const whtRate = document.querySelector('#whtRate');
+            let whtTaxAmount = document.querySelector('[name="wht_tax_amount"]');
+
             document.querySelectorAll('#itemsTable tbody tr').forEach(row => {
                 let qty = parseFloat(row.querySelector('[name="quantity[]"]').value) || 0;
                 let price = parseFloat(row.querySelector('[name="unit_price[]"]').value) || 0;
                 let discount = parseFloat(row.querySelector('[name="discount_percent[]"]').value) || 0;
                 let item_tax = parseFloat(row.querySelector('[name="item_tax[]').value) || 0;
 
-                let taxrate = qty * item_tax * (1 + price / 100);
+                // let taxrate = qty * item_tax * (1 + price / 100);
+                // let subtotal = qty * price * (1 - discount / 100);
+
+                let taxrate = qty * item_tax * (price / 100);
                 let subtotal = qty * price * (1 - discount / 100);
                 // row.querySelector('.subtotal-cell').textContent = subtotal.toFixed(2);
                 row.querySelector('.subtotal-cell').value = subtotal.toFixed(2);
@@ -389,7 +395,9 @@ $form_action = 'form?action=save';
             document.querySelector('[name="tax"]').value = item_tax_rate;
             let tax = parseFloat(document.querySelector('[name="tax"]').value) || 0;
 
-            total += tax;
+            whtTaxAmount.value = whtRate.value * (total / 100);
+
+            total += tax + parseFloat(whtTaxAmount.value);
 
             document.querySelector('#total').value = total.toFixed(2);
             }
@@ -414,8 +422,14 @@ $form_action = 'form?action=save';
         // Get WHT Rate controls
         const selectWHT = document.querySelector("#selectWHT"); // Select WHR Rate
         const whtRate = document.querySelector('#whtRate'); //Set WHT Rate
+        let whtTaxAmount = document.querySelector('[name="wht_tax_amount"]');
 
-        showWHT.style.visibility = "hidden";
+        if(enableWHT.checked) {
+            showWHT.style.visibility = "visible";
+        } else {
+            showWHT.style.visibility = "hidden";
+        }
+        
         enableWHT.addEventListener('change', () => {
             if(enableWHT.checked) {
                 showWHT.style.visibility = "visible";
@@ -423,13 +437,25 @@ $form_action = 'form?action=save';
                 showWHT.style.visibility = "hidden";
                 selectWHT.value = 0;
                 whtRate.value = '';
+                whtTaxAmount.value = '';
             }
         });
         
         // set WHT rate value
+        // selectWHT.addEventListener('change', () => {
+        //     whtRate.value = selectWHT.options[selectWHT.selectedIndex].dataset.whtrate;
+        // });
+        
+        // set WHT rate value
         selectWHT.addEventListener('change', () => {
-            whtRate.value = selectWHT.options[selectWHT.selectedIndex].dataset.whtrate;
-        });    
+            if(selectWHT.options[selectWHT.selectedIndex].value != 0) {
+                whtRate.value = selectWHT.options[selectWHT.selectedIndex].dataset.whtrate;
+                recalcTotal();
+            } else {
+                whtRate.value = '';
+                recalcTotal();
+            }
+        }); 
         
     </script>
     <!--end::Script-->

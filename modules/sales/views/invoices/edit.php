@@ -37,12 +37,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $quotation_id = $_POST['quotation_id'];
     $lead_id = $_POST['lead_id'];
     $total_amount = $_POST['total_amount'];
-    $tax_amount = $_POST['tax_amount'];
+    $vat_tax_amount = $_POST['vat_tax_amount'];
+    $wht_tax_amount = $_POST['wht_tax_amount'] ?? null;
     $notes = $_POST['notes'];
     $status = $_POST['status'];
 
-    $stmt = $db->prepare("UPDATE sales_invoices SET invoice_number = ?, invoice_date = ?, due_date = ?, customer_id = ?, order_id = ?, quotation_id=?, lead_id=?, total_amount = ?, tax_amount=?,  notes = ?, status = ? WHERE id = ?");
-    $update = $stmt->execute([$invoice_number, $invoice_date, $due_date, $customer_id, $order_id, $quotation_id, $lead_id, $total_amount, $tax_amount, $notes, $status, $id]);
+    $stmt = $db->prepare("UPDATE sales_invoices SET invoice_number = ?, invoice_date = ?, due_date = ?, customer_id = ?, order_id = ?, quotation_id=?, lead_id=?, total_amount = ?, vat_tax_amount=?, wht_tax_amount=?, notes = ?, status = ? WHERE id = ?");
+    $update = $stmt->execute([$invoice_number, $invoice_date, $due_date, $customer_id, $order_id, $quotation_id, $lead_id, $total_amount, $vat_tax_amount, $wht_tax_amount, $notes, $status, $id]);
     if(!$update) {
         exit("Error updating invoice: " . implode(", ", $stmt->errorInfo()));
     } else {
@@ -89,8 +90,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <section class="content">
                     <form method="post" class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Invoice Details</h3>
+                            <div class="card-tools">
+                                <div class="form-check form-switch">
+                                    <label for="enable_wht" class="form-check-label">Has WHT</label>
+                                    <input type="checkbox" class="form-check-input" id="enableWHT" <?= $invoice['wht_tax_amount'] ? 'checked' : '' ?>>
+                                </div>
+                            </div>
+                        </div>
                         <div class="card-body">
-
                             <div class="row mt-3">
                                 <div class="col">
                                     <div class="form-group">
@@ -162,7 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <select name="quotation_id" id="selectQuotation" class="form-control select2" onchange="getQuoteValues()" required>
                                             <option value="<?= intval("0"); ?>" selected>-- Select Quotation --</option>
                                             <?php foreach ($quotations as $quotation): ?>
-                                            <option value="<?= $quotation['id'] ?>" <?= ($invoice['quotation_id'] == $quotation['id']) ? 'selected' : ''; ?> data-tax="<?= $quotation['tax']; ?>" data-total="<?= $quotation['total']; ?>"><?= $quotation['quote_number'] ?></option>
+                                            <option value="<?= $quotation['id'] ?>" <?= ($invoice['quotation_id'] == $quotation['id']) ? 'selected' : ''; ?> data-tax="<?= $quotation['tax']; ?>"  data-whttaxamount="<?= $ord['wht_tax_amount']; ?>" data-total="<?= $quotation['total']; ?>"><?= $quotation['quote_number'] ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>
@@ -174,7 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <select name="order_id" id="selectOrder" class="form-control select2" onchange="getOrderValues()">
                                         <option value="<?= intval("0"); ?>" selected>-- Select Order --</option>
                                         <?php foreach ($orders as $ord): ?>
-                                        <option value="<?= $ord['id'] ?>" <?= ($invoice['order_id'] == $ord['id']) ? 'selected' : ''; ?> data-taxamount="<?= $ord['tax_amount']; ?>" data-totalamount="<?= $ord['total_amount']; ?>"><?= $ord['order_number'] ?></option>
+                                        <option value="<?= $ord['id'] ?>" <?= ($invoice['order_id'] == $ord['id']) ? 'selected' : ''; ?> data-taxamount="<?= $ord['vat_tax_amount']; ?>"  data-whttaxamount="<?= $ord['wht_tax_amount']; ?>" data-totalamount="<?= $ord['total_amount']; ?>"><?= $ord['order_number'] ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                     </div>
@@ -182,14 +191,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </div>
 
                             <div class="row mt-3">
-                                <div class="col-md-4 offset-md-8">
-                                    <div class="form-group">
-                                        <label>Tax (N)</label>
-                                        <input type="number" step="0.01" name="tax_amount" class="form-control" value="<?= $invoice['tax_amount'] ?? '0.00' ?>">
+                                <div class="col-md-3 offset-md-9">
+                                    <div class="form-group" id="showWHT">
+                                        <label for="wht_tax_amount">WHT Tax Amount (N)(%)</label>
+                                        <input type="number" name="wht_tax_amount" id="whtRate" class="form-control" value="<?= $invoice['wht_tax_amount'] ?? null; ?>" readonly>
                                     </div>
                                     <div class="form-group">
-                                        <label>Total (N)</label>
-                                        <input type="number" step="0.01" name="total_amount" class="form-control" id="total_amount" readonly value="<?= $invoice['total_amount'] ?? '0.00' ?>">
+                                        <label>VAT Tax Amount (N)(%)</label>
+                                        <input type="number" step="0.01" name="vat_tax_amount" class="form-control" value="<?= $invoice['vat_tax_amount'] ?? '0.00' ?>" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Total Amount (N)</label>
+                                        <input type="number" step="0.01" name="total_amount" class="form-control" id="total_amount" value="<?= $invoice['total_amount'] ?? '0.00' ?>" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -234,9 +247,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // Sets Order select menu to default if it was previously selected
                     document.querySelector('#selectOrder').value = 0;
                     // document.querySelector('#selectOrder').selectedIndex = 0;
-                    // Sets total_amount and tax_amount input field's value
-                    document.querySelector('[name="tax_amount"]').value = quotation.dataset.tax || 0
-                    document.querySelector('[name="total_amount"]').value = quotation.dataset.total || 0
+                    // Sets total_amount and vat_tax_amount input field's value
+                    document.querySelector('[name="vat_tax_amount"]').value = quotation.dataset.tax || 0;
+                    document.querySelector('[name="total_amount"]').value = quotation.dataset.total || 0;
+                    document.querySelector('[name="wht_tax_amount"]').value = quotation.dataset.whttaxamount;
                 }
             });
         }
@@ -248,14 +262,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 if (order) {
                     // Sets Quotation select menu to default if it was previously selected
-                    document.querySelector('#selectQuotation').value = 0
+                    document.querySelector('#selectQuotation').value = 0;
                     // document.querySelector('#selectQuotation').selectedIndex = 0
                     // Sets total_amount and tax_amount input field's value
-                    document.querySelector('[name="tax_amount"]').value = order.dataset.taxamount || 0
-                    document.querySelector('[name="total_amount"]').value = order.dataset.totalamount || 0
+                    document.querySelector('[name="vat_tax_amount"]').value = order.dataset.taxamount || 0;
+                    document.querySelector('[name="total_amount"]').value = order.dataset.totalamount || 0;
+                    document.querySelector('[name="wht_tax_amount"]').value = order.dataset.whttaxamount;
                 }
             });
         }
+        
+        // Toggle WHT Tax
+        const showWHT = document.querySelector("#showWHT");
+        const enableWHT = document.querySelector('#enableWHT');
+
+        // Get WHT Rate controls
+        const whtRate = document.querySelector('#whtRate'); //Set WHT Rate
+
+        if(enableWHT.checked) {
+            showWHT.style.visibility = "visible";
+        } else {
+            showWHT.style.visibility = "hidden";
+        }
+        
+        enableWHT.addEventListener('change', () => {
+            if(enableWHT.checked) {
+                showWHT.style.visibility = "visible";
+            } else {
+                showWHT.style.visibility = "hidden";
+                whtRate.value = '';
+            }
+        });
     </script>
     <!--end::Script-->
   </body>

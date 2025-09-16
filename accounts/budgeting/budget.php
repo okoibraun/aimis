@@ -108,7 +108,7 @@ if ($budget_id > 0) {
                           <h3 class="card-title"><?= $budget['budget_name']; ?> Items</h3>
                         </div>
                         <div class="card-body">
-                          <table class="table table-stripped DataTables">
+                          <table class="table table-striped DataTables">
                             <thead>
                               <tr>
                                 <th>Product</th>
