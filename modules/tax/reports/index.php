@@ -52,7 +52,7 @@ ORDER BY generated_at DESC");
         <div class="container-fluid">
 
             <div class="content-wrapper">
-              <section class="content-header">
+              <section class="content-header mt-3 mb-3">
                 <h1><i class="fas fa-file-alt"></i> Tax & IPSAS Reports</h1>
                 <p>
                   Generate tax filing and IPSAS-compliant reports
@@ -66,11 +66,11 @@ ORDER BY generated_at DESC");
                 <div class="row">
 
                   <!-- Generate New Report -->
-                  <div class="col-md-4">
+                  <div class="col-3">
                     <div class="card card-primary">
                       <div class="card-header"><h3 class="card-title">Generate New Report</h3></div>
                       <div class="card-body">
-                        <form action="generate_report.php" method="POST" class="card">
+                        <form action="generate.php" method="POST" class="card">
                         <div class="card-body">
 
                             <div class="form-group">
@@ -82,6 +82,18 @@ ORDER BY generated_at DESC");
                                 <option value="Annual">Annual Tax Filing</option>
                                 <option value="IPSAS">IPSAS Compliance Report</option>
                                 </select>
+                            </div>
+                            <div class="row">
+                              <div class="col">
+                                <div class="form-group">
+                                  <label for="from">From:</label>
+                                  <input type="date" name="from" class="form-control" required>
+                                </div>
+                              </div>
+                              <div class="col">
+                                <label for="to">To:</label>
+                                <input type="date" name="to" class="form-control" required>
+                              </div>
                             </div>
                         </div>
                           <div class="card-footer">
@@ -97,15 +109,18 @@ ORDER BY generated_at DESC");
                   </div>
 
                   <!-- Existing Reports -->
-                  <div class="col-md-8">
+                  <div class="col">
                     <div class="card card-info">
-                      <div class="card-header"><h3 class="card-title">Generated Reports</h3></div>
+                      <div class="card-header"><h3 class="card-title">Generated Reports</h3>
+                      <div class="card-tools tableToolbar"></div>
+                    </div>
                       <div class="card-body table-responsive">
                         <table class="table table-bordered table-striped DataTable">
                           <thead>
                             <tr>
                               <th>#</th>
                               <th>Type</th>
+                              <th>Range</th>
                               <th>Generated At</th>
                               <th>By</th>
                               <th>Action</th>
@@ -116,15 +131,16 @@ ORDER BY generated_at DESC");
                               <tr>
                                 <td><?= $i + 1 ?></td>
                                 <td><?= $r['report_type'] ?></td>
+                                <td><?= $r['date_from'] ?> - <?= $r['date_to'] ?></td>
                                 <td><?= $r['generated_at'] ?></td>
                                 <td>User: <?= $r['user_name'] ?></td>
                                 <td>
-                                  <a href="view_report.php?id=<?= $r['id'] ?>" class="btn btn-sm btn-info" target="_blank">
-                                    View
-                                  </a>
-                                  <a href="download_report.php?id=<?= $r['id'] ?>" class="btn btn-sm btn-secondary">
-                                    Download
-                                  </a>
+                                  <form action="report.php" method="post">
+                                    <input type="hidden" name="report_type" value="<?= $r['report_type'] ?>">
+                                    <input type="hidden" name="date_from" value="<?= $r['date_from'] ?>">
+                                    <input type="hidden" name="date_to" value="<?= $r['date_to'] ?>">
+                                    <button type="submit" class="btn btn-sm btn-info">View</button>
+                                  </form>
                                 </td>
                               </tr>
                             <?php endforeach ?>

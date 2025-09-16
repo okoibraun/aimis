@@ -66,10 +66,10 @@ if(in_array($_SESSION['user_role'], system_users())) {
                   <thead>
                     <tr>
                       <th>Name</th>
-                      <th>Price (N) (incl. tax)</th>
+                      <th>Price (N)</th>
                       <th>Discount</th>
                       <th>Status</th>
-                      <th>Tax Rate</th>
+                      <th>Tax Rate (%)</th>
                       <th>Actions</th>
                     </tr>
                   </thead>
@@ -77,9 +77,9 @@ if(in_array($_SESSION['user_role'], system_users())) {
                     <?php foreach($products as $row) { ?>
                       <tr>
                         <td><?= htmlspecialchars($row['name']) ?></td>
-                        <td><?= number_format($row['price'], 2) ?> <?= ($row['price_includes_tax'] == 1) ? '<small class="text-muted">(Taxed)</small>' : ''; ?></td>
+                        <td><?= number_format($row['price'], 2) ?></td>
                         <td><?= $row['discount_type'] . ' (' . $row['discount_value'] . ')' ?></td>
-                        <td><?= $row['is_active'] ? 'Active' : 'Inactive' ?></td>
+                        <td><?= $row['is_active'] ? '<span class="text text-success">Active</span>' : '<span class="text text-secondary">Inactive</span>' ?></td>
                         <td><?= $row['tax_rate']; ?></td>
                         <td>
                           <a href="edit?id=<?= $row['id'] ?>" class="btn btn-sm btn-info">Edit</a>

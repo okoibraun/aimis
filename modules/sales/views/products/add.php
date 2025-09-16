@@ -108,17 +108,21 @@ if ($is_edit) {
                                                         </div>
                                                     </div>
                                                     <div class="col">
-                                                        <div class="form-group mt-4">
-                                                            <div class="form-check form-switch">
-                                                                <label for="priceIncludesTax" class="form-check-label">Price Includes TAX</label>
-                                                                <input type="checkbox" name="price_includes_tax" class="form-check-input" value="1" id="priceTax" checked>
-                                                            </div>
+                                                        <div class="form-group">
+                                                            <label for="tax_type">Tax Type</label>
+                                                            <select name="tax_config_id" id="taxType" class="form-control">
+                                                                <option data-rate="0" selected>None</option>
+                                                                <?php $taxes = $conn->query("SELECT * FROM tax_config WHERE company_id = $company_id"); ?>
+                                                                <?php foreach($taxes as $tax) { ?>
+                                                                    <option value="<?= $tax['id'] ?>" data-rate="<?= $tax['rate'] ?>"><?= $tax['tax_type'] ?> - <?= $tax['description'] ?></option>
+                                                                <?php } ?>
+                                                            </select>
                                                         </div>
                                                     </div>
-                                                    <div class="col" id="showTax">
+                                                    <div class="col">
                                                         <div class="form-group">
                                                             <label for="tax_rate">Tax Rate (%)</label>
-                                                            <input type="number" name="tax_rate" id="" step="0.01" class="form-control">
+                                                            <input type="number" name="tax_rate" id="taxRate" class="form-control" readonly>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -150,17 +154,14 @@ if ($is_edit) {
     <!--end::App Wrapper-->
     <!--begin::Script-->
     <?php include("../../../../includes/scripts.phtml"); ?>
+    <?php include("../../../../includes/scripts.phtml"); ?>
     <script>
-        const showTax = document.querySelector("#showTax");
-        const priceTax = document.querySelector('#priceTax');
+        const taxType = document.querySelector("#taxType");
 
-        showTax.style.display = "none";
-        priceTax.addEventListener('change', () => {
-            if(!priceTax.checked) {
-                showTax.style.display = "block";
-            } else {
-                showTax.style.display = "none";
-            }
+        document.querySelector('#taxRate').value = taxType.options[taxType.selectedIndex].dataset.rate;
+
+        taxType.addEventListener('change', () => {
+            document.querySelector('#taxRate').value = taxType.options[taxType.selectedIndex].dataset.rate;
         });
     </script>
     <!--end::Script-->

@@ -3,17 +3,16 @@ session_start();
 // Include database connection and header
 // This file should be included at the top of your PHP files to establish a database connection and include common header elements.
 include('../../config/db.php');
+include("../../functions/role_functions.php");
 
-if (!isset($_SESSION['user_id'])) {
-    header('Location: ../../login.php');
+if (!isset($user_id)) {
+    header('Location: /login.php');
     exit();
 }
 
 require_once 'functions.php';
 
-$user_id = $_SESSION['user_id'];
 $user_role = $_SESSION['user_role'];
-$company_id = $_SESSION['company_id'];
 
 // Fetch available reports based on access_roles
 $reports = getReportsByRole($conn, $user_role);
@@ -84,18 +83,6 @@ $dashboard = getUserDashboard($conn, $user_id);
                 </section>
             </div>
 
-            <script src="../../assets/plugins/chart.js/Chart.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script>
-                <?php foreach ($layout ?? [] as $widget): ?>
-                    fetch('ajax/fetch_data.php?id=<?= $widget['report_id'] ?>')
-                        .then(res => res.json())
-                        .then(data => {
-                            new Chart(document.getElementById('chart-<?= $widget['report_id'] ?>'), data);
-                        });
-                <?php endforeach; ?>
-            </script>
-
         </div>
       </div>
       </main>
@@ -107,6 +94,17 @@ $dashboard = getUserDashboard($conn, $user_id);
     <!--end::App Wrapper-->
     <!--begin::Script-->
     <?php include("../../includes/scripts.phtml"); ?>
+    <script src="/plugins/chart.js/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        <?php foreach ($layout ?? [] as $widget): ?>
+            fetch('ajax/fetch_data.php?id=<?= $widget['report_id'] ?>')
+                .then(res => res.json())
+                .then(data => {
+                    new Chart(document.getElementById('chart-<?= $widget['report_id'] ?>'), data);
+                });
+        <?php endforeach; ?>
+    </script>
     <!--end::Script-->
   </body>
   <!--end::Body-->

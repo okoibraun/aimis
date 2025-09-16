@@ -68,9 +68,9 @@ $tax = $conn->query("SELECT * FROM tax_config WHERE id = $id AND company_id = $c
                     <div class="form-group">
                       <label>Tax Type</label>
                       <select name="tax_type" id="tax_type" class="form-control" required>
-                        <option value="VAT" <?= $tax['tax_type'] == "VAT" ? 'selected' : '' ?>>VAT</option>
+                        <option value="VAT" <?= $tax['tax_type'] == "VAT" ? 'selected' : '' ?>>VAT - Value Added Tax</option>
                         <option value="GST" <?= $tax['tax_type'] == "GST" ? 'selected' : '' ?>>GST</option>
-                        <option value="WHT" <?= $tax['tax_type'] == "WHT" ? 'selected' : '' ?>>Withholding Tax</option>
+                        <option value="WHT" <?= $tax['tax_type'] == "WHT" ? 'selected' : '' ?>>WHT - Withholding Tax</option>
                       </select>
                     </div>
                     <div class="form-group">

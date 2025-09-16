@@ -25,7 +25,7 @@ function add_product($data) {
     global $user_id;
     global $employee_id;
 
-    $stmt = $conn->prepare("INSERT INTO sales_products (company_id, user_id, employee_id, name, description, price, discount_type, discount_value, price_includes_tax, tax_rate, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO sales_products (company_id, user_id, employee_id, name, description, price, discount_type, discount_value, tax_config_id, tax_rate, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     $stmt->bind_param("iiissdsdidi",
         $company_id,
         $user_id,
@@ -35,7 +35,7 @@ function add_product($data) {
         $data['price'],
         $data['discount_type'],
         $data['discount_value'],
-        $data['price_includes_tax'],
+        $data['tax_config_id'],
         $data['tax_rate'],
         $data['is_active']
     );
@@ -51,7 +51,7 @@ function update_product($data) {
     global $user_id;
     global $employee_id;
 
-    $stmt = $conn->prepare("UPDATE sales_products SET company_id = ?, user_id = ?, employee_id = ?, name = ?, description = ?, price = ?, discount_type = ?, discount_value = ?, price_includes_tax = ?, tax_rate=?, is_active = ? WHERE id = ?");
+    $stmt = $conn->prepare("UPDATE sales_products SET company_id = ?, user_id = ?, employee_id = ?, name = ?, description = ?, price = ?, discount_type = ?, discount_value = ?, tax_config_id = ?, tax_rate=?, is_active = ? WHERE id = ?");
     $stmt->bind_param("iiissdsdidii",
         $company_id,
         $user_id,
@@ -61,7 +61,7 @@ function update_product($data) {
         $data['price'],
         $data['discount_type'],
         $data['discount_value'],
-        $data['price_includes_tax'],
+        $data['tax_config_id'],
         $data['tax_rate'],
         $data['is_active'],
         $data['id']

@@ -170,9 +170,9 @@ $form_action = 'form?action=save';
                                 <div class="form-group mb-2">
                                     <label>Status</label>
                                     <select name="status" class="form-control">
-                                        <?php foreach (['Draft', 'Sent', 'Accepted', 'Rejected', 'Declined'] as $status): ?>
+                                        <?php foreach (['draft', 'sent', 'accepted', 'rejected', 'declined'] as $status): ?>
                                         <option value="<?= $status ?>">
-                                            <?= $status ?>
+                                            <?= ucfirst($status) ?>
                                         </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -185,11 +185,23 @@ $form_action = 'form?action=save';
                         <!-- Sales Quotation Items -->
                         <div class="card mt-5 mb-5">
                             <div class="card-header">
-                                <h3 class="card-title">Quotation Items</h3>
-                                <div class="card-tools">
-                                    <button type="button" class="btn btn-sm btn-info" onclick="addRow()">
-                                        <i class="bi bi-plus"></i> Add Item
-                                    </button>
+                                <div class="row">
+                                    <div class="col">
+                                        <h3 class="card-title">Quotation Items</h3>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="form-check form-switch">
+                                                    <label for="priceIncludesTax" class="form-check-label">Has WHT</label>
+                                                    <input type="checkbox" class="form-check-input" id="enableWHT">
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <button type="button" class="btn btn-info btn-sm" onclick="addRow()">+ Add Item</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="card-body table-responsive p-0">
@@ -254,14 +266,44 @@ $form_action = 'form?action=save';
                         <!-- / Sales quotation Items -->
 
                         <div class="row">
-                            <div class="col-md-4 offset-md-8">
-                                <div class="form-group">
-                                    <label>Tax (N)</label>
-                                    <input type="number" step="0.01" name="tax" class="form-control">
+                            <div class="col-md-5 offset-md-7">
+                                <div class="row" id="showWHT">
+                                    <div class="col-md-7">
+                                        <div class="form-group">
+                                            <label>WHT Tax:</label>
+                                            <select name="wht_tax_id" id="selectWHT"  class="form-control" required>
+                                                <option value="<?= intval('0') ?>" selected>-- Select --</option>
+                                            <?php
+                                                $tax_type = $conn->query("SELECT * FROM tax_config WHERE tax_type = 'WHT' AND company_id = $company_id");
+                                                foreach($tax_type as $tax) {
+                                            ?>
+                                                <option value="<?= $tax['id'] ?>" data-whtrate="<?= $tax['rate'] ?>" <?= ($order['wht_tax_id'] ?? '') == $tax['id'] ? 'selected' : '' ?>>
+                                                <?= $tax['tax_type'] ?> - <?= $tax['description'] ?>
+                                                </option>
+                                            <?php } ?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <label for="wht_tax_amount">WHT Tax Amount (N)(%)</label>
+                                            <input type="number" name="wht_tax_amount" id="whtRate" class="form-control" readonly>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Total (N)</label>
-                                    <input type="number" step="0.01" name="total" class="form-control" id="total" readonly>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label>VAT Tax Amount (N)(%)</label>
+                                            <input type="number" step="0.01" name="tax" class="form-control" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label>Total Amount (N)</label>
+                                            <input type="number" step="0.01" name="total" class="form-control" id="total" readonly>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -334,7 +376,30 @@ $form_action = 'form?action=save';
         }
 
         // Populate price and discount for each selected product item
-       
+
+        // Toggle WHT Tax
+        const showWHT = document.querySelector("#showWHT");
+        const enableWHT = document.querySelector('#enableWHT');
+
+        // Get WHT Rate controls
+        const selectWHT = document.querySelector("#selectWHT"); // Select WHR Rate
+        const whtRate = document.querySelector('#whtRate'); //Set WHT Rate
+
+        showWHT.style.visibility = "hidden";
+        enableWHT.addEventListener('change', () => {
+            if(enableWHT.checked) {
+                showWHT.style.visibility = "visible";
+            } else {
+                showWHT.style.visibility = "hidden";
+                selectWHT.value = 0;
+                whtRate.value = '';
+            }
+        });
+        
+        // set WHT rate value
+        selectWHT.addEventListener('change', () => {
+            whtRate.value = selectWHT.options[selectWHT.selectedIndex].dataset.whtrate;
+        });
         
     </script>
     <!--end::Script-->

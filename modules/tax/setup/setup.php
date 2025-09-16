@@ -2,16 +2,16 @@
 session_start();
 // Include database connection and header
 // This file should be included at the top of your PHP files to establish a database connection and include common header elements.
-include('../../config/db.php');
+include('../../../config/db.php');
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: ../../login.php');
+    header('Location: ../../../login.php');
     exit();
 }
 
 // Fetch all tax configs for current company
 $company_id = $_SESSION['company_id'] ?? 0; // Ensure company_id is set, default to 0 if not
-$taxes = $conn->prepare("SELECT * FROM tax_config WHERE company_id = $company_id");
+$taxes = $conn->query("SELECT * FROM tax_config WHERE company_id = $company_id");
 ?>
 <!doctype html>
 <html lang="en">
@@ -19,7 +19,7 @@ $taxes = $conn->prepare("SELECT * FROM tax_config WHERE company_id = $company_id
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>AIMIS | Tax - Setup</title>
-    <?php include_once("../../includes/head.phtml"); ?>
+    <?php include_once("../../../includes/head.phtml"); ?>
   </head>
   <!--end::Head-->
   <!--begin::Body-->
@@ -27,10 +27,10 @@ $taxes = $conn->prepare("SELECT * FROM tax_config WHERE company_id = $company_id
     <!--begin::App Wrapper-->
     <div class="app-wrapper">
       <!--begin::Header-->
-      <?php include_once("../../includes/header.phtml"); ?>
+      <?php include_once("../../../includes/header.phtml"); ?>
       <!--end::Header-->
       <!--begin::Sidebar-->
-      <?php include_once("../../includes/sidebar.phtml"); ?>
+      <?php include_once("../../../includes/sidebar.phtml"); ?>
       <!--end::Sidebar-->
       <!--begin::App Main-->
       <main class="app-main">
@@ -50,7 +50,10 @@ $taxes = $conn->prepare("SELECT * FROM tax_config WHERE company_id = $company_id
                     </h3>
                     <div class="card-tools">
                       <a href="index.php" class="btn btn-secondary btn-sm">Back</a>
-                      <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#taxModal">
+                      <!-- Earlier versions of bootstrap <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#taxModal">
+                        <i class="fas fa-plus"></i> Add Tax Rule
+                      </button> -->
+                      <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#taxModal">
                         <i class="fas fa-plus"></i> Add Tax Rule
                       </button>
                     </div>
@@ -85,7 +88,7 @@ $taxes = $conn->prepare("SELECT * FROM tax_config WHERE company_id = $company_id
                               <button class="btn btn-sm btn-info editTaxBtn" data-id="<?= $row['id'] ?>" data-type="<?= $row['tax_type'] ?>" data-rate="<?= $row['rate'] ?>"
                                       data-desc="<?= $row['description'] ?>"
                                       data-active="<?= $row['is_active'] ?>"
-                                      data-toggle="modal" data-target="#taxModal">
+                                      data-bs-toggle="modal" data-bs-target="#taxModal">
                                 Edit
                               </button>
                               <a href="ajax/delete_tax.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-danger" onclick="return confirm('Delete this tax rule?')">Delete</a>
@@ -107,7 +110,8 @@ $taxes = $conn->prepare("SELECT * FROM tax_config WHERE company_id = $company_id
                   <div class="modal-content">
                     <div class="modal-header">
                       <h5 class="modal-title">Tax Rule</h5>
-                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      <!-- Earlier versions of bootstrap <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button> -->
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
                     <div class="modal-body">
@@ -137,6 +141,8 @@ $taxes = $conn->prepare("SELECT * FROM tax_config WHERE company_id = $company_id
                     </div>
 
                     <div class="modal-footer">
+                      <!-- Earlier versions of bootstrap <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                       <button type="submit" class="btn btn-success">Save Tax</button>
                     </div>
                   </div>
@@ -149,12 +155,12 @@ $taxes = $conn->prepare("SELECT * FROM tax_config WHERE company_id = $company_id
       </main>
       <!--end::App Main-->
       <!--begin::Footer-->
-      <?php include("../../includes/footer.phtml"); ?>
+      <?php include("../../../includes/footer.phtml"); ?>
       <!--end::Footer-->
     </div>
     <!--end::App Wrapper-->
     <!--begin::Script-->
-    <?php include("../../includes/scripts.phtml"); ?>
+    <?php include("../../../includes/scripts.phtml"); ?>
     <!--end::Script-->
     <script>
       document.querySelectorAll('.editTaxBtn').forEach(btn => {
@@ -166,6 +172,12 @@ $taxes = $conn->prepare("SELECT * FROM tax_config WHERE company_id = $company_id
           document.getElementById('tax_active').value = this.dataset.active;
         });
       });
+
+      toastr.info("This is how to display info Toastr");
+      toastr.success("This is how to display success Toastr");
+      toastr.warning("This is how to display warning Toastr");
+      toastr.error("This is how to display error Toastr");
+      toastr.success('We do have the Kapua suite available.', 'Turtle Bay Resort', {timeOut: 5000});
     </script>
   </body>
   <!--end::Body-->

@@ -67,9 +67,9 @@ $taxes = $conn->prepare("SELECT * FROM tax_config WHERE company_id = $company_id
                     <div class="form-group">
                       <label>Tax Type</label>
                       <select name="tax_type" id="tax_type" class="form-control" required>
-                        <option value="VAT">VAT</option>
+                        <option value="VAT">VAT - Value Added Tax</option>
                         <option value="GST">GST</option>
-                        <option value="WHT">Withholding Tax</option>
+                        <option value="WHT">WHT - Withholding Tax</option>
                       </select>
                     </div>
                     <div class="form-group">

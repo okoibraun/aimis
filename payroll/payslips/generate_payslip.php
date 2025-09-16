@@ -3,19 +3,26 @@ session_start();
 // Include database connection and header
 // This file should be included at the top of your PHP files to establish a database connection and include common header elements.
 include('../../config/db.php');
+include("../../functions/role_functions.php");
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
 }
 
-$can_access = ['admin', 'superadmin', 'system'];
-if(!in_array($_SESSION['user_role'], $can_access)) {
+// Check User Permissions
+$page = "payslip";
+$user_permissions = get_user_permissions($_SESSION['user_id']);
+
+if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
     exit;
 }
 
-$company_id = $_SESSION['company_id'];
+// if(!in_array($_SESSION['user_role'], super_roles())) {
+//     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
+//     exit;
+// }
 
 if(isset($_POST['generate'])) {
     $month = $_POST['month'];
@@ -114,7 +121,7 @@ if(isset($_POST['generate'])) {
         }
     }
 
-    echo "<div class='alert alert-success mt-3'>Payslips generated for $month.</div>";
+    $_SESSION['message'] = "Payslips generated for $month.";
 }
 ?>
 <!doctype html>
@@ -155,6 +162,7 @@ if(isset($_POST['generate'])) {
             </div>
 
             <div class="content">
+              <?php include("../../includes/alert.phtml"); ?>
               <div class="card">
                 <div class="card-body">
                   <div class="center">

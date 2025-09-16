@@ -48,7 +48,7 @@ if ($id) {
         <div class="container-fluid">
             
 
-            <section class="content-header">
+            <section class="content-header mt-3 mb-3">
                 <h1>Sales Order</h1>
             </section>
 
@@ -96,9 +96,23 @@ if ($id) {
 
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title">Order Items</h3>
-                                    <div class="card-tools">
-                                        <button type="button" class="btn btn-secondary" onclick="addRow()">+ Add Items</button>
+                                    <div class="row">
+                                        <div class="col">
+                                            <h3 class="card-title">Order Items</h3>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="form-check form-switch">
+                                                        <label for="enable_wht" class="form-check-label">Has WHT</label>
+                                                        <input type="checkbox" class="form-check-input" id="enableWHT">
+                                                    </div>
+                                                </div>
+                                                <div class="col">
+                                                    <button type="button" class="btn btn-secondary btn-sm" onclick="addRow()">+ Add Item</button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="card-header">
@@ -188,14 +202,48 @@ if ($id) {
 
                             <hr>
                             <div class="row">
-                                <div class="col-md-4 offset-md-8">
-                                    <div class="form-group">
-                                        <label>Tax (N)</label>
-                                        <input type="number" step="0.01" name="tax_amount" class="form-control" value="<?= $order['tax_amount'] ?? '0.00' ?>">
+                                <div class="col-md-5 offset-md-7">
+                                    <div class="row" id="showWHT">
+                                        <div class="col-md-7">
+                                            <div class="form-group">
+                                                <label>WHT Tax Type:</label>
+                                                <select name="wht_tax_id" id="selectWHT"  class="form-control" required>
+                                                    <option value="<?= intval('0') ?>" selected>-- Select --</option>
+                                                <?php
+                                                    $tax_type = $conn->query("SELECT * FROM tax_config WHERE tax_type = 'WHT' AND company_id = $company_id");
+                                                    foreach($tax_type as $tax) {
+                                                ?>
+                                                    <option value="<?= $tax['id'] ?>" data-whtrate="<?= $tax['rate'] ?>" <?= ($order['wht_tax_id'] ?? '') == $tax['id'] ? 'selected' : '' ?>>
+                                                    <?= $tax['tax_type'] ?> - <?= $tax['description'] ?>
+                                                    </option>
+                                                <?php } ?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <label for="wht_rate">WHT Tax Amount (N)(%)</label>
+                                                <input type="number" name="wht_tax_amount" id="whtRate" class="form-control" readonly>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label>Total (N)</label>
-                                        <input type="number" step="0.01" name="total_amount" class="form-control" id="total_amount" readonly value="<?= $order['total_amount'] ?? '0.00' ?>">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label>VAT Tax Amount (N)(%)</label>
+                                                    <input type="number" name="vat_tax_amount" class="form-control" value="<?= $order['vat_tax_amount'] ?? '0.00' ?>" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label>Total Amount (N)</label>
+                                                    <input type="number" name="total_amount" class="form-control" id="total_amount" value="<?= $order['total_amount'] ?? '0.00' ?>" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -250,8 +298,8 @@ if ($id) {
                 item_tax_rate += taxrate;
             });
 
-            document.querySelector('[name="tax_amount"]').value = item_tax_rate;
-            let tax = parseFloat(document.querySelector('[name="tax_amount"]').value) || 0;
+            document.querySelector('[name="vat_tax_amount"]').value = item_tax_rate;
+            let tax = parseFloat(document.querySelector('[name="vat_tax_amount"]').value) || 0;
 
             total += tax;
 
@@ -266,11 +314,34 @@ if ($id) {
             //     addRow();
             // }
 
-            document.querySelector('[name="tax_amount"]').addEventListener('input', recalcTotal);
+            document.querySelector('[name="vat_tax_amount"]').addEventListener('input', recalcTotal);
         }
 
         // Populate price and discount for each selected product item
-       
+
+        // Toggle WHT Tax
+        const showWHT = document.querySelector("#showWHT");
+        const enableWHT = document.querySelector('#enableWHT');
+
+        // Get WHT Rate controls
+        const selectWHT = document.querySelector("#selectWHT"); // Select WHR Rate
+        const whtRate = document.querySelector('#whtRate'); //Set WHT Rate
+
+        showWHT.style.visibility = "hidden";
+        enableWHT.addEventListener('change', () => {
+            if(enableWHT.checked) {
+                showWHT.style.visibility = "visible";
+            } else {
+                showWHT.style.visibility = "hidden";
+                selectWHT.value = 0;
+                whtRate.value = '';
+            }
+        });
+        
+        // set WHT rate value
+        selectWHT.addEventListener('change', () => {
+            whtRate.value = selectWHT.options[selectWHT.selectedIndex].dataset.whtrate;
+        });
         
     </script>
   </body>

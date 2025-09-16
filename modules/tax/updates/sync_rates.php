@@ -6,11 +6,11 @@ include_once '../functions/log_event.php';
 
 $country = $_POST['country'];
 if($country == "Nigeria") {
-    $source = 'Nigeria'; // This can be replaced with external source name
+    $source = 'Nigeria Tax Rates'; // This can be replaced with external source name
     $status = 'success';
-    $rate_details = "VAT: 7.5%, WHT: 15%"; // Simulated values
+    $rate_details = "VAT: 7.5%, WHT: 10%"; // Simulated values
 } else {
-    $source = 'System Default Sync'; // This can be replaced with external source name
+    $source = "{$country} Tax Rate"; // This can be replaced with external source name
     $status = 'success';
     $rate_details = "VAT: 15%, WHT: 15%"; // Simulated values
 }

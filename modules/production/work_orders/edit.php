@@ -135,4 +135,3 @@ $boms = $conn->query("SELECT b.id, b.version, p.name FROM production_bom b JOIN 
   </body>
   <!--end::Body-->
 </html>
-.php'; ?>
