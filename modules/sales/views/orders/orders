@@ -11,17 +11,19 @@ function handle_order_form_submission() {
 
     $id = $_POST['id'] ?? null;
     $customer_id = $_POST['customer_id'];
+    $wht_tax_id = $_POST['wht_tax_id'];
     $order_date = $_POST['order_date'];
     $delivery_date = $_POST['delivery_date'] ?? null;
     $status = $_POST['status'];
     $notes = $_POST['notes'] ?? '';
 
-    $tax_amount = $_POST['tax_amount'] ?? 0;
+    $vat_tax_amount = $_POST['vat_tax_amount'] ?? 0;
+    $wht_tax_amount = $_POST['wht_tax_amount'] ?? 0;
     $total_amount = $_POST['total_amount'] ?? 0;
 
     if ($id) {
-        $update_order_stmt = $db->prepare("UPDATE sales_orders SET company_id=?, user_id=?, employee_id=?, customer_id=?, order_date=?, delivery_date=?, status=?, notes=?, tax_amount=?, total_amount=? WHERE id=?");
-        $update_order = $update_order_stmt->execute([$company_id, $user_id, $employee_id, $customer_id, $order_date, $delivery_date, $status, $notes, $tax_amount, $total_amount, $id]);
+        $update_order_stmt = $db->prepare("UPDATE sales_orders SET company_id=?, user_id=?, employee_id=?, customer_id=?, wht_tax_id=?, order_date=?, delivery_date=?, status=?, notes=?, vat_tax_amount=?, wht_tax_amount=?, total_amount=? WHERE id=?");
+        $update_order = $update_order_stmt->execute([$company_id, $user_id, $employee_id, $customer_id, $wht_tax_id, $order_date, $delivery_date, $status, $notes, $vat_tax_amount, $wht_tax_amount, $total_amount, $id]);
         if($update_order) {
           $delete = $db->query("DELETE FROM sales_order_items WHERE order_id = $id");
           if($delete) {
@@ -46,8 +48,8 @@ function handle_order_form_submission() {
         }
     } else {
         $order_number = generate_unique_order_number();
-        $add_order = $db->query("INSERT INTO sales_orders (company_id, user_id, employee_id, order_number, customer_id, order_date, delivery_date, status, notes, tax_amount, total_amount) 
-                    VALUES ($company_id, $user_id, $employee_id, '$order_number', '$customer_id', '$order_date', '$delivery_date', '$status', '$notes', '$tax_amount', '$total_amount')");
+        $add_order = $db->query("INSERT INTO sales_orders (company_id, user_id, employee_id, order_number, customer_id, wht_tax_id, order_date, delivery_date, status, notes, vat_tax_amount, wht_tax_amount, total_amount) 
+                    VALUES ($company_id, $user_id, $employee_id, '$order_number', '$customer_id', $wht_tax_id, '$order_date', '$delivery_date', '$status', '$notes', '$vat_tax_amount', '$wht_tax_amount', '$total_amount')");
         
         if($add_order) {
           $order_id = $db->insert_id;

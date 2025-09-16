@@ -24,21 +24,23 @@ $leads = $conn->query("SELECT * FROM sales_customers WHERE company_id = $company
 if($_SERVER['REQUEST_METHOD'] == "POST") {
     $lead_id = $_POST['lead_id'];
     $customer_id = $_POST['customer_id'];
+    $wht_tax_id = $_POST['wht_tax_id'] ?? 0;
     $quote_number = $_POST['quote_number'];
     $quotation_date = $_POST['quotation_date'];
     $valid_until = $_POST['valid_until'];
     $status = $_POST['status'];
     $total = $_POST['total'];
     $tax_amount = $_POST['tax'];
+    $wht_tax_amount = $_POST['wht_tax_amount'] ?? 0;
     $created_by = $_POST['created_by'];
     $notes = $_POST['notes'];
 
     // insert_row('sales_quotations', $input);
     $quote_stmt = $conn->prepare("
-        INSERT INTO sales_quotations (lead_id, company_id, customer_id, quote_number, quotation_date, valid_until, status, total, tax, created_by, notes)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO sales_quotations (lead_id, company_id, customer_id, wht_tax_id, quote_number, quotation_date, valid_until, status, total, tax, wht_tax_amount, created_by, notes)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
-    $quote_stmt->bind_param("iiissssddis", $lead_id, $company_id, $customer_id, $quote_number, $quotation_date, $valid_until, $status, $total, $tax_amount, $created_by, $notes);
+    $quote_stmt->bind_param("iiiissssdddis", $lead_id, $company_id, $customer_id, $wht_tax_id, $quote_number, $quotation_date, $valid_until, $status, $total, $tax_amount, $wht_tax_amount, $created_by, $notes);
     $quote_stmt->execute();
 
     // Insert quotation items

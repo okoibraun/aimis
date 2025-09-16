@@ -23,8 +23,8 @@ switch ($action) {
         $id = $_POST['id'] ?? null;
 
         $fields = [
-            'lead_id', 'customer_id', 'quote_number', 'quote_date', 'expiry_date',
-            'status', 'total_amount', 'tax_amount', 'created_by'
+            'lead_id', 'customer_id', 'wht_tax_id', 'quote_number', 'quote_date', 'expiry_date',
+            'status', 'total_amount', 'tax_amount', 'wht_tax_amount', 'created_by'
         ];
 
         $input = array_intersect_key($data, array_flip($fields));
