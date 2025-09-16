@@ -15,7 +15,7 @@ $report_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $report = getReportById($conn, $report_id);
 
 // Permissions check
-$user_role = $_SESSION['role_id'];
+$user_role = $_SESSION['role_id'] ?? 1;
 if (!$report || !in_array($user_role, explode(',', $report['access_roles']))) {
     echo "<div class='alert alert-danger'>Access denied.</div>";
     require_once '../../includes/footer.phtml';
@@ -47,55 +47,19 @@ if (!$report || !in_array($user_role, explode(',', $report['access_roles']))) {
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header">
+                <section class="content-header mt-3 mb-3">
                     <h1><?= htmlspecialchars($report['name']) ?></h1>
                 </section>
 
                 <section class="content">
-                    <div class="box box-primary">
-                        <div class="box-body">
+                    <div class="card card-primary">
+                        <div class="card-body">
                             <canvas id="reportChart"></canvas>
                             <div id="kpi-alerts" class="p-3"></div>
                         </div>
                     </div>
                 </section>
             </div>
-
-            <script src="../../assets/plugins/chart.js/Chart.min.js"></script>
-            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-            <script>
-                fetch('ajax/fetch_data.php?id=<?= $report_id ?>')
-                    .then(res => res.json())
-                    .then(config => {
-                        const chartData = config.data.datasets[0].data;
-                        const chartLabels = config.data.labels;
-
-                        // KPI Thresholds (from config object passed)
-                        const thresholds = config.options.thresholds || {};
-                        const alerts = [];
-
-                        if (thresholds.min !== undefined || thresholds.max !== undefined) {
-                            chartData.forEach((val, i) => {
-                                if ((thresholds.min && val < thresholds.min) || (thresholds.max && val > thresholds.max)) {
-                                    alerts.push(`${chartLabels[i]}: ${val} is ${val < thresholds.min ? 'below' : 'above'} threshold`);
-                                }
-                            });
-                        }
-
-                        if (alerts.length) {
-                            document.getElementById('kpi-alerts').innerHTML =
-                                `<div class="alert alert-warning"><strong>KPI Alert(s):</strong><ul>` +
-                                alerts.map(a => `<li>${a}</li>`).join('') +
-                                `</ul></div>`;
-                        }
-
-                        new Chart(document.getElementById('reportChart'), config);
-                    })
-                    .catch(err => {
-                        alert("Error loading chart data.");
-                        console.error(err);
-                    });
-            </script>
 
 
         </div>
@@ -109,6 +73,41 @@ if (!$report || !in_array($user_role, explode(',', $report['access_roles']))) {
     <!--end::App Wrapper-->
     <!--begin::Script-->
     <?php include("../../includes/scripts.phtml"); ?>
+    <script src="/plugins/chart.js/Chart.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+    <script>
+        fetch('ajax/fetch_data.php?id=<?= $report_id ?>')
+            .then(res => res.json())
+            .then(config => {
+                const chartData = config.data.datasets[0].data;
+                const chartLabels = config.data.labels;
+
+                // KPI Thresholds (from config object passed)
+                const thresholds = config.options.thresholds || {};
+                const alerts = [];
+
+                if (thresholds.min !== undefined || thresholds.max !== undefined) {
+                    chartData.forEach((val, i) => {
+                        if ((thresholds.min && val < thresholds.min) || (thresholds.max && val > thresholds.max)) {
+                            alerts.push(`${chartLabels[i]}: ${val} is ${val < thresholds.min ? 'below' : 'above'} threshold`);
+                        }
+                    });
+                }
+
+                if (alerts.length) {
+                    document.getElementById('kpi-alerts').innerHTML =
+                        `<div class="alert alert-warning"><strong>KPI Alert(s):</strong><ul>` +
+                        alerts.map(a => `<li>${a}</li>`).join('') +
+                        `</ul></div>`;
+                }
+
+                new Chart(document.getElementById('reportChart'), config);
+            })
+            .catch(err => {
+                alert("Error loading chart data." + err);
+                console.error(err);
+            });
+    </script>
     <!--end::Script-->
   </body>
   <!--end::Body-->

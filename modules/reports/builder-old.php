@@ -78,8 +78,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php endif; ?>
 
                     <form method="post">
-                        <div class="box box-primary">
-                            <div class="box-body">
+                        <div class="card card-primary">
+                            <div class="card-body">
                                 <div class="form-group">
                                     <label>Report Name</label>
                                     <input type="text" name="name" class="form-control" required value="<?= htmlspecialchars($report['name'] ?? '') ?>">
@@ -124,9 +124,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </select>
                                 </div>
                             </div>
-                            <div class="box-footer">
-                                <button class="btn btn-success" type="submit">Save Report</button>
-                                <a href="index.php" class="btn btn-default">Cancel</a>
+                            <div class="card-footer">
+                                <div class="form-group float-end">
+                                    <a href="index.php" class="btn btn-default">Cancel</a>
+                                    <button class="btn btn-success" type="submit">Save Report</button>
+                                </div>
                             </div>
                         </div>
                     </form>

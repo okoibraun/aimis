@@ -71,7 +71,13 @@ $items = $conn->query("SELECT * FROM sales_quotation_items WHERE quotation_id = 
                         <p>
                             Quote Date: <?= $quotation['quotation_date'] ?><br>
                             Expiry Date: <?= $quotation['valid_until'] ?><br>
-                            Status: <span class="badge badge-info"><?= $quotation['status'] ?></span>
+                            Status: <span class="text text-<?= match($quotation['status']) {
+                                'draft' => 'info',
+                                'sent' => 'primary',
+                                'accepted' => 'success',
+                                'rejected' => 'danger',
+                                default => 'warning'
+                            } ?>"><?= ucfirst($quotation['status']) ?></span>
                         </p>
     
                         <h5>Quotation Items</h5>

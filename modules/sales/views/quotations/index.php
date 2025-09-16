@@ -77,14 +77,20 @@ if(in_array($_SESSION['user_role'], system_users())) {
                     </tr>
                   </thead>
                   <tbody>
-                    <?php foreach ($quotations as $quote): ?>
+                    <?php foreach ($quotations as $i => $quote): ?>
                       <?php $customer = $conn->query("SELECT * FROM sales_customers WHERE id = {$quote['customer_id']}")->fetch_assoc(); //get_row_by_id('sales_customers', $quote['customer_id']); ?>
                       <tr>
-                        <td><?= $quote['id'] ?></td>
+                        <td><?= $i + 1 ?></td>
                         <td><?= $quote['quote_number'] ?></td>
                         <td><?= htmlspecialchars($customer['name']) ?></td>
                         <td><?= $quote['quotation_date'] ?></td>
-                        <td><span class="text text-primary"><?= $quote['status'] ?></span></td>
+                        <td><span class="text text-<?= match($quote['status']) {
+                                'draft' => 'info',
+                                'sent' => 'primary',
+                                'accepted' => 'success',
+                                'rejected' => 'danger',
+                                default => 'warning'
+                            } ?>"><?= ucfirst($quote['status']) ?></span></td>
                         <td>N<?= number_format($quote['total'], 2) ?></td>
                         <td>
                           <a href="quotation?id=<?= $quote['id'] ?>" class="btn btn-xs btn-info">

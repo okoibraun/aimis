@@ -72,7 +72,7 @@ if ($is_edit) {
                                             <div class="card-body">
                                                 <div class="form-group">
                                                     <label>Product Name</label>
-                                                    <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($product['name']) ?>" required>
+                                                    <input type="text" name="name" class="form-control" value="<?= $product['name'] ?>" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Description</label>
@@ -111,25 +111,29 @@ if ($is_edit) {
                                                         </div>
                                                     </div>
                                                     <div class="col">
-                                                        <div class="form-group mt-4">
-                                                            <div class="form-check form-switch">
-                                                                <label for="priceIncludesTax" class="form-check-label">Price Includes TAX</label>
-                                                                <input type="checkbox" name="price_includes_tax" class="form-check-input" value="1" id="priceTax" <?= ($product['price_includes_tax'] == 1) ? 'checked' : ''; ?>>
-                                                            </div>
+                                                        <div class="form-group">
+                                                            <label for="tax_type">Tax Type</label>
+                                                            <select name="tax_config_id" id="taxType" class="form-control">
+                                                                <option data-rate="0" selected>None</option>
+                                                                <?php $taxes = $conn->query("SELECT * FROM tax_config WHERE company_id = $company_id"); ?>
+                                                                <?php foreach($taxes as $tax) { ?>
+                                                                    <option value="<?= $tax['id'] ?>" data-rate="<?= $tax['rate'] ?>" <?= $product['tax_config_id'] == $tax['id'] ? 'selected' : '' ?>><?= $tax['tax_type'] ?> - <?= $tax['description'] ?></option>
+                                                                <?php } ?>
+                                                            </select>
                                                         </div>
                                                     </div>
-                                                    <div class="col" id="showTax">
+                                                    <div class="col">
                                                         <div class="form-group">
                                                             <label for="tax_rate">Tax Rate (%)</label>
-                                                            <input type="number" name="tax_rate" id="" step="0.01" class="form-control" value="<?= $product['tax_rate']; ?>">
+                                                            <input type="number" name="tax_rate" id="taxRate" step="0.01" class="form-control" value="<?= $product['tax_rate']; ?>" readonly>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="card-footer">
                                                 <div class="form-group float-end">
-                                                    <button class="btn btn-success">Save</button>
                                                     <a href="./" class="btn btn-secondary">Cancel</a>
+                                                    <button class="btn btn-success">Save</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -155,19 +159,10 @@ if ($is_edit) {
     <!--begin::Script-->
     <?php include("../../../../includes/scripts.phtml"); ?>
     <script>
-        const showTax = document.querySelector("#showTax");
-        const priceTax = document.querySelector('#priceTax');
+        const taxType = document.querySelector("#taxType");
 
-        //showTax.style.display = "none";
-        if(priceTax.checked) {
-            showTax.style.display = "none";
-        }
-        priceTax.addEventListener('change', () => {
-            if(!priceTax.checked) {
-                showTax.style.display = "block";
-            } else {
-                showTax.style.display = "none";
-            }
+        taxType.addEventListener('change', () => {
+            document.querySelector('#taxRate').value = taxType.options[taxType.selectedIndex].dataset.rate;
         });
     </script>
     <!--end::Script-->
