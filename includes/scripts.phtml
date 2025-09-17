@@ -101,7 +101,13 @@
         // new DataTable('.DataTable', { layout: { topStart: { buttons: ['copy', 'excel', 'pdf'] } } });
 
         $(".ReportTable").DataTable({
-          "responsive": false, "lengthChange": false, "autoWidth": false, "searching": false, "buttons": ["copy", "csv", "excel", "pdf",
+          "oLanguage": {
+                // "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
+                "sInfo": "Showing page _PAGE_ of _PAGES_",
+                "sSearchPlaceholder": "Search...",
+                "sLengthMenu": " Show:&nbsp;&nbsp;_MENU_ &nbsp;Records per Page",
+            },
+          "responsive": false, "lengthChange": true, "autoWidth": false, "searching": true, "buttons": ["copy", "csv", "excel", "pdf",
                 {
                     extend: 'print',
                     customize: function (win) {
@@ -124,7 +130,7 @@
                         .after(`<div class="row mt-4"><div class="col-5 offset-7"><strong>Total Tax Amount: </strong>${localStorage.getItem('total_tax_amount')}</div></div>`);
                     }
                 }]
-        }).buttons().container().appendTo('.tableButtons');
+        }).buttons().container().appendTo('.dataTables_filter').prepend("&nbsp;&nbsp;&nbsp;&nbsp;");
         
         $(document).ready(function() {
             // Initialize Summernote

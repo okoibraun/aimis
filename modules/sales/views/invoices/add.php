@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $lead_id = $_POST['lead_id'];
     $total_amount = $_POST['total_amount'];
     $vat_tax_amount = $_POST['vat_tax_amount'];
-    $wht_tax_amount = $_POST['wht_tax_amount'] ?? null;
+    $wht_tax_amount = $_POST['wht_tax_amount'];
     $notes = $_POST['notes'];
 
     $insert = $db->query("INSERT INTO sales_invoices (company_id, user_id, employee_id, invoice_number, invoice_date, due_date, customer_id, order_id, quotation_id, lead_id, total_amount, vat_tax_amount, wht_tax_amount, notes, status) VALUES ($company_id,

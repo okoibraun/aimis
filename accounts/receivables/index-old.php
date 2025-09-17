@@ -126,18 +126,19 @@ $customers = $conn->query("SELECT id, name FROM sales_customers WHERE company_id
                         // ";
                         if(in_array($_SESSION['user_role'], super_roles())) {
                           $sql = "
-                            SELECT i.*, 
-                                  (SELECT SUM(amount) FROM sales_invoice_payments WHERE invoice_id = i.id) AS amount_paid
-                            FROM sales_invoices i
-                            WHERE i.company_id = $company_id AND due_date >= '$start_date' AND due_date <= '$end_date'
+                            SELECT i.*, c.name,
+                                  (SELECT SUM(amount) FROM payments WHERE invoice_id = i.id) AS paid
+                            FROM invoices i
+                            JOIN sales_customers c ON c.id = i.customer_id
+                            WHERE i.company_id = $company_id
                           ";
                         } else {
                           $sql = "
                             SELECT i.*, c.name,
-                                  (SELECT SUM(amount) FROM sales_invoice_payments WHERE invoice_id = i.id) AS amount_paid
-                            FROM sales_invoices i
+                                  (SELECT SUM(amount) FROM payments WHERE invoice_id = i.id) AS paid
+                            FROM invoices i
                             JOIN sales_customers c ON c.id = i.customer_id
-                            WHERE i.company_id = $company_id
+                            WHERE i.company_id = $company_id AND i.user_id = $user_id OR i.employee_id = $employee_id
                           ";
                         }
 
@@ -145,8 +146,8 @@ $customers = $conn->query("SELECT id, name FROM sales_customers WHERE company_id
 
                         $result = mysqli_query($conn, $sql);
                         foreach($result as $row) {
-                          $paid = $row['amount_paid'] ?? 0;
-                          $balance = $row['total_amount'] - $paid;
+                          $paid = $row['paid'] ?? 0;
+                          $balance = $row['amount'] - $paid;
 
                           if ($status == 'paid' && $balance > 0) continue;
                           if ($status == 'unpaid' && $paid > 0) continue;
@@ -155,31 +156,17 @@ $customers = $conn->query("SELECT id, name FROM sales_customers WHERE company_id
                           $status_label = ($balance <= 0) ? 'Paid' : (($paid > 0) ? 'Partial' : 'Unpaid');
                       ?>
                       <tr>
-                        <td><?= $row['invoice_number'] ?></td>
-                        <td>
-                          <?php
-                          $customer;
-                          if($row['customer_id']) {
-                            $customer = $conn->query("SELECT * FROM sales_customers WHERE id = {$row['customer_id']}")->fetch_assoc();
-                            echo ($customer && $customer['customer_type'] == "customer") ? $customer['name'] : "{$customer['name']} (Lead)";
-                          }
-                          ?>
-                        </td>
+                        <td><?= htmlspecialchars($row['invoice_no']) ?></td>
+                        <td><?= htmlspecialchars($row['name']) ?></td>
                         <td><?= $row['invoice_date'] ?></td>
                         <td><?= $row['due_date'] ?></td>
-                        <td><?= number_format($row['total_amount'], 2) ?></td>
+                        <td><?= number_format($row['amount'], 2) ?></td>
                         <td><?= number_format($paid, 2) ?></td>
                         <td><?= number_format($balance, 2) ?></td>
-                        <td class="text text-<?= 
-                        match($status_label) {
-                          'Paid' => 'success',
-                          'Partial' => 'primary',
-                          'Unpaid' => 'danger',
-                          default => 'info'
-                        }
-                        ?>"><?= $status_label ?></td>
+                        <td><?= $status_label ?></td>
                         <td>
                           <a href="invoice?id=<?= $row['id'] ?>" class="btn btn-info btn-sm">View</a>
+                          <a href="payments?invoice_id=<?= $row['id'] ?>" class="btn btn-success btn-sm">Pay</a>
                         </td>
                       </tr>
                       <?php } ?>
