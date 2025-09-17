@@ -15,10 +15,7 @@ if (!isset($_SESSION['user_id'])) {
 $page = "view";
 $user_permissions = get_user_permissions($_SESSION['user_id']);
 
-// Get Super Roles
-$roles = super_roles();
-
-if (!in_array($_SESSION['role'], $roles) && !in_array($page, $user_permissions)) {
+if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
     exit;
 }
@@ -32,51 +29,32 @@ $total_paid = 0;
 if ($invoice_id) {
   if(in_array($_SESSION['user_role'], system_users())) {
     // Get invoice details
-    $invoice = $conn->query("
-        SELECT i.*, c.name
-        FROM invoices i
-        JOIN sales_customers c ON c.id = i.customer_id
-        WHERE i.id = $invoice_id
-    ")->fetch_assoc();
-
-    //$invoice = $conn->query("SELECT * FROM invoices WHERE id = $invoice_id")->fetch_assoc();
+    $invoice = $conn->query("SELECT *FROM sales_invoices WHERE id = $invoice_id")->fetch_assoc();
 
     // Get payments
-    $payments_result = $conn->query("SELECT * FROM payments WHERE invoice_id = $invoice_id ORDER BY payment_date ASC");
+    $payments_result = $conn->query("SELECT * FROM sales_invoice_payments WHERE invoice_id = $invoice_id ORDER BY payment_date ASC");
     foreach($payments_result as $payment) {
         $payments[] = $payment;
         $total_paid += $payment['amount'];
     }
   } else if(in_array($_SESSION['user_role'], super_roles())) {
     // Get invoice details
-    $invoice = $conn->query("
-        SELECT i.*, c.name
-        FROM invoices i
-        JOIN sales_customers c ON c.id = i.customer_id
-        WHERE i.id = $invoice_id AND i.company_id = $company_id
-    ")->fetch_assoc();
-
-    //$invoice = $conn->query("SELECT * FROM invoices WHERE id = $invoice_id")->fetch_assoc();
+    $invoice = $conn->query("SELECT *FROM sales_invoices WHERE id = $invoice_id AND company_id = $company_id")->fetch_assoc();
 
     // Get payments
-    $payments_result = $conn->query($conn, "SELECT * FROM payments WHERE company_id = $company_id AND invoice_id = $invoice_id ORDER BY payment_date ASC");
+    $payments_result = $conn->query("SELECT * FROM sales_invoice_payments WHERE invoice_id = $invoice_id ORDER BY payment_date ASC");
     foreach($payments_result as $payment) {
         $payments[] = $payment;
         $total_paid += $payment['amount'];
     }
   } else {
     // Get invoice details
-    $invoice = $conn->query("
-        SELECT i.*, c.name
-        FROM invoices i
-        JOIN sales_customers c ON c.id = i.customer_id
-        WHERE i.id = $invoice_id AND i.company_id = $company_id AND i.user_id = $user_id OR i.employee_id = $employee_id
-    ")->fetch_assoc();
+    $invoice = $conn->query("SELECT * FROM sales_invoices WHERE id = $invoice_id AND company_id = $company_id AND user_id = $user_id OR employee_id = $employee_id")->fetch_assoc();
 
     //$invoice = $conn->query("SELECT * FROM invoices WHERE id = $invoice_id")->fetch_assoc();
 
     // Get payments
-    $payments_result = $conn->query($conn, "SELECT * FROM payments WHERE invoice_id = $invoice_id AND company_id = $company_id AND user_id = $user_id OR employee_id = $employee_id ORDER BY payment_date ASC");
+    $payments_result = $conn->query("SELECT * FROM sales_invoice_payments WHERE invoice_id = $invoice_id AND company_id = $company_id AND user_id = $user_id OR employee_id = $employee_id ORDER BY payment_date ASC");
     foreach($payments_result as $payment) {
         $payments[] = $payment;
         $total_paid += $payment['amount'];
@@ -84,7 +62,7 @@ if ($invoice_id) {
   }
 }
 
-$balance = $invoice ? ($invoice['amount'] - $total_paid) : 0;
+$balance = $invoice ? ($invoice['total_amount'] - $total_paid) : 0;
 ?>
 <!doctype html>
 <html lang="en">
@@ -128,17 +106,17 @@ $balance = $invoice ? ($invoice['amount'] - $total_paid) : 0;
                 <div class="card">
                   <div class="card-header">
                     <h3 class="card-title">Invoice</h3>
-                    <div class="card-tools">
+                    <!-- <div class="card-tools">
                       <a href="payments?invoice_id=<?= $invoice['id']; ?>" class="btn btn-success btn-sm">Pay</a>
-                    </div>
+                    </div> -->
                   </div>
                   <div class="card-body">
-                    <h4>Invoice #: <?= htmlspecialchars($invoice['invoice_no']) ?></h4>
-                    <p><strong>Customer:</strong> <?= htmlspecialchars($invoice['name']) ?></p>
+                    <h4>Invoice #: <?= $invoice['invoice_number'] ?></h4>
+                    <p><strong>Customer:</strong> <?= ($invoice['customer_id']) ? $conn->query("SELECT name FROM sales_customers WHERE id = {$invoice['customer_id']}")->fetch_assoc()['name'] : '-' ?></p>
                     <p><strong>Date:</strong> <?= $invoice['invoice_date'] ?></p>
                     <p><strong>Due:</strong> <?= $invoice['due_date'] ?></p>
-                    <p><strong>Description:</strong> <?= nl2br(htmlspecialchars($invoice['description'])) ?></p>
-                    <p><strong>Total Amount:</strong> <?= number_format($invoice['amount'], 2) ?></p>
+                    <p><strong>Description:</strong> <?= nl2br($invoice['notes']) ?></p>
+                    <p><strong>Total Amount:</strong> <?= number_format($invoice['total_amount'], 2) ?></p>
                     <p><strong>Paid:</strong> <?= number_format($total_paid, 2) ?></p>
                     <p><strong>Balance:</strong> <?= number_format($balance, 2) ?></p>
     
@@ -172,8 +150,8 @@ $balance = $invoice ? ($invoice['amount'] - $total_paid) : 0;
                             <tr>
                               <td><?= $p['payment_date'] ?></td>
                               <td><?= number_format($p['amount'], 2) ?></td>
-                              <td><?= htmlspecialchars($p['method']) ?></td>
-                              <td><?= htmlspecialchars($p['reference']) ?></td>
+                              <td><?= $p['payment_method'] ?></td>
+                              <td><?= $p['reference'] ?></td>
                             </tr>
                           <?php endforeach; ?>
                         </tbody>

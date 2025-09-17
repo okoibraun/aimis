@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $lead_id = $_POST['lead_id'];
     $total_amount = $_POST['total_amount'];
     $vat_tax_amount = $_POST['vat_tax_amount'];
-    $wht_tax_amount = $_POST['wht_tax_amount'] ?? null;
+    $wht_tax_amount = $_POST['wht_tax_amount'];
     $notes = $_POST['notes'];
     $status = $_POST['status'];
 
@@ -171,7 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <select name="quotation_id" id="selectQuotation" class="form-control select2" onchange="getQuoteValues()" required>
                                             <option value="<?= intval("0"); ?>" selected>-- Select Quotation --</option>
                                             <?php foreach ($quotations as $quotation): ?>
-                                            <option value="<?= $quotation['id'] ?>" <?= ($invoice['quotation_id'] == $quotation['id']) ? 'selected' : ''; ?> data-tax="<?= $quotation['tax']; ?>"  data-whttaxamount="<?= $ord['wht_tax_amount']; ?>" data-total="<?= $quotation['total']; ?>"><?= $quotation['quote_number'] ?></option>
+                                            <option value="<?= $quotation['id'] ?>" <?= ($invoice['quotation_id'] == $quotation['id']) ? 'selected' : ''; ?> data-tax="<?= $quotation['tax']; ?>"  data-whttaxamount="<?= $quotation['wht_tax_amount']; ?>" data-total="<?= $quotation['total']; ?>"><?= $quotation['quote_number'] ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>

@@ -12,10 +12,10 @@ if (!isset($_SESSION['user_id'])) {
 
 
 // Memo count
-$memo_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM memos"))['total'];
+$memo_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM memos WHERE company_id = $company_id"))['total'];
 
 // User count
-$user_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total FROM users"))['total'];
+$user_count = $conn->query("SELECT COUNT(*) as total FROM users WHERE company_id = $company_id")->fetch_assoc()['total'];
 ?>
 <!doctype html>
 <html lang="en">
@@ -63,227 +63,138 @@ $user_count = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as total F
           <div class="container-fluid">
             <!--begin::Row-->
             <div class="row">
-              <!--begin::Col-->
-              <div class="col-lg-3 col-6">
-                <!--begin::Small Box Widget 1-->
-                <div class="small-box text-bg-primary">
-                  <div class="inner">
-                    <h3><?php echo $memo_count; ?></h3>
-                    <p>Memos</p>
+              <div class="col-12 col-sm-6 col-md-2">
+                <div class="info-box mb-3">
+                  <span class="info-box-icon bg-primary elevation-1 text-white"><i class="fas fa-clipboard"></i></span>
+                  <div class="info-box-content">
+                      <span class="info-box-text">Memos</span>
+                      <span class="info-box-number"><?php echo $memo_count; ?></span>
                   </div>
-                  <div class="small-box-icon">
-                    <i class="fas fa-clipboard fa-md"></i>
-                  </div>
-                  <a href="./memo/" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-                    More info <i class="bi bi-link-45deg"></i>
-                  </a>
+                  <!-- /.info-box-content -->
                 </div>
-                <!--end::Small Box Widget 1-->
+                <!-- /.info-box -->
               </div>
-              <!--end::Col-->
+              <!-- /.col -->
               <?php if(in_array($_SESSION['user_role'], super_roles()) || in_array($_SESSION['user_role'], ['accounts'])) { ?>
-              <div class="col-lg-3 col-6">
-                <!--begin::Small Box Widget 2-->
-                <div class="small-box text-bg-success">
-                  <div class="inner">
-                    <h3><?php echo "0";//echo $user_count; ?></h3>
-                    <p>Accounts</p>
+              <div class="col-12 col-sm-6 col-md-2">
+                <div class="info-box mb-3">
+                  <span class="info-box-icon bg-success elevation-1 text-white">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                  </span>
+                  <div class="info-box-content">
+                      <span class="info-box-text">Accounts</span>
+                      <span class="info-box-number"><?= $conn->query("SELECT COUNT(*) AS total FROM sales_invoices WHERE company_id = $company_id")->fetch_assoc()['total']; ?></span>
                   </div>
-                  <svg
-                    class="small-box-icon"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.036-.84-1.875-1.875-1.875h-.75zM9.75 8.625c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75a1.875 1.875 0 01-1.875-1.875V8.625zM3 13.125c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75A1.875 1.875 0 013 19.875v-6.75z"
-                    ></path>
-                  </svg>
-                  <a
-                    href="#"
-                    class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover"
-                  >
-                    More info <i class="bi bi-link-45deg"></i>
-                  </a>
+                  <!-- /.info-box-content -->
                 </div>
-                <!--end::Small Box Widget 2-->
+                <!-- /.info-box -->
               </div>
+              <!-- /.col -->
               <?php } ?>
               <!--end::Col-->
               <?php if(in_array($_SESSION['user_role'], super_roles()) || in_array($_SESSION['user_role'], ['hr'])) { ?>
-              <div class="col-lg-3 col-6">
-                <!--begin::Small Box Widget 3-->
-                <div class="small-box text-bg-warning">
-                  <div class="inner">
-                    <h3>0</h3>
-                    <p>Payroll</p>
+              <div class="col-12 col-sm-6 col-md-2">
+                <div class="info-box mb-3">
+                  <span class="info-box-icon bg-secondary elevation-1 text-white"><i class="fas fa-users"></i></span>
+
+                  <div class="info-box-content">
+                      <span class="info-box-text">Employees</span>
+                      <span class="info-box-number"><?= $conn->query("SELECT COUNT(*) AS total FROM employees WHERE company_id = $company_id")->fetch_assoc()['total'] ?></span>
                   </div>
-                  <div class="small-box-icon">
-                    <i class="fas fa-user fa-md"></i>
-                  </div>
-                  <a href="#" class="small-box-footer link-dark link-underline-opacity-0 link-underline-opacity-50-hover">
-                    More info <i class="bi bi-link-45deg"></i>
-                  </a>
+                  <!-- /.info-box-content -->
                 </div>
-                <!--end::Small Box Widget 3-->
+                <!-- /.info-box -->
               </div>
+              <!-- /.col -->
               <?php } ?>
               <!--end::Col-->
               <?php if(in_array($_SESSION['user_role'], super_roles()) || in_array($_SESSION['user_role'], ['sales'])) { ?>
-              <div class="col-lg-3 col-6">
-                <!--begin::Small Box Widget 4-->
-                <div class="small-box text-bg-secondary">
-                  <div class="inner">
-                    <h3>0</h3>
-                    <p>Sales</p>
+              <div class="col-12 col-sm-6 col-md-2">
+                <div class="info-box mb-3">
+                  <span class="info-box-icon bg-warning elevation-1 text-white"><i class="fas fa-shopping-cart"></i></span>
+
+                  <div class="info-box-content">
+                      <span class="info-box-text">Sales</span>
+                      <span class="info-box-number"><?= $conn->query("SELECT COUNT(*) AS total FROM sales_invoices WHERE company_id = $company_id")->fetch_assoc()['total']; ?></span>
                   </div>
-                  <svg
-                    class="small-box-icon"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <path
-                      clip-rule="evenodd"
-                      fill-rule="evenodd"
-                      d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z"
-                    ></path>
-                    <path
-                      clip-rule="evenodd"
-                      fill-rule="evenodd"
-                      d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z"
-                    ></path>
-                  </svg>
-                  <a
-                    href="#"
-                    class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover"
-                  >
-                    More info <i class="bi bi-link-45deg"></i>
-                  </a>
+                  <!-- /.info-box-content -->
                 </div>
-                <!--end::Small Box Widget 4-->
+                <!-- /.info-box -->
               </div>
+              <!-- /.col -->
               <!--end::Col-->
-              <div class="col-lg-3 col-6">
-                <!--begin::Small Box Widget 4-->
-                <div class="small-box text-bg-danger">
-                  <div class="inner">
-                    <h3>0</h3>
-                    <p>CRM</p>
+              <div class="col-12 col-sm-6 col-md-2">
+                <div class="info-box mb-3">
+                  <span class="info-box-icon bg-info elevation-1 text-white"><i class="fas fa-headset"></i></span>
+
+                  <div class="info-box-content">
+                      <span class="info-box-text">CRM</span>
+                      <span class="info-box-number"><?= $conn->query("SELECT COUNT(*) AS total FROM sales_orders WHERE company_id = $company_id")->fetch_assoc()['total']; ?></span>
                   </div>
-                  <svg
-                    class="small-box-icon"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <path
-                      clip-rule="evenodd"
-                      fill-rule="evenodd"
-                      d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z"
-                    ></path>
-                    <path
-                      clip-rule="evenodd"
-                      fill-rule="evenodd"
-                      d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z"
-                    ></path>
-                  </svg>
-                  <a
-                    href="#"
-                    class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover"
-                  >
-                    More info <i class="bi bi-link-45deg"></i>
-                  </a>
+                  <!-- /.info-box-content -->
                 </div>
-                <!--end::Small Box Widget 4-->
+                <!-- /.info-box -->
               </div>
-              <!--end::Col-->
-              <div class="col-lg-3 col-6">
-                <!--begin::Small Box Widget 4-->
-                <div class="small-box text-bg-info">
-                  <div class="inner">
-                    <h3>0</h3>
-                    <p>Production</p>
+              <!-- /.col -->
+              <div class="col-12 col-sm-6 col-md-2">
+                <div class="info-box mb-3">
+                  <span class="info-box-icon bg-danger elevation-1 text-white"><i class="fas fa-cogs"></i></span>
+
+                  <div class="info-box-content">
+                      <span class="info-box-text">Productions</span>
+                      <span class="info-box-number"><?= $conn->query("SELECT COUNT(*) AS total FROM production_work_orders WHERE company_id = $company_id")->fetch_assoc()['total']; ?></span>
                   </div>
-                  <svg
-                    class="small-box-icon"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                  >
-                    <path
-                      clip-rule="evenodd"
-                      fill-rule="evenodd"
-                      d="M2.25 13.5a8.25 8.25 0 018.25-8.25.75.75 0 01.75.75v6.75H18a.75.75 0 01.75.75 8.25 8.25 0 01-16.5 0z"
-                    ></path>
-                    <path
-                      clip-rule="evenodd"
-                      fill-rule="evenodd"
-                      d="M12.75 3a.75.75 0 01.75-.75 8.25 8.25 0 018.25 8.25.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75V3z"
-                    ></path>
-                  </svg>
-                  <a
-                    href="#"
-                    class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover"
-                  >
-                    More info <i class="bi bi-link-45deg"></i>
-                  </a>
+                  <!-- /.info-box-content -->
                 </div>
-                <!--end::Small Box Widget 4-->
+                <!-- /.info-box -->
               </div>
-              <!--end::Col-->
-              <?php } ?>
+              <!-- /.col -->
             </div>
             <!--end::Row-->
-            <?php if(in_array($_SESSION['user_role'], super_roles()) || in_array($_SESSION['user_role'], ['sales'])) { ?>
-              <div class="row">
-                <div class="col">
-                  <?php $today = date('Y-m-d H:i', strtotime(date('Y-m-d H:i'))); ?>
-                  <?php $reminders = $conn->query("SELECT * FROM crm_reminders WHERE company_id = $company_id AND user_id = $user_id AND is_done = 0 ORDER BY due_at DESC"); ?>
-                  <div class="card">
-                    <div class="card-header">
-                      <h3 class="card-title">
-                        Reminders
-                      </h3>
-                    </div>
-                    <div class="card-body table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                <th>Due Date</th>
-                                <th>Reminder</th>
-                                <th>Linked To</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($reminders as $reminder): ?>
-                                <tr class="<?= $reminder['is_done'] ? 'text-muted' : '' ?>">
-                                    <td><?= date('Y-m-d H:i', strtotime($reminder['due_at'])) ?></td>
-                                    <td><?= htmlspecialchars($reminder['reminder_text']) ?></td>
-                                      <?php $related_to = $conn->query("SELECT name, title, customer_type FROM sales_customers WHERE id={$reminder['related_id']}")->fetch_assoc(); ?>
-                                      <td><?= ucfirst($reminder['related_type']) ?> : <?= !empty($reminder['related_id']) ? ($related_to['customer_type'] == 'customer' ? $related_to['name'] : $related_to['title']) : 'none'; ?></td>
-                                    <td>
-                                      <?= $reminder['is_done'] ? '<span class="text text-success">Done</span>' : '<span class="text text-warning">Pending</span>' ?>
-                                    </td>
-                                    <td>
-                                      <?php if (!$reminder['is_done']): ?>
-                                        <a href="/modules/crm/reminders/complete.php?id=<?= $reminder['id'] ?>&reflink=home" class="btn btn-xs btn-success">Mark Done</a>
-                                      <?php endif; ?>
-                                    </td>
-                                </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="row">
+              <div class="col-6">
+                <?php $today = date('Y-m-d H:i', strtotime(date('Y-m-d H:i'))); ?>
+                <?php $reminders = $conn->query("SELECT * FROM crm_reminders WHERE company_id = $company_id AND user_id = $user_id AND is_done = 0 ORDER BY due_at DESC"); ?>
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">
+                      Reminders
+                    </h3>
+                  </div>
+                  <div class="card-body table-responsive">
+                      <table class="table table-bordered">
+                          <thead>
+                              <tr>
+                              <th>Due Date</th>
+                              <th>Reminder</th>
+                              <th>Linked To</th>
+                              <th>Status</th>
+                              <th>Actions</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <?php foreach ($reminders as $reminder): ?>
+                              <tr class="<?= $reminder['is_done'] ? 'text-muted' : '' ?>">
+                                  <td><?= date('Y-m-d H:i', strtotime($reminder['due_at'])) ?></td>
+                                  <td><?= htmlspecialchars($reminder['reminder_text']) ?></td>
+                                    <?php $related_to = $conn->query("SELECT name, title, customer_type FROM sales_customers WHERE id={$reminder['related_id']}")->fetch_assoc(); ?>
+                                    <td><?= ucfirst($reminder['related_type']) ?> : <?= !empty($reminder['related_id']) ? ($related_to['customer_type'] == 'customer' ? $related_to['name'] : $related_to['title']) : 'none'; ?></td>
+                                  <td>
+                                    <?= $reminder['is_done'] ? '<span class="text text-success">Done</span>' : '<span class="text text-warning">Pending</span>' ?>
+                                  </td>
+                                  <td>
+                                    <?php if (!$reminder['is_done']): ?>
+                                      <a href="/modules/crm/reminders/complete.php?id=<?= $reminder['id'] ?>&reflink=home" class="btn btn-xs btn-success">Mark Done</a>
+                                    <?php endif; ?>
+                                  </td>
+                              </tr>
+                              <?php endforeach; ?>
+                          </tbody>
+                      </table>
                   </div>
                 </div>
               </div>
+            </div>
             <?php } ?>
           </div>
           <!--end::Container-->

@@ -73,7 +73,6 @@ if($report_type == "VAT") {
                                     <h3 class="card-title">
                                         <?= $report_type ?> Report
                                     </h3>
-                                    <div class="card-tools tableButtons"></div>
                                 </div>
                                 <div class="card-body">
                                     <table class="table table-striped ReportTable">
