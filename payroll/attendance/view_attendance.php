@@ -3,6 +3,7 @@ session_start();
 // Include database connection and header
 // This file should be included at the top of your PHP files to establish a database connection and include common header elements.
 include('../../config/db.php');
+include("../../functions/role_functions.php");
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: ../../login.php');
@@ -17,7 +18,7 @@ if (!isset($_SESSION['user_id'])) {
 $employee_id = isset($_GET['employee_id']) ? intval($_GET['employee_id']) : $_SESSION['employee_id'];
 
 // Get employee info
-$emp_sql = "SELECT first_name, last_name FROM employees WHERE id = $employee_id";
+$emp_sql = "SELECT first_name, last_name FROM employees WHERE id = $employee_id AND company_id = $company_id";
 $emp_result = $conn->query($emp_sql);
 if ($emp_result->num_rows === 0) {
     echo "<div class='alert alert-warning'>Employee not found.</div>";

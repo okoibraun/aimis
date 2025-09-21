@@ -12,21 +12,16 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Check User Permissions
-$page = "list";
-$user_permissions = get_user_permissions($_SESSION['user_id']);
+// $page = "list";
+// $user_permissions = get_user_permissions($_SESSION['user_id']);
 
-if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
-    die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
-    exit;
-}
+// if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
+//     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
+//     exit;
+// }
 
-$status = $_GET['status'] ?? '';
-$customer_id = $_GET['customer_id'] ?? '';
-$start_date = $_GET['start_date'] ?? date('Y-m-01');
-$end_date = $_GET['end_date'] ?? date('Y-m-t');
-
-// Fetch customers (students)
-$customers = $conn->query("SELECT id, name FROM sales_customers WHERE company_id = $company_id ORDER BY name");
+// Fetch Customers (latest)
+$latest_customers = $conn->query("SELECT * FROM sales_customers WHERE customer_type = 'customer' AND company_id = $company_id  LIMIT 8");
 ?>
 <!doctype html>
 <html lang="en">
@@ -86,7 +81,7 @@ $customers = $conn->query("SELECT id, name FROM sales_customers WHERE company_id
                                         <div class="row">
                                             <div class="col-md-8">
                                                 <p class="text-center">
-                                                    <strong>Sales: 1 Jan, 2014 - 30 Jul, 2014</strong>
+                                                    <strong>Sales: 1 <?= date('M') ?>, <?= date('Y') ?> - 30 <?= date('M') ?>, <?= date('Y') ?></strong>
                                                 </p>
 
                                                 <div class="chart">
@@ -117,17 +112,28 @@ $customers = $conn->query("SELECT id, name FROM sales_customers WHERE company_id
                                                 </p>
 
                                                 <div class="progress-group">
-                                                    Paid Invoices
+                                                    <?php if($total_paid['total'] > 0 && $total_invoices['total'] > 0) { ?>
+                                                    <span class="progress-text">Paid Invoices</span>
                                                     <span class="float-right">
                                                         <b><?= $total_paid['total'] ?></b>/<?= $total_invoices['total'] ?>
                                                     </span>
                                                     <div class="progress progress-sm">
                                                         <div class="progress-bar bg-success" style="width: <?= $total_paid['total'] / $total_invoices['total'] * 100 ?>%"></div>
                                                     </div>
+                                                    <?php } else { ?>
+                                                    <span class="progress-text">Paid Invoices</span>
+                                                    <span class="float-right">
+                                                        <b>0</b>/0
+                                                    </span>
+                                                    <div class="progress progress-sm">
+                                                        <div class="progress-bar bg-success" style="width: 0%"></div>
+                                                    </div>
+                                                    <?php } ?>
                                                 </div>
                                                 <!-- /.progress-group -->
 
                                                 <div class="progress-group">
+                                                    <?php if($total_unpaid['total'] > 0 && $total_invoices['total'] > 0) { ?>
                                                     <span class="progress-text">Unpaid Invoices</span>
                                                     <span class="float-right">
                                                         <b><?= $total_unpaid['total'] ?></b>/<?= $total_invoices['total'] ?>
@@ -135,10 +141,20 @@ $customers = $conn->query("SELECT id, name FROM sales_customers WHERE company_id
                                                     <div class="progress progress-sm">
                                                         <div class="progress-bar bg-danger" style="width: <?= $total_unpaid['total'] / $total_invoices['total'] * 100 ?>%"></div>
                                                     </div>
+                                                    <?php } else { ?>
+                                                    <span class="progress-text">Unpaid Invoices</span>
+                                                    <span class="float-right">
+                                                        <b>0</b>/0
+                                                    </span>
+                                                    <div class="progress progress-sm">
+                                                        <div class="progress-bar bg-danger" style="width: 0%"></div>
+                                                    </div>
+                                                    <?php } ?>
                                                 </div>
 
                                                 <!-- /.progress-group -->
                                                 <div class="progress-group">
+                                                    <?php if($total_partial['total'] > 0 && $total_invoices['total'] > 0) { ?>
                                                     <span class="progress-text">Partially Paid Invoices</span>
                                                     <span class="float-right">
                                                         <b><?= $total_partial['total'] ?></b>/<?= $total_invoices['total'] ?>
@@ -146,17 +162,36 @@ $customers = $conn->query("SELECT id, name FROM sales_customers WHERE company_id
                                                     <div class="progress progress-sm">
                                                         <div class="progress-bar bg-info" style="width: <?= $total_partial['total'] / $total_invoices['total'] * 100 ?>%"></div>
                                                     </div>
+                                                    <?php } else { ?>
+                                                    <span class="progress-text">Partially Paid Invoices</span>
+                                                    <span class="float-right">
+                                                        <b>0</b>/0
+                                                    </span>
+                                                    <div class="progress progress-sm">
+                                                        <div class="progress-bar bg-info" style="width: 0%"></div>
+                                                    </div>
+                                                    <?php } ?>
                                                 </div>
 
                                                 <!-- /.progress-group -->
                                                 <div class="progress-group">
-                                                    Overdue Invoice
+                                                    <?php if($total_overdue['total'] > 0 && $total_invoices['total'] > 0) { ?>
+                                                    <span class="progress-text">Overdue Invoice</span>
                                                     <span class="float-right">
                                                         <b><?= $total_overdue['total'] ?></b>/<?= $total_invoices['total'] ?>
                                                     </span>
                                                     <div class="progress progress-sm">
                                                         <div class="progress-bar bg-warning" style="<?= $total_overdue['total'] / $total_invoices['total'] * 100 ?>%"></div>
                                                     </div>
+                                                    <?php } else { ?>
+                                                    <span class="progress-text">Overdue Invoice</span>
+                                                    <span class="float-right">
+                                                        <b>0</b>/0
+                                                    </span>
+                                                    <div class="progress progress-sm">
+                                                        <div class="progress-bar bg-info" style="width: 0%"></div>
+                                                    </div>
+                                                    <?php } ?>
                                                 </div>
                                                 <!-- /.progress-group -->
                                             </div>
@@ -313,13 +348,13 @@ $customers = $conn->query("SELECT id, name FROM sales_customers WHERE company_id
                                             <div class="card-header">
                                                 <h3 class="card-title">Latest Customers</h3>
                                                 <div class="card-tools">
-                                                    <span class="text text-info"><small>8 New Customers</small></span>
+                                                    <span class="text text-danger"><small><?= $latest_customers->num_rows ?> New Customers</small></span>
                                                 </div>
                                             </div>
                                             <!-- /.card-header -->
                                             <div class="card-body p-0">
                                                 <ul class="nav nav-pills flex-column clearfix">
-                                                    <?php foreach($conn->query("SELECT * FROM sales_customers WHERE customer_type = 'customer' AND company_id = $company_id  LIMIT 8") as $customer) { ?>
+                                                    <?php foreach($latest_customers as $customer) { ?>
                                                     <li class="nav-item">
                                                         <!-- <img src="dist/img/user1-128x128.jpg" alt="User Image"> -->
                                                         <a class="nav-link" href="#">
@@ -353,14 +388,9 @@ $customers = $conn->query("SELECT id, name FROM sales_customers WHERE company_id
                                                 <ul class="nav nav-pills flex-column clearfix">
                                                     <?php foreach($conn->query("SELECT * FROM sales_products WHERE company_id = $company_id  LIMIT 10") as $product) { ?>
                                                     <li class="nav-item">
-                                                        <!-- <div class="product-img">
-                                                            <img src="dist/img/default-150x150.png" alt="Product Image" class="img-size-50">
-                                                        </div> -->
-                                                        <!-- <div class="product-info mt-2 mb-0"> -->
                                                             <a href="javascript:void(0)" class="nav-link" style="text-decoration: none;">
                                                                 <strong><?= $product['name'] ?></strong>
                                                                 <span class="text text-danger float-end">N<?= $product['price'] ?></span>
-                                                                <span class="text-muted"><?= $product['description'] ?></span>
                                                             </a>
                                                         <!-- </div> -->
                                                     </li>
@@ -609,7 +639,7 @@ $customers = $conn->query("SELECT id, name FROM sales_customers WHERE company_id
             var salesChartCanvas = $('#salesChart').get(0).getContext('2d')
 
             var salesChartData = {
-                labels: ['August'],
+                labels: ['<?= date('F', strtotime('-1 month')) ?>'],
                 datasets: [
                     {
                         label: 'Revenue',

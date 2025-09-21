@@ -75,7 +75,7 @@ $result = $conn->query("SELECT * FROM crm_campaigns WHERE company_id = $company_
                   </div>
                 </div>
                 <div class="card-body">
-                    <table class="table table-bordered">
+                    <table class="table table-striped DataTable">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -116,11 +116,6 @@ $result = $conn->query("SELECT * FROM crm_campaigns WHERE company_id = $company_
     <!--begin::Script-->
     <?php include("../../../includes/scripts.phtml"); ?>
     <!--end::Script-->
-    <script>
-      $(function () {
-        $('#leadsTable').DataTable();
-      });
-    </script>
   </body>
   <!--end::Body-->
 </html>

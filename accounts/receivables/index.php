@@ -62,7 +62,7 @@ $customers = $conn->query("SELECT id, name FROM sales_customers WHERE company_id
               <div class="card-header">
                 <h4 class="card-title">Invoices</h4>
                 <div class="card-tools">
-                  <a href="add" class="btn btn-primary">Create New Invoice</a>
+                  <!-- <a href="add" class="btn btn-primary">Create New Invoice</a> -->
                 </div>
               </div>
               <div class="card-body">
