@@ -18,7 +18,7 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
     exit;
 }
 
-$leads = $conn->query("SELECT * FROM sales_customers WHERE company_id = $company_id AND customer_type = 'customer'");
+$customers = $conn->query("SELECT * FROM sales_customers WHERE company_id = $company_id AND customer_type = 'customer'");
 ?>
 <!doctype html>
 <html lang="en">
@@ -78,14 +78,14 @@ $leads = $conn->query("SELECT * FROM sales_customers WHERE company_id = $company
                       </tr>
                     </thead>
                     <tbody>
-                      <?php foreach ($leads as $lead): ?>
+                      <?php foreach ($customers as $customer): ?>
                       <tr>
-                        <td><?= htmlspecialchars($lead['name']) ?></td>
-                        <td><?= htmlspecialchars($lead['email']) ?></td>
-                        <td><?= htmlspecialchars($lead['phone']) ?></td>
-                        <td><?= htmlspecialchars($lead['status']) ?></td>
+                        <td><?= htmlspecialchars($customer['name']) ?></td>
+                        <td><?= htmlspecialchars($customer['email']) ?></td>
+                        <td><?= htmlspecialchars($customer['phone']) ?></td>
+                        <td><?= htmlspecialchars($customer['status']) ?></td>
                         <td>
-                          <a href="customer.php?id=<?= $lead['id'] ?>" class="btn btn-xs btn-info">
+                          <a href="customer.php?id=<?= $customer['id'] ?>" class="btn btn-xs btn-info">
                             <i class="fas fa-eye"></i>
                           </a>
                         </td>

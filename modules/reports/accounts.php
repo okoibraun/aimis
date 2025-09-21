@@ -2,12 +2,12 @@
 session_start();
 // Include database connection and header
 // This file should be included at the top of your PHP files to establish a database connection and include common header elements.
-include('../config/db.php');
-include("../functions/role_functions.php");
+include('../../config/db.php');
+include("../../functions/role_functions.php");
 
 //Check if a user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: /login.php');
+    header('Location: ../../login.php');
     exit();
 }
 
@@ -49,8 +49,8 @@ $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amoun
   <!--begin::Head-->
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>AIMIS | Accounts Dashboard</title>
-    <?php include_once("../includes/head.phtml"); ?>
+    <title>AIMIS | Accounts Reports</title>
+    <?php include_once("../../includes/head.phtml"); ?>
   </head>
   <!--end::Head-->
   <!--begin::Body-->
@@ -58,10 +58,10 @@ $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amoun
     <!--begin::App Wrapper-->
     <div class="app-wrapper">
       <!--begin::Header-->
-      <?php include_once("../includes/header.phtml"); ?>
+      <?php include_once("../../includes/header.phtml"); ?>
       <!--end::Header-->
       <!--begin::Sidebar-->
-      <?php include_once("../includes/sidebar.phtml"); ?>
+      <?php include_once("../../includes/sidebar.phtml"); ?>
       <!--end::Sidebar-->
       <!--begin::App Main-->
       <main class="app-main">
@@ -74,12 +74,12 @@ $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amoun
                     <div class="container-fluid">
                         <div class="row mb-2">
                             <div class="col-sm-6">
-                                <h1 class="m-0">Accounts <small>Dashboard</small></h1>
+                                <h1 class="m-0">Accounts</h1>
                             </div><!-- /.col -->
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-end mt-3">
                                     <li class="breadcrumb-item"><a href="/">Home</a></li>
-                                    <li class="breadcrumb-item active">Dashboard</li>
+                                    <li class="breadcrumb-item active">Reports</li>
                                 </ol>
                             </div><!-- /.col -->
                         </div><!-- /.row -->
@@ -399,12 +399,12 @@ $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amoun
       </main>
       <!--end::App Main-->
       <!--begin::Footer-->
-      <?php include("../includes/footer.phtml"); ?>
+      <?php include("../../includes/footer.phtml"); ?>
       <!--end::Footer-->
     </div>
     <!--end::App Wrapper-->
     <!--begin::Script-->
-    <?php include("../includes/scripts.phtml"); ?>
+    <?php include("../../includes/scripts.phtml"); ?>
     <script>
         /* global Chart:false */
         $(function () {

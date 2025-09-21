@@ -124,7 +124,7 @@ $items = $db->query("SELECT i.*, p.name AS product_name
                     <div class="row">
                     <div class="col-md-4 offset-md-8">
                         <p>Subtotal: N<?= number_format($total, 2) ?></p>
-                        <p>Tax: N<?= number_format($order['tax_amount'], 2) ?></p>
+                        <p>Tax: N<?= number_format($order['vat_tax_amount'], 2) ?></p>
                         <h4>Total: N<?= number_format($order['total_amount'], 2) ?></h4>
                     </div>
                     </div>

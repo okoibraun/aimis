@@ -5,7 +5,7 @@ session_start();
 include('../../../config/db.php');
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: ../../../login.php');
+    header('Location: /login.php');
     exit();
 }
 
@@ -140,7 +140,7 @@ $oee = $availability * $performance * $quality * 100;
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         <?php
-            $trend = mysqli_query($conn, "
+            $trend = $conn->query("
                 SELECT DATE(produced_at) AS day, 
                     SUM(quantity_produced) AS produced, 
                     SUM(quantity_defective) AS defective
@@ -148,14 +148,14 @@ $oee = $availability * $performance * $quality * 100;
                 GROUP BY day ORDER BY day DESC LIMIT 7
             ");
             $labels = $produced = $defective = [];
-            while ($t = mysqli_fetch_assoc($trend)) {
+            foreach($trend as $t) {
                 $labels[] = $t['day'];
                 $produced[] = $t['produced'];
                 $defective[] = $t['defective'];
             }
         ?>
 
-        const ctx = document.getElementById('outputChart').getContext('2d');
+        const ctx = document.querySelector('#outputChart').getContext('2d');
         new Chart(ctx, {
             type: 'bar',
             data: {

@@ -50,15 +50,15 @@ if (!isset($_SESSION['user_id'])) {
                                                 <option value="">-- Select --</option>
                                                 <?php
                                                 $res = $conn->query("SELECT id, first_name, last_name FROM employees WHERE company_id = $company_id AND status='active'");
-                                                while ($row = $res->fetch_assoc()):
+                                                foreach ($res as $row):
                                                 ?>
                                                     <option value="<?= $row['id'] ?>"><?= $row['first_name'] . ' ' . $row['last_name'] ?></option>
-                                                <?php endwhile; ?>
+                                                <?php endforeach; ?>
                                             </select>
                                         </div>
                                     </div>
                                     <?php } else { ?>
-                                        <input type="hidden" name="employee_id" value="<?= $_SESSION['employee_id'] ?>">
+                                        <input type="hidden" name="employee_id" value="<?= $_GET['employee_id'] ?? $_SESSION['employee_id'] ?>">
                                     <?php } ?>
                                     <div class="col-auto">
                                         <div class="form-group">

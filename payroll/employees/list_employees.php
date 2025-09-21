@@ -87,7 +87,7 @@ $company_id = $_SESSION['company_id'];
                             <tbody>
                                 <?php
                                 $res = $conn->query("SELECT * FROM employees WHERE company_id = $company_id ORDER BY created_at DESC");
-                                while ($row = $res->fetch_assoc()):
+                                foreach ($res as $row):
                                 ?>
                                 <tr>
                                     <td><?= htmlspecialchars($row['employee_code']) ?></td>
@@ -106,7 +106,7 @@ $company_id = $_SESSION['company_id'];
                                         <?php } ?>
                                     </td>
                                 </tr>
-                                <?php endwhile; ?>
+                                <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>

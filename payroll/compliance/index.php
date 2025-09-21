@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $msg = "Country added.";
 }
 
-$compliance = $conn->query("SELECT * FROM employee_tax_compliance");
+$compliance = $conn->query("SELECT * FROM employee_tax_compliance WHERE company_id = $company_id");
 ?>
 <!doctype html>
 <html lang="en">

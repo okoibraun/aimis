@@ -47,7 +47,7 @@ foreach ($sentiments as $s) {
 
 // === Top 5 Leads ===
 $top_leads = $conn->query("
-    SELECT c.id, c.first_name, c.last_name, i.score
+    SELECT c.id, c.full_name, i.score
     FROM crm_lead_insights i
     JOIN crm_contacts c ON i.contact_id = c.id
     WHERE c.company_id = {$_SESSION['company_id']} AND c.deleted_at IS NULL

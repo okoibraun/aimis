@@ -3,6 +3,7 @@ session_start();
 // Include database connection and header
 // This file should be included at the top of your PHP files to establish a database connection and include common header elements.
 include('../../config/db.php');
+include("../../functions/role_functions.php");
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
@@ -16,9 +17,9 @@ if (isset($_POST['submit_leave'])) {
     $end = $_POST['end_date'];
     $reason = $_POST['reason'];
 
-    $stmt = $conn->prepare("INSERT INTO leave_requests (employee_id, leave_type, start_date, end_date, reason) 
-                            VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("issss", $emp_id, $type, $start, $end, $reason);
+    $stmt = $conn->prepare("INSERT INTO leave_requests (company_id, user_id, employee_id, leave_type, start_date, end_date, reason) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("iiissss", $company_id, $user_id, $emp_id, $type, $start, $end, $reason);
     $stmt->execute();
     header("Location: leave_requests.php?status=submitted");
     exit;
@@ -29,7 +30,7 @@ if (isset($_POST['submit_leave'])) {
   <!--begin::Head-->
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>AIMIS | Mark Attendance</title>
+    <title>AIMIS | Payroll - Leaves</title>
     <?php include_once("../../includes/head.phtml"); ?>
   </head>
   <!--end::Head-->
@@ -49,12 +50,12 @@ if (isset($_POST['submit_leave'])) {
         <div class="container-fluid">
 
         <div class="container mt-4">
-            <div class="card card-header mt-3 mb-4">
+            <div class="card card-body mt-3 mb-4">
                 <div class="row">
                     <div class="col-lg-6">
                         <h3>All Leave Requests</h3>
                     </div>
-                    <div class="col-lg-6 text-end">
+                    <div class="col-lg-6 float-end">
                         <a href="apply_leave.php" class="btn btn-primary float-end">Apply for Leave</a>
                     </div>
                 </div>
@@ -63,43 +64,51 @@ if (isset($_POST['submit_leave'])) {
                 <div class="alert alert-success">Leave request submitted successfully.</div>
             <?php endif; ?>
 
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Employee</th>
-                        <th>Type</th>
-                        <th>Start</th>
-                        <th>End</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $res = $conn->query("SELECT l.*, e.first_name, e.last_name 
-                                        FROM leave_requests l
-                                        JOIN employees e ON l.employee_id = e.id 
-                                        ORDER BY l.id DESC");
-                    while ($row = $res->fetch_assoc()):
-                    ?>
-                        <tr>
-                            <td><?= $row['first_name'] . ' ' . $row['last_name'] ?></td>
-                            <td><?= ucfirst($row['leave_type']) ?></td>
-                            <td><?= $row['start_date'] ?></td>
-                            <td><?= $row['end_date'] ?></td>
-                            <td><?= ucfirst($row['status']) ?></td>
-                            <td>
-                                <?php if ($row['status'] == 'Pending'): ?>
-                                    <a href="approve_leave.php?id=<?= $row['id'] ?>&action=Approved" class="btn btn-success btn-sm">Approve</a>
-                                    <a href="approve_leave.php?id=<?= $row['id'] ?>&action=Rejected" class="btn btn-danger btn-sm">Reject</a>
-                                <?php else: ?>
-                                    <em><?= ucfirst($row['status']) ?></em>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Leave Requests</h3>
+                </div>
+                <div class="card-body table-responsive">
+                    <table class="table table-bordered table-striped table-hover DataTable">
+                        <thead>
+                            <tr>
+                                <th>Employee</th>
+                                <th>Type</th>
+                                <th>Start</th>
+                                <th>End</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $res = $conn->query("SELECT l.*, e.first_name, e.last_name 
+                                                FROM leave_requests l
+                                                JOIN employees e ON l.employee_id = e.id
+                                                WHERE l.company_id = $company_id AND e.company_id = l.company_id
+                                                ORDER BY l.id DESC");
+                            while ($row = $res->fetch_assoc()):
+                            ?>
+                                <tr>
+                                    <td><?= $row['first_name'] . ' ' . $row['last_name'] ?></td>
+                                    <td><?= ucfirst($row['leave_type']) ?></td>
+                                    <td><?= $row['start_date'] ?></td>
+                                    <td><?= $row['end_date'] ?></td>
+                                    <td><?= ucfirst($row['status']) ?></td>
+                                    <td>
+                                        <?php if ($row['status'] == 'Pending'): ?>
+                                            <a href="approve_leave.php?id=<?= $row['id'] ?>&action=Approved" class="btn btn-success btn-sm">Approve</a>
+                                            <a href="approve_leave.php?id=<?= $row['id'] ?>&action=Rejected" class="btn btn-danger btn-sm">Reject</a>
+                                        <?php else: ?>
+                                            <em><?= ucfirst($row['status']) ?></em>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         </div>

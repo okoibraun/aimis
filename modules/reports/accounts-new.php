@@ -2,12 +2,12 @@
 session_start();
 // Include database connection and header
 // This file should be included at the top of your PHP files to establish a database connection and include common header elements.
-include('../config/db.php');
-include("../functions/role_functions.php");
+include('../../config/db.php');
+include("../../functions/role_functions.php");
 
 //Check if a user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: /login.php');
+    header('Location: ../../login.php');
     exit();
 }
 
@@ -20,7 +20,39 @@ if (!isset($_SESSION['user_id'])) {
 //     exit;
 // }
 
-$revenue = $conn->query("SELECT SUM(total_amount) AS revenue FROM sales_invoices WHERE company_id = $company_id AND MONTH(due_date) = MONTH(CURDATE()) AND YEAR(due_date) = YEAR(CURDATE())")->fetch_assoc()['revenue'];
+// TOTAL OUTPUT
+$output = mysqli_query($conn, "
+    SELECT SUM(quantity_produced) AS total, SUM(quantity_defective) AS defective
+    FROM production_output_logs
+");
+$out_data = mysqli_fetch_assoc($output);
+$total_output = $out_data['total'] ?? 1;
+$defective_output = $out_data['defective'];
+$good_output = $total_output - $defective_output;
+
+// TOTAL DOWNTIME (minutes)
+$downtime = mysqli_fetch_assoc(mysqli_query($conn, "
+    SELECT SUM(duration_minutes) AS total FROM production_downtime_logs
+"))['total'] ?? 0;
+
+// TOTAL ASSIGNED TIME (minutes)
+$runtime = mysqli_fetch_assoc(mysqli_query($conn, "
+    SELECT SUM(TIMESTAMPDIFF(MINUTE, assigned_start, assigned_end)) AS total
+    FROM production_resource_assignments
+"))['total'] ?? 1;
+
+// IDEAL CYCLE TIME (hardcoded or from config)
+$ideal_cycle_time = 1.0; // in minutes per unit
+
+// --- OEE Components ---
+$availability = ($runtime - $downtime) / $runtime;
+$performance = ($ideal_cycle_time * $total_output) / ($runtime - $downtime);
+$quality = $good_output / $total_output;
+
+$oee = $availability * $performance * $quality * 100;
+
+$revenue = $conn->query("SELECT SUM(total_amount) AS revenue FROM sales_invoices WHERE company_id = $company_id AND MONTH(due_date) = MONTH(CURDATE())
+            AND YEAR(due_date) = YEAR(CURDATE())")->fetch_assoc()['revenue'];
 $profit = $conn->query("SELECT SUM(total_amount) AS profit FROM sales_invoices WHERE company_id = $company_id AND status='paid' AND payment_status='paid' AND MONTH(due_date) = MONTH(CURDATE())
             AND YEAR(due_date) = YEAR(CURDATE())")->fetch_assoc()['profit'];
 $vat_tax_amount = $conn->query("SELECT SUM(vat_tax_amount) AS vat_tax_amount FROM sales_invoices WHERE company_id = $company_id AND status='paid' AND payment_status='paid' AND MONTH(due_date) = MONTH(CURDATE())
@@ -32,13 +64,9 @@ $profit -= $wht_tax_amount;
 
 $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amount) AS total_paid 
     FROM bills
-    WHERE company_id = $company_id AND MONTH(bill_date) = MONTH(CURDATE())
-            AND YEAR(bill_date) = YEAR(CURDATE())
-")->fetch_assoc();
-
-// echo $vendor_bills['total_amount'];
-// echo $vendor_bills['total_paid'];
-// exit;
+    WHERE company_id = $company_id AND MONTH(due_date) = MONTH(CURDATE())
+            AND YEAR(due_date) = YEAR(CURDATE())
+");
 
 // $budgets = $conn->query("SELECT * FROM budgets WHERE company_id = $company_id AND MONTH(due_date) = MONTH(CURDATE()) AND YEAR(due_date) = YEAR(CURDATE())");
 
@@ -49,8 +77,8 @@ $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amoun
   <!--begin::Head-->
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>AIMIS | Accounts Dashboard</title>
-    <?php include_once("../includes/head.phtml"); ?>
+    <title>AIMIS | Accounts Reports</title>
+    <?php include_once("../../includes/head.phtml"); ?>
   </head>
   <!--end::Head-->
   <!--begin::Body-->
@@ -58,10 +86,10 @@ $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amoun
     <!--begin::App Wrapper-->
     <div class="app-wrapper">
       <!--begin::Header-->
-      <?php include_once("../includes/header.phtml"); ?>
+      <?php include_once("../../includes/header.phtml"); ?>
       <!--end::Header-->
       <!--begin::Sidebar-->
-      <?php include_once("../includes/sidebar.phtml"); ?>
+      <?php include_once("../../includes/sidebar.phtml"); ?>
       <!--end::Sidebar-->
       <!--begin::App Main-->
       <main class="app-main">
@@ -74,12 +102,12 @@ $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amoun
                     <div class="container-fluid">
                         <div class="row mb-2">
                             <div class="col-sm-6">
-                                <h1 class="m-0">Accounts <small>Dashboard</small></h1>
+                                <h1 class="m-0">Accounts</h1>
                             </div><!-- /.col -->
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-end mt-3">
                                     <li class="breadcrumb-item"><a href="/">Home</a></li>
-                                    <li class="breadcrumb-item active">Dashboard</li>
+                                    <li class="breadcrumb-item active">Reports</li>
                                 </ol>
                             </div><!-- /.col -->
                         </div><!-- /.row -->
@@ -101,9 +129,7 @@ $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amoun
 
                                     <div class="info-box-content">
                                         <span class="info-box-text">Charts of Accounts</span>
-                                        <span class="info-box-number">
-                                            <?= $conn->query("SELECT COUNT(id) AS total FROM accounts WHERE company_id = $company_id")->fetch_assoc()['total'] ?>
-                                        </span>
+                                        <span class="info-box-number">2</span>
                                     </div>
                                     <!-- /.info-box-content -->
                                 </div>
@@ -117,7 +143,7 @@ $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amoun
 
                                     <div class="info-box-content">
                                         <span class="info-box-text">Journal Entries</span>
-                                        <span class="info-box-number"><?= $conn->query("SELECT COUNT(id) AS total FROM journal_entries WHERE company_id = $company_id")->fetch_assoc()['total'] ?></span>
+                                        <span class="info-box-number"><?= $total_output ?></span>
                                     </div>
                                     <!-- /.info-box-content -->
                                 </div>
@@ -131,7 +157,7 @@ $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amoun
 
                                     <div class="info-box-content">
                                         <span class="info-box-text">Vendors</span>
-                                        <span class="info-box-number"><?= $conn->query("SELECT COUNT(id) AS total FROM accounts_vendors WHERE company_id = $company_id")->fetch_assoc()['total'] ?></span>
+                                        <span class="info-box-number"><?= $good_output ?></span>
                                     </div>
                                     <!-- /.info-box-content -->
                                 </div>
@@ -145,7 +171,7 @@ $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amoun
 
                                     <div class="info-box-content">
                                         <span class="info-box-text">Accruals</span>
-                                        <span class="info-box-number"><?= $conn->query("SELECT COUNT(id) AS total FROM accruals WHERE company_id = $company_id")->fetch_assoc()['total'] ?></span>
+                                        <span class="info-box-number"><?= $downtime ?> min</span>
                                     </div>
                                     <!-- /.info-box-content -->
                                 </div>
@@ -176,6 +202,37 @@ $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amoun
                                         <div class="chart">
                                             <!-- Sales Chart Canvas -->
                                             <canvas id="billsChart" height="540" style="height: 260px; display: block; width: 359px;" width="1077" class="chartjs-render-monitor"></canvas>
+                                        </div>
+                                        <!-- /.chart-responsive -->
+                                    </div>
+                                    <!-- ./card-body -->
+                                </div>
+                                <!-- /.card -->
+                            </div>
+                        </div>
+                        <!-- /.row -->
+
+                        <div class="row mt-3 mb-3">
+                            <div class="col">
+                                <div class="card card-primary">
+                                    <div class="card-body">
+                                        <h5>Budgets Summary</h5>
+                                        <div class="chart">
+                                            <canvas id="budgetsChart" height="540" style="height: 180px; display: block; width: 359px;" width="1077" class="chartjs-render-monitor"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card card-success">
+                                    <div class="card-body">
+                                        <h5 class="text-center">
+                                            Ledger Summary
+                                        </h5>
+
+                                        <div class="chart">
+                                            <!-- Sales Chart Canvas -->
+                                            <canvas id="ledgerChart" height="540" style="height: 260px; display: block; width: 359px;" width="1077" class="chartjs-render-monitor"></canvas>
                                         </div>
                                         <!-- /.chart-responsive -->
                                     </div>
@@ -287,7 +344,7 @@ $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amoun
                                     </div>
                                     <!-- /.card-header -->
                                     <div class="card-body p-0">
-                                        <table class="table table-hover table-striped">
+                                        <table class="table table-bordered DataTable">
                                             <thead>
                                                 <tr>
                                                     <th>Date</th>
@@ -399,12 +456,12 @@ $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amoun
       </main>
       <!--end::App Main-->
       <!--begin::Footer-->
-      <?php include("../includes/footer.phtml"); ?>
+      <?php include("../../includes/footer.phtml"); ?>
       <!--end::Footer-->
     </div>
     <!--end::App Wrapper-->
     <!--begin::Script-->
-    <?php include("../includes/scripts.phtml"); ?>
+    <?php include("../../includes/scripts.phtml"); ?>
     <script>
         /* global Chart:false */
         $(function () {
@@ -414,7 +471,7 @@ $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amoun
             * -------
             * Here we will create a few charts using ChartJS
             */
-            //-----------------------
+           //-----------------------
             // - MONTHLY RECEIVABLES CHART -
             //-----------------------
 
@@ -422,7 +479,7 @@ $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amoun
             var receivablesChartCanvas = $('#receivablesChart').get(0).getContext('2d')
 
             var receivablesChartData = {
-                labels: ['<?= date('F') ?>'],
+                labels: ['<?= date('F', strtotime('-1 month')) ?>'],
                 datasets: [
                     {
                         label: 'Revenue',
@@ -473,36 +530,42 @@ $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amoun
                 type: 'bar',
                 data: receivablesChartData,
                 options: receivablesChartOptions
-            });
+            }
+            )
 
             //---------------------------
             // - END MONTHLY RECEIVABLES CHART-
             //---------------------------
 
             //-----------------------
-            // - MONTHLY RECEIVABLES CHART -
+            // - MONTHLY SALES CHART -
             //-----------------------
 
             // Get context with jQuery - using jQuery's .get() method.
-            var billsChartCanvas = $('#billsChart').get(0).getContext('2d')
+            var salesChartCanvas = $('#salesChart').get(0).getContext('2d')
 
-            var billsChartData = {
+            var salesChartData = {
                 labels: ['<?= date('F') ?>'],
                 datasets: [
                     {
-                        label: 'Total Amount',
-                        backgroundColor: 'rgba(60,141,188,0.9)',
-                        data: [<?= $vendor_bills['total_amount'] ?>]
+                        label: 'Estimated',
+                        backgroundColor: 'red',
+                        data: [<?= $costings['total_estimated_cost'] > 0 ? $costings['total_estimated_cost'] : 0 ?>]
                     },
                     {
-                        label: 'Total Aamount Paid',
+                        label: 'Actuals',
                         backgroundColor: 'green',
-                        data: [<?= $vendor_bills['total_paid'] ?>]
+                        data: [<?= $costings['total_actual_cost'] > 0 ? $costings['total_actual_cost'] : 0 ?>]
+                    },
+                    {
+                        label: 'Variance',
+                        backgroundColor: 'blue',
+                        data: [<?= $costings['total_cost_variance'] > 0 ? $costings['total_cost_variance'] : 0 ?>]
                     }
                 ]
             }
 
-            var billsChartOptions = {
+            var salesChartOptions = {
                 maintainAspectRatio: false,
                 responsive: true,
                 legend: {
@@ -524,14 +587,15 @@ $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amoun
 
             // This will get the first returned node in the jQuery collection.
             // eslint-disable-next-line no-unused-vars
-            var billsChart = new Chart(billsChartCanvas, {
+            var salesChart = new Chart(salesChartCanvas, {
                 type: 'bar',
-                data: billsChartData,
-                options: billsChartOptions
-            });
+                data: salesChartData,
+                options: salesChartOptions
+            }
+            )
 
             //---------------------------
-            // - END MONTHLY RECEIVABLES CHART-
+            // - END MONTHLY SALES CHART -
             //---------------------------
 
             //-------------
@@ -553,7 +617,7 @@ $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amoun
                     data: [
                         <?= $conn->query("SELECT COUNT(id) AS total FROM accounts WHERE company_id = $company_id")->fetch_assoc()['total']; ?>, 
                         <?= $conn->query("SELECT COUNT(id) AS total FROM journal_entries WHERE company_id = $company_id")->fetch_assoc()['total']; ?>,
-                        <?= $conn->query("SELECT COUNT(id) AS total FROM accounts_vendors WHERE company_id = $company_id")->fetch_assoc()['total']; ?>,
+                        <?= $conn->query("SELECT COUNT(id) AS total FROM account_vendors WHERE company_id = $company_id")->fetch_assoc()['total']; ?>,
                         <?= $conn->query("SELECT COUNT(id) AS total FROM bills WHERE company_id = $company_id")->fetch_assoc()['total']; ?>,
                         <?= $conn->query("SELECT COUNT(id) AS total FROM budgets WHERE company_id = $company_id")->fetch_assoc()['total']; ?>,
                         <?= $conn->query("SELECT COUNT(id) AS total FROM production_downtime_logs WHERE company_id = $company_id")->fetch_assoc()['total']; ?>
@@ -582,6 +646,38 @@ $vendor_bills = $conn->query("SELECT SUM(amount) AS total_amount, SUM(paid_amoun
         })
 
         // lgtm [js/unused-local-variable]
+        const ctx = document.querySelector('#billsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: '<?= date('F') ?>',
+                datasets: [
+                    {
+                        label: 'Total Amount',
+                        data: [<?= $vendor_bills['total_amount'] ?>],
+                        backgroundColor: 'rgba(54, 162, 235, 0.8)'
+                    },
+                    {
+                        label: 'Total Amount Paid',
+                        data: [<?= $vendor_bills['total_paid'] ?>],
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)'
+                    }
+                ]
+            }
+        });
+
+        // Budget Chart
+        const budgetChart = document.querySelector('#budgetChart').getContext('2d');
+        new Chart(budgetChart, {
+            type: 'bar',
+            data: {
+                label: '',
+                datasets: [
+                    {},
+                    {}
+                ]
+            }
+        })
     </script>
     <!--end::Script-->
   </body>

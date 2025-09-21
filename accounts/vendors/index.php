@@ -17,11 +17,7 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
     exit;
 }
 
-if(in_array($_SESSION['user_role'], system_users())) {
-  $vendors = get_all_rows('accounts_vendors');
-} else {
-  $vendors = $conn->query("SELECT * FROM accounts_vendors WHERE company_id = $company_id");
-}
+$vendors = $conn->query("SELECT * FROM accounts_vendors WHERE company_id = $company_id");
 ?>
 <!doctype html>
 <html lang="en">
@@ -96,8 +92,7 @@ if(in_array($_SESSION['user_role'], system_users())) {
               </div>
             </div>
           </section>
-
-          <?php include("_modal.php"); ?>
+          
         </div>
       </div>
       </main>
