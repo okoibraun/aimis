@@ -47,7 +47,7 @@ $bank_reconciliation = mysqli_fetch_assoc($bank_result);
       <div class="app-content">
         <div class="container-fluid">
 
-            <section class="content-header">
+            <section class="content-header mt-3 mb-3">
                 <h1>Accounts Dashboard Overview</h1>
             </section>
 
@@ -55,85 +55,85 @@ $bank_reconciliation = mysqli_fetch_assoc($bank_result);
                 <div class="row">
                     <!-- Accounts -->
                     <div class="col-lg-3 col-6">
-                    <div class="small-box bg-info">
-                        <div class="inner">
-                        <h3><?= $accounts['total_accounts'] ?></h3>
-                        <p>Chart of Accounts</p>
+                        <div class="small-box bg-info">
+                            <div class="inner">
+                                <h3><?= $accounts['total_accounts'] ?></h3>
+                                <p>Chart of Accounts</p>
+                            </div>
+                            <div class="small-box-icon">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <a href="accounts/list_accounts.php" class="small-box-footer">View Accounts <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
-                        <div class="icon">
-                        <i class="fas fa-book"></i>
-                        </div>
-                        <a href="accounts/list_accounts.php" class="small-box-footer">View Accounts <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
                     </div>
 
                     <!-- Invoices -->
                     <div class="col-lg-3 col-6">
-                    <div class="small-box bg-success">
-                        <div class="inner">
-                        <h3><?= $invoices['total_invoices'] ?></h3>
-                        <p>Total Invoices</p>
+                        <div class="small-box bg-success">
+                            <div class="inner">
+                                <h3><?= $invoices['total_invoices'] ?></h3>
+                                <p>Total Invoices</p>
+                            </div>
+                            <div class="small-box-icon">
+                                <i class="fas fa-file-invoice"></i>
+                            </div>
+                            <a href="receivables/list_invoices.php" class="small-box-footer">View Invoices <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
-                        <div class="icon">
-                        <i class="fas fa-file-invoice"></i>
-                        </div>
-                        <a href="receivables/list_invoices.php" class="small-box-footer">View Invoices <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
                     </div>
 
                     <!-- Payroll -->
                     <div class="col-lg-3 col-6">
-                    <div class="small-box bg-warning">
-                        <div class="inner">
-                        <h3><?= $payroll['total_employees'] ?></h3>
-                        <p>Employees</p>
+                        <div class="small-box bg-warning">
+                            <div class="inner">
+                                <h3><?= $payroll['total_employees'] ?></h3>
+                                <p>Employees</p>
+                            </div>
+                            <div class="small-box-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <a href="payroll/list_employees.php" class="small-box-footer">Manage Employees <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
-                        <div class="icon">
-                        <i class="fas fa-users"></i>
-                        </div>
-                        <a href="payroll/list_employees.php" class="small-box-footer">Manage Employees <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
                     </div>
 
                     <!-- Bank Reconciliation -->
                     <div class="col-lg-3 col-6">
-                    <div class="small-box bg-danger">
-                        <div class="inner">
-                        <h3><?= $bank_reconciliation['total_bank_entries'] ?></h3>
-                        <p>Bank Reconciliation Entries</p>
+                        <div class="small-box bg-danger">
+                            <div class="inner">
+                                <h3><?= $bank_reconciliation['total_bank_entries'] ?></h3>
+                                <p>Bank Reconciliation Entries</p>
+                            </div>
+                            <div class="small-box-icon">
+                                <i class="fas fa-money-check-alt"></i>
+                            </div>
+                            <a href="bank_reconciliation/view_statements.php" class="small-box-footer">View Reconciliation <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
-                        <div class="icon">
-                        <i class="fas fa-money-check-alt"></i>
-                        </div>
-                        <a href="bank_reconciliation/view_statements.php" class="small-box-footer">View Reconciliation <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
                     </div>
                 </div>
 
                 <div class="row">
                     <!-- Accruals -->
                     <div class="col-lg-3 col-6">
-                    <div class="small-box bg-secondary">
-                        <div class="inner">
-                        <h3>5</h3> <!-- Placeholder for accruals data -->
-                        <p>Payroll Accruals</p>
+                        <div class="small-box bg-secondary">
+                            <div class="inner">
+                                <h3>5</h3> <!-- Placeholder for accruals data -->
+                                <p>Payroll Accruals</p>
+                            </div>
+                            <div class="small-box-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <a href="payroll/payroll_accruals.php" class="small-box-footer">View Accruals <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
-                        <div class="icon">
-                        <i class="fas fa-calendar-check"></i>
-                        </div>
-                        <a href="payroll/payroll_accruals.php" class="small-box-footer">View Accruals <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
                     </div>
 
                     <!-- Financial Reports -->
                     <div class="col-lg-3 col-6">
                     <div class="small-box bg-info">
                         <div class="inner">
-                        <h3>10</h3> <!-- Placeholder for report data -->
-                        <p>Financial Reports</p>
+                            <h3>10</h3> <!-- Placeholder for report data -->
+                            <p>Financial Reports</p>
                         </div>
-                        <div class="icon">
-                        <i class="fas fa-chart-pie"></i>
+                        <div class="small-box-icon">
+                            <i class="fas fa-chart-pie"></i>
                         </div>
                         <a href="accounts/reports.php" class="small-box-footer">View Reports <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
@@ -141,16 +141,16 @@ $bank_reconciliation = mysqli_fetch_assoc($bank_result);
 
                     <!-- Journal Entries -->
                     <div class="col-lg-3 col-6">
-                    <div class="small-box bg-success">
-                        <div class="inner">
-                        <h3>20</h3> <!-- Placeholder for journal entries data -->
-                        <p>Journal Entries</p>
+                        <div class="small-box bg-success">
+                            <div class="inner">
+                                <h3>20</h3> <!-- Placeholder for journal entries data -->
+                                <p>Journal Entries</p>
+                            </div>
+                            <div class="small-box-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <a href="accounts/journal_entries.php" class="small-box-footer">View Entries <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
-                        <div class="icon">
-                        <i class="fas fa-book-open"></i>
-                        </div>
-                        <a href="accounts/journal_entries.php" class="small-box-footer">View Entries <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
                     </div>
                 </div>
             </section>

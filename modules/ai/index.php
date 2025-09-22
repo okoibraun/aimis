@@ -41,8 +41,11 @@ $translateCount = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS tot
           <div class="container-fluid">
 
               <div class="content-wrapper">
-                <section class="content-header">
-                  <h1><i class="fas fa-robot"></i> AI Module Dashboard</h1>
+                <section class="content-header mt-3 mb-3">
+                  <h1>
+                    <i class="fas fa-robot"></i> 
+                    AI Dashboard
+                  </h1>
                 </section>
 
                 <section class="content">
@@ -54,7 +57,7 @@ $translateCount = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS tot
                           <h3><?= $leadScoreCount ?></h3>
                           <p>CRM Lead Scores</p>
                         </div>
-                        <div class="icon"><i class="fas fa-bolt"></i></div>
+                        <div class="small-box-icon"><i class="fas fa-bolt"></i></div>
                         <a href="/modules/ai/predictive/lead_scoring.php" class="small-box-footer">Go <i class="fas fa-arrow-circle-right"></i></a>
                       </div>
                     </div>
@@ -65,7 +68,7 @@ $translateCount = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS tot
                           <h3><?= $nlqCount ?></h3>
                           <p>Natural Language Queries</p>
                         </div>
-                        <div class="icon"><i class="fas fa-search"></i></div>
+                        <div class="small-box-icon"><i class="fas fa-search"></i></div>
                         <a href="/modules/ai/nlp/nl_query.php" class="small-box-footer">Go <i class="fas fa-arrow-circle-right"></i></a>
                       </div>
                     </div>
@@ -76,8 +79,12 @@ $translateCount = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS tot
                           <h3><?= $memoCount ?></h3>
                           <p>Voice/Text Memos</p>
                         </div>
-                        <div class="icon"><i class="fas fa-microphone-alt"></i></div>
-                        <a href="/modules/ai/input/voice_memo.php" class="small-box-footer">Go <i class="fas fa-arrow-circle-right"></i></a>
+                        <div class="small-box-icon">
+                          <i class="fas fa-microphone-alt"></i>
+                        </div>
+                        <a href="/modules/ai/input/voice_memo.php" class="small-box-footer">
+                          Go <i class="fas fa-arrow-circle-right"></i>
+                        </a>
                       </div>
                     </div>
 
@@ -87,7 +94,11 @@ $translateCount = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS tot
                           <h3><?= $summaryCount + $translateCount ?></h3>
                           <p>Document AI Tasks</p>
                         </div>
-                        <div class="icon"><i class="fas fa-file-alt"></i></div>
+                        <div class="small-box-icon">
+                          <!-- <i class="fas fa-file-alt bg-white p-2" style="border: 1px solid #fff; border-radius: 5px;"></i> -->
+                          <!-- <i class="fas fa-file-alt p-2" style="border: 1px solid #fff; border-radius: 5px;"></i> -->
+                          <i class="fas fa-file-alt"></i>
+                        </div>
                         <a href="/modules/ai/automation/doc_translate.php" class="small-box-footer">Go <i class="fas fa-arrow-circle-right"></i></a>
                       </div>
                     </div>

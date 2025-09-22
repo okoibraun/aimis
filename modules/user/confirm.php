@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                   <?php if ($success): ?>
                     <div class="alert alert-success">
-                      Registration complete. <a href="../auth/login.php">Login here</a>.
+                      Registration complete. <a href="/login.php">Login here</a>.
                     </div>
                   <?php else: ?>
 
