@@ -17,16 +17,18 @@ $error = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $question = trim($_POST['user_question']);
-    $user_id = 1; // Replace with $_SESSION['user_id'] if available
+    $module = "chatbot";
+    $feature = "internal_faq";
+    $score = 95.0; // Simulated confidence
+
 
     if ($question) {
         $response = handleInternalFAQ($question);
 
         // Log query
-        $stmt = $conn->prepare("INSERT INTO ai_logs (module, feature, input_data, output_data, confidence_score, created_by)
-                                VALUES ('chatbot', 'internal_faq', ?, ?, ?, ?)");
-        $stmt->bind_param("ssdi", $question, $response, $score, $user_id);
-        $score = 95.0; // Simulated confidence
+        $stmt = $conn->prepare("INSERT INTO ai_logs (company_id, module, feature, input_data, output_data, confidence_score, created_by)
+                                VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("issssdi", $company_id, $module, $feature, $question, $response, $score, $user_id);
         $stmt->execute();
     } else {
         $error = "Please enter a question.";
@@ -66,21 +68,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </section>
 
                 <section class="content">
-                    <form method="POST" class="card card-primary p-3 mb-3">
-                      <div class="form-group">
-                          <label>Ask a question:</label>
-                          <input type="text" name="user_question" class="form-control" placeholder="e.g. What is the payroll date?" required>
+                    <form method="POST" class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">Ask a Question</h3>
                       </div>
-                      <button type="submit" class="btn btn-info">Get Answer</button>
+                      <div class="card-body">
+                        <?php if ($error): ?>
+                        <div class="alert alert-danger"><?= $error ?></div>
+                        <?php elseif ($response): ?>
+                        <div class="alert alert-success">
+                            <strong>Chatbot:</strong> <?= nl2br(htmlspecialchars($response)) ?>
+                        </div>
+                        <?php endif; ?>
+                      </div>
+                      <div class="card-footer">
+                        <div class="row">
+                          <div class="col">
+                            <div class="form-group">
+                                <input type="text" name="user_question" class="form-control" placeholder="e.g. What is the payroll date?" required>
+                            </div>
+                          </div>
+                          <div class="col-auto">
+                            <button type="submit" class="btn btn-success">Get Answer</button>
+                          </div>
+                        </div>
+                      </div>
                     </form>
 
-                    <?php if ($error): ?>
-                    <div class="alert alert-danger"><?= $error ?></div>
-                    <?php elseif ($response): ?>
-                    <div class="alert alert-success">
-                        <strong>Chatbot:</strong> <?= nl2br(htmlspecialchars($response)) ?>
-                    </div>
-                    <?php endif; ?>
+                    
                 </section>
             </div>
 
