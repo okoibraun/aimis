@@ -9,8 +9,14 @@ function callOpenAI($prompt, $temperature = 0.3) {
     $data = [
         'model' => $model,
         'messages' => [
-            ['role' => 'system', 'content' => 'You are a helpful assistant.'],
-            ['role' => 'user', 'content' => $prompt]
+            [
+                'role' => 'system',
+                'content' => 'You are a helpful assistant.'
+            ],
+            [
+                'role' => 'user',
+                'content' => $prompt
+            ]
         ],
         'temperature' => $temperature
     ];
@@ -91,7 +97,7 @@ function translateDocumentText($text, $to) {
 }
 
 function handleInternalFAQ($question) {
-    $prompt = "You are a chatbot answering employee HR and finance-related questions. Answer this:\n$question";
+    $prompt = "You are a chatbot answering employee HR, payroll, accounts and finance-related questions. Answer this:\n$question";
     return callOpenAI($prompt);
 }
 
