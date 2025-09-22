@@ -3,13 +3,14 @@ session_start();
 // Include database connection and header
 // This file should be included at the top of your PHP files to establish a database connection and include common header elements.
 include('../../../config/db.php');
+include("../../../functions/role_functions.php");
+require_once '../functions/openai_api.php'; // we'll create this next
 
-if (!isset($_SESSION['user_id'])) {
-    header('Location: ../../../login.php');
+if (!isset($user_id)) {
+    header('Location: /login.php');
     exit();
 }
 
-require_once '../functions/openai_api.php'; // we'll create this next
 
 $response = "";
 $error = "";
@@ -57,17 +58,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header">
-                    <h1><i class="fas fa-comment-dots"></i> Internal Help Chatbot (HR & Accounts)</h1>
+                <section class="content-header mt-3 mb-3">
+                    <h1>
+                      <i class="fas fa-comment-dots"></i> 
+                      Internal Help Chatbot (Payroll & Accounts)
+                    </h1>
                 </section>
 
                 <section class="content">
                     <form method="POST" class="card card-primary p-3 mb-3">
-                    <div class="form-group">
-                        <label>Ask a question:</label>
-                        <input type="text" name="user_question" class="form-control" placeholder="e.g. What is the payroll date?" required>
-                    </div>
-                    <button type="submit" class="btn btn-info">Get Answer</button>
+                      <div class="form-group">
+                          <label>Ask a question:</label>
+                          <input type="text" name="user_question" class="form-control" placeholder="e.g. What is the payroll date?" required>
+                      </div>
+                      <button type="submit" class="btn btn-info">Get Answer</button>
                     </form>
 
                     <?php if ($error): ?>

@@ -65,7 +65,9 @@ $user_count = $conn->query("SELECT COUNT(*) as total FROM users WHERE company_id
             <div class="row">
               <div class="col-12 col-sm-6 col-md-2">
                 <div class="info-box mb-3">
-                  <span class="info-box-icon bg-primary elevation-1 text-white"><i class="fas fa-clipboard"></i></span>
+                  <span class="info-box-icon bg-primary elevation-1 text-white">
+                    <i class="fas fa-envelope"></i>
+                  </span>
                   <div class="info-box-content">
                       <span class="info-box-text">Memos</span>
                       <span class="info-box-number"><?php echo $memo_count; ?></span>
