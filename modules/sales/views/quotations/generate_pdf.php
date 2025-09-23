@@ -4,6 +4,7 @@
 require_once '../../../../config/db.php'; // Your database connection
 require '../../includes/helpers.php';
 require './lib/pdf.php';
+$company_id = $_SESSION['company_id'];
 
 $type = $_GET['type'] ?? null;
 $id = $_GET['id'] ?? null;

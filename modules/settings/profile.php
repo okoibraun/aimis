@@ -4,6 +4,7 @@ require_once '../../functions/auth_functions.php';
 require_once '../../functions/user_functions.php';
 require_once '../../includes/audit_log.php';
 require_once '../../functions/log_functions.php';
+include("../../functions/role_functions.php");
 
 // ensure_logged_in();
 $user_id = $_SESSION['user_id'];
