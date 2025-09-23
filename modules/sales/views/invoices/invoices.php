@@ -77,10 +77,10 @@ if ($action === 'pdf') {
     $pdf->SetMargins(15, 20, 15);
     $pdf->AddPage();
 
-    $logoPath = "../../../../assets/images/aimis_logo.png";
+    $logoPath = "../../../../uploads/company/" . $conn->query("SELECT logo FROM companies WHERE id = $company_id")->fetch_assoc()['logo'];
     if (file_exists($logoPath)) {
         // $pdf->Image($logoPath, 15, $pdf->GetY(), 40);
-        $pdf->Image($logoPath, 15, 15, 65);
+        $pdf->Image($logoPath, 15, 15, 25);
         $pdf->Ln(20);
     }
 

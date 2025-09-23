@@ -11,7 +11,8 @@
   </style>
 </head>
 <body>
-  <img src="http://aimis.test/assets/images/aimis_logo.png" alt="AIMIS Cloud Logo" width="40%">
+  <?php $logo = $conn->query("SELECT logo FROM companies WHERE id = $company_id")->fetch_assoc()['logo']; ?>
+  <img src="http://aimis.test/uploads/company/<?= htmlspecialchars($logo) ?>" alt="AIMIS Cloud Logo" height="107">
   <h2>Quotation #<?= $quotation['quote_number'] ?></h2>
   <p>Date: <?= $quotation['quotation_date'] ?></p>
   <p>Customer: <?= htmlspecialchars($customer['name']) ?></p>

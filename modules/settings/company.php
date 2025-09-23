@@ -2,6 +2,7 @@
 require_once '../../config/db.php';
 require_once '../../functions/auth_functions.php';
 require_once '../../functions/company_functions.php';
+require_once '../../includes/audit_log.php';
 
 //ensure_logged_in();
 $user_id = $_SESSION['user_id'];
@@ -13,7 +14,7 @@ $company_id = $_SESSION['company_id'];
 
 $company = get_company_by_id($company_id);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if (isset($_POST['updateCompanyInfoBtn']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = trim($_POST['name']);
     $industry = trim($_POST['industry']);
     $address = trim($_POST['address']);
@@ -23,6 +24,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     update_company_profile($company_id, $name, $industry, $address, $email, $phone);
     $company = get_company_by_id($company_id); // Refresh
     $success = "Company settings updated.";
+}
+
+if (isset($_POST['addCompanyLogoBtn']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  // Handle file upload for avatar
+  if (!empty($_FILES['logo']['name'])) {
+      $target_dir = "../../uploads/company/";
+      $file_name = basename($_FILES['logo']['name']);
+      $target_file = $target_dir . time() . '_' . $file_name;
+
+      if (move_uploaded_file($_FILES['logo']['tmp_name'], $target_file)) {
+          $company_logo_name = basename($target_file);
+          $conn->query("UPDATE companies SET logo='$company_logo_name' WHERE id=$company_id");
+
+          $_SESSION['company_logo'] = $company_logo_name;
+          $success = "Company Logo Uploaded Successfully!";
+
+          // Log Audit
+          log_audit($conn, $user_id, 'Company Logo Upload', 'Uploaded their Company Logo.');
+      } else {
+          $errors[] = "Failed to upload Company Logo.";
+      }
+  }
 }
 ?>
 <!doctype html>
@@ -50,42 +73,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="container-fluid">
           
             <div class="content-wrapper">
-              <section class="content-header">
+              <section class="content-header mt-3 mb-3">
                 <h1>Company Settings</h1>
               </section>
               <section class="content">
-                <div class="card card-info">
-                  <div class="card-header"><h3 class="card-title">Edit Company Info</h3></div>
-                  <form method="POST">
-                    <div class="card-body">
-                      <?php if (!empty($success)): ?>
-                        <div class="alert alert-success"><?= $success ?></div>
-                      <?php endif; ?>
-                      <div class="form-group">
-                        <label>Company Name</label>
-                        <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($company['name']) ?>" required>
+                <div class="row">
+                  <div class="col">
+                    <div class="card card-info">
+                      <div class="card-header"><h3 class="card-title">Edit Company Info</h3></div>
+                      <form method="POST">
+                        <div class="card-body">
+                          <?php if (!empty($success)): ?>
+                            <div class="alert alert-success"><?= $success ?></div>
+                          <?php endif; ?>
+                          <div class="form-group">
+                            <label>Company Name</label>
+                            <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($company['name']) ?>" required>
+                          </div>
+                          <div class="form-group">
+                            <label>Industry</label>
+                            <input type="text" name="industry" class="form-control" value="<?= htmlspecialchars($company['industry']) ?>">
+                          </div>
+                          <div class="form-group">
+                            <label>Address</label>
+                            <input type="text" name="address" class="form-control" value="<?= $company['address'] ?>">
+                          </div>
+                          <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" class="form-control" value="<?= $company['email'] ?>">
+                          </div>
+                          <div class="form-group">
+                            <label>Phone</label>
+                            <input type="text" name="phone" class="form-control" value="<?= $company['phone'] ?>">
+                          </div>
+                        </div>
+                        <div class="card-footer">
+                          <button type="submit" class="btn btn-info" name="updateCompanyInfoBtn">Update Company</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                  <div class="col-auto">
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">Upload Company Logo</h3>
                       </div>
-                      <div class="form-group">
-                        <label>Industry</label>
-                        <input type="text" name="industry" class="form-control" value="<?= htmlspecialchars($company['industry']) ?>">
-                      </div>
-                      <div class="form-group">
-                        <label>Address</label>
-                        <input type="text" name="address" class="form-control" value="<?= $company['address'] ?>">
-                      </div>
-                      <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" name="email" class="form-control" value="<?= $company['email'] ?>">
-                      </div>
-                      <div class="form-group">
-                        <label>Phone</label>
-                        <input type="text" name="phone" class="form-control" value="<?= $company['phone'] ?>">
+                      <div class="card-body">
+                        <?php if (isset($_SESSION['company_logo'])): ?>
+                            <img src="/uploads/company/<?php echo htmlspecialchars($_SESSION['company_logo']); ?>" width="120" class="rounded-circle mb-3">
+                        <?php else: ?>
+                            <img src="/assets/images/users/default_user_avatar.jpg" width="120" class="rounded-circle mb-3">
+                        <?php endif; ?>
+                        <form method="post" enctype="multipart/form-data">
+                            <div class="form-group mb-3">
+                                <label>Company Logo (640 x 640 px)</label>
+                                <input type="file" name="logo" class="form-control">
+                            </div>
+                            <button type="submit" class="btn btn-primary" name="addCompanyLogoBtn">Upload</button>
+                        </form>
                       </div>
                     </div>
-                    <div class="card-footer">
-                      <button type="submit" class="btn btn-info">Update Company</button>
-                    </div>
-                  </form>
+                  </div>
                 </div>
               </section>
             </div>
