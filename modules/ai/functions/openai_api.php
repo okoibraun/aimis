@@ -7,7 +7,7 @@ require_once '../../../config/openai.php';
 //     $model = OPENAI_MODEL;
 
 //     $data = [
-//         'model' => 'gpt-4o-mini',
+//         'model' => $model,
 //         'messages' => [
 //             [
 //                 'role' => 'developer',
@@ -70,6 +70,9 @@ function callOpenAI($prompt, $apiKey = OPENAI_API_KEY) {
 
     return $result["choices"][0]["message"]["content"] ?? "No response";
 }
+
+// echo callOpenAI("cmr");
+// exit;
 
 // function askChatGPT($prompt, $apiKey = OPENAI_API_KEY) {
 //     $url = "https://api.openai.com/v1/chat/completions";
