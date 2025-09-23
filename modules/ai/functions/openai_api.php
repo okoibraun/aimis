@@ -2,39 +2,73 @@
 
 require_once '../../../config/openai.php';
 
-function callOpenAI($prompt, $temperature = 0.3) {
-    $apiKey = OPENAI_API_KEY;
-    $model = OPENAI_MODEL;
+// function callOpenAI($prompt, $temperature = 0.3) {
+//     $apiKey = OPENAI_API_KEY;
+//     $model = OPENAI_MODEL;
+
+//     $data = [
+//         'model' => 'gpt-4o-mini',
+//         'messages' => [
+//             [
+//                 'role' => 'developer',
+//                 'content' => 'You are a helpful assistant.'
+//             ],
+//             [
+//                 'role' => 'user',
+//                 'content' => $prompt
+//             ]
+//         ],
+//         'temperature' => $temperature
+//     ];
+
+//     $ch = curl_init('https://api.openai.com/v1/chat/completions');
+//     curl_setopt_array($ch, [
+//         CURLOPT_RETURNTRANSFER => true,
+//         CURLOPT_HTTPHEADER => [
+//             'Content-Type: application/json',
+//             'Authorization: Bearer ' . $apiKey
+//         ],
+//         CURLOPT_POSTFIELDS => json_encode($data)
+//     ]);
+
+//     $response = curl_exec($ch);
+//     curl_close($ch);
+//     $json = json_decode($response, true);
+//     return $json['choices'][0]['message']['content'] ?? '[Error: No response]';
+// }
+
+function callOpenAI($prompt, $apiKey = OPENAI_API_KEY) {
+    $url = "https://api.openai.com/v1/chat/completions";
 
     $data = [
-        'model' => 'gpt-4o-mini',
-        'messages' => [
-            [
-                'role' => 'developer',
-                'content' => 'You are a helpful assistant.'
-            ],
-            [
-                'role' => 'user',
-                'content' => $prompt
-            ]
+        "model" => "gpt-4o-mini", // lightweight, cheap model
+        "messages" => [
+            ["role" => "system", "content" => "You are a helpful assistant."],
+            ["role" => "user", "content" => $prompt]
         ],
-        'temperature' => $temperature
+        "temperature" => 0.7
     ];
 
-    $ch = curl_init('https://api.openai.com/v1/chat/completions');
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_HTTPHEADER => [
-            'Content-Type: application/json',
-            'Authorization: Bearer ' . $apiKey
-        ],
-        CURLOPT_POSTFIELDS => json_encode($data)
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Content-Type: application/json",
+        "Authorization: Bearer $apiKey"
     ]);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 
     $response = curl_exec($ch);
+
+    if (curl_errno($ch)) {
+        return "cURL Error: " . curl_error($ch);
+    }
+
     curl_close($ch);
-    $json = json_decode($response, true);
-    return $json['choices'][0]['message']['content'] ?? '[Error: No response]';
+
+    $result = json_decode($response, true);
+
+    return $result["choices"][0]["message"]["content"] ?? "No response";
 }
 
 // function askChatGPT($prompt, $apiKey = OPENAI_API_KEY) {
