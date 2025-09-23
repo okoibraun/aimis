@@ -79,6 +79,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <form method="POST" class="card card-info p-3 mb-3">
                         <div class="card-header">
                             <h3 class="card-title">Ask a Question:</h3>
+                            <div class="card-tools">
+                                <a href="../" class="btn btn-sm btn-danger">X</a>
+                            </div>
                         </div>
                         <div class="card-body">
                             <?php if ($error): ?>

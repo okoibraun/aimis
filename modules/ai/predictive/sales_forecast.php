@@ -3,9 +3,10 @@ session_start();
 // Include database connection and header
 // This file should be included at the top of your PHP files to establish a database connection and include common header elements.
 include('../../../config/db.php');
+include("../../../functions/role_functions.php");
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: ../../../login.php');
+    header('Location: /login.php');
     exit();
 }
 
@@ -18,6 +19,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $to = $_POST['to'];
     $product_id = $_POST['product_id'];
 
+    $period = "{$_POST['from']} to {$_POST['to']}";
+    //$region = $_POST['region'];
+    $product = $conn->query("SELECT name FROM sales_products WHERE id = $product_id")->fetch_assoc()['name'];
+
     // Fetch sales history from DB
     $sales_data = [];
     $sql = "SELECT invoice_date, SUM(quantity) as total_qty 
@@ -25,12 +30,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             JOIN sales_invoice_items sii ON si.id = sii.invoice_id
             WHERE sii.product_id = $product_id AND invoice_date BETWEEN '$from' AND '$to'
             GROUP BY invoice_date";
-    $res = mysqli_query($conn, $sql);
-    while ($row = mysqli_fetch_assoc($res)) {
+    $res = $conn->query($sql);
+    foreach ($res as $row) {
         $sales_data[] = ['date' => $row['invoice_date'], 'qty' => $row['total_qty']];
     }
 
     // Prepare input for AI
+    // $forecast = getSalesForecast([
+    //     'period' => $period,
+    //     'region' => $region,
+    //     'product' => $product,
+    //     'historical' => $historicalData
+    // ]);
+    $context = "Sales data for period: $period";
+    if (!empty($region)) $context .= ", region: $region";
+    if (!empty($product)) $context .= ", product: $product";
+
+    // Simulate historical data injection (stub or real source later)
+    $historicalData = "Total sales: 150,000; Growth rate: 12%; Avg ticket size: ₦25,000";
+    $prompt = "Based on the following sales context and data, predict future sales trend and key insights:\n\nContext: $context\n\nHistorical Data: $historicalData";
+
+    //$forecast = callOpenAI($prompt);
     $forecast = getSalesForecast([
         'period' => $period,
         'region' => $region,
@@ -54,8 +74,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
 
     // Also log
-    mysqli_query($conn, "INSERT INTO ai_logs (module, feature, input_data, output_data, confidence_score, created_by)
-                         VALUES ('sales', 'forecast', '".mysqli_real_escape_string($conn, $input)."',
+    mysqli_query($conn, "INSERT INTO ai_logs (company_id, module, feature, input_data, output_data, confidence_score, created_by)
+                         VALUES ($company_id, 'sales', 'forecast', '".mysqli_real_escape_string($conn, $input)."',
                          '".mysqli_real_escape_string($conn, $result)."', '$score', 1)");
 
     $forecast_result = $result;

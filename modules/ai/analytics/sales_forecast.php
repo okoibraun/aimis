@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <?php if ($forecast): ?>
                   <div class="alert alert-success">
-                    <strong>AI Forecast Output:</strong><br>
+                    <strong>AIMIS AI Forecast Output:</strong><br>
                     <?= nl2br(htmlspecialchars($forecast)) ?>
                   </div>
                 <?php endif; ?>
