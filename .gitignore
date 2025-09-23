@@ -1,2 +1,3 @@
 # # local directories not for live or production
 /config/
+/modules/ai/assistant/chatgpt.php
