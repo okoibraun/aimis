@@ -14,7 +14,6 @@ require_once '../functions/openai_api.php'; // we'll create this next
 // Count stats
 $leadScoreCount = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM ai_logs WHERE feature = 'lead_scoring'"))['total'];
 $nlqCount = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM ai_logs WHERE feature = 'natural_language_query'"))['total'];
-$aiAssistantCount = $conn->query("SELECT COUNT(*) AS total FROM ai_logs WHERE feature = 'internal_faq'")->fetch_assoc()['total'];
 $memoCount = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM ai_memos"))['total'];
 $summaryCount = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM ai_doc_outputs WHERE task_type='summary'"))['total'];
 $translateCount = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS total FROM ai_doc_outputs WHERE task_type='translation'"))['total'];
@@ -51,17 +50,16 @@ $translateCount = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS tot
               </section>
 
               <section class="content">
-                
-                <div class="row mt-4">
+                <div class="row">
                   <!-- Cards for each feature -->
                   <div class="col-md-3">
                     <div class="small-box bg-primary">
                       <div class="inner">
-                        <h3><?= $aiAssistantCount ?></h3>
-                        <p>AI Assistant</p>
+                        <h3><?= $leadScoreCount ?></h3>
+                        <p>CRM Lead Scores</p>
                       </div>
                       <div class="small-box-icon"><i class="fas fa-bolt"></i></div>
-                      <a href="/modules/ai/assistant/" class="small-box-footer">Go <i class="fas fa-arrow-circle-right"></i></a>
+                      <a href="../../crm/ai/lead_scoring.php" class="small-box-footer">Go <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                   </div>
 
@@ -72,35 +70,29 @@ $translateCount = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) AS tot
                         <p>Natural Language Queries</p>
                       </div>
                       <div class="small-box-icon"><i class="fas fa-search"></i></div>
-                      <a href="/modules/ai/nlp/" class="small-box-footer">Go <i class="fas fa-arrow-circle-right"></i></a>
-                    </div>
-                  </div>
-
-                  <div class="col-md-3">
-                    <div class="small-box bg-info">
-                      <div class="inner">
-                        <h3><?= $memoCount ?></h3>
-                        <p>Voice/Text Memos</p>
-                      </div>
-                      <div class="small-box-icon">
-                        <i class="fas fa-microphone-alt"></i>
-                      </div>
-                      <a href="/modules/ai/input/" class="small-box-footer">
-                        Go <i class="fas fa-arrow-circle-right"></i>
-                      </a>
+                      <a href="../nlp/nl_query.php" class="small-box-footer">Go <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                   </div>
 
                   <div class="col-md-3">
                     <div class="small-box bg-warning">
                       <div class="inner">
+                        <h3><?= $memoCount ?></h3>
+                        <p>Voice/Text Memos</p>
+                      </div>
+                      <div class="small-box-icon"><i class="fas fa-microphone-alt"></i></div>
+                      <a href="../input/voice_memo.php" class="small-box-footer">Go <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                  </div>
+
+                  <div class="col-md-3">
+                    <div class="small-box bg-danger">
+                      <div class="inner">
                         <h3><?= $summaryCount + $translateCount ?></h3>
-                        <p>Analytics (Sales Forecast)</p>
+                        <p>Document AI Tasks</p>
                       </div>
-                      <div class="small-box-icon">
-                        <i class="fas fa-chart-line"></i>
-                      </div>
-                      <a href="/modules/ai/analytics/" class="small-box-footer">Go <i class="fas fa-arrow-circle-right"></i></a>
+                      <div class="small-box-icon"><i class="fas fa-file-alt"></i></div>
+                      <a href="../automation/doc_translate.php" class="small-box-footer">Go <i class="fas fa-arrow-circle-right"></i></a>
                     </div>
                   </div>
                 </div>

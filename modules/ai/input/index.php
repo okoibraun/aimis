@@ -71,6 +71,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="card-header">
                                     <h3 class="card-title">Dictate of Type in</h3>
                                     <!-- <label>Dictate or type your memo:</label> -->
+                                    <div class="card-tools">
+                                        <a href="../" class="btn btn-sm btn-danger">X</a>
+                                    </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="form-group">

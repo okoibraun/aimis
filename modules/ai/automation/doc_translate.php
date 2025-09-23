@@ -3,9 +3,10 @@ session_start();
 // Include database connection and header
 // This file should be included at the top of your PHP files to establish a database connection and include common header elements.
 include('../../../config/db.php');
+include("../../../functions/role_functions.php");
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: ../../../login.php');
+    header('Location: /login.php');
     exit();
 }
 
@@ -18,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $lang_to = $_POST['lang_to'];
 
     // Fetch file content (simulate OCR/text extract)
-    $doc = mysqli_fetch_assoc(mysqli_query($conn, "SELECT title, file_path FROM dms_documents WHERE id = $doc_id"));
+    $doc = $conn->query("SELECT title, file_path FROM documents WHERE id = $doc_id")->fetch_assoc();
     $fake_text = file_exists($doc['file_path']) ? file_get_contents($doc['file_path']) : "Sample document content for ID $doc_id";
 
     // AI processing
@@ -31,9 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Save to ai_doc_outputs
-    $stmt = $conn->prepare("INSERT INTO ai_doc_outputs (document_id, task_type, original_text, ai_output, language_from, language_to)
-                            VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("isssss", $doc_id, $task_type, $fake_text, $output, $lang_from, $lang_to);
+    $stmt = $conn->prepare("INSERT INTO ai_doc_outputs (company_id, document_id, task_type, original_text, ai_output, language_from, language_to)
+                            VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("iisssss", $company_id, $doc_id, $task_type, $fake_text, $output, $lang_from, $lang_to);
     $stmt->execute();
 
     $msg = "AI task '$task_type' completed for document ID $doc_id.";
@@ -80,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       <select name="document_id" class="form-control" required>
                         <option value="">-- Select Document --</option>
                         <?php
-                        $res = mysqli_query($conn, "SELECT id, title FROM dms_documents ORDER BY created_at DESC LIMIT 20");
+                        $res = mysqli_query($conn, "SELECT id, title FROM documents ORDER BY created_at DESC");
                         while ($r = mysqli_fetch_assoc($res)) {
                           echo "<option value='{$r['id']}'>{$r['title']}</option>";
                         }
