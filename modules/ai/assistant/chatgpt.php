@@ -1,6 +1,5 @@
 <?php
-// Replace with your actual OpenAI API key
-$apiKey = "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";
+require_once '../functions/openai_api.php'; // we'll create this next
 
 // API endpoint for Chat Completions
 $url = "https://api.openai.com/v1/chat/completions";
