@@ -103,6 +103,7 @@ $customers = $conn->query("SELECT * FROM sales_customers WHERE company_id = $com
                     </thead>
                     <tbody>
                       <?php foreach ($customers as $customer): ?>
+                        <?php if(isset($_POST['type']) && $_POST['type'] == $customer['customer_ype']) continue; ?>
                       <tr>
                         <td><?= htmlspecialchars($customer['name']) ?></td>
                         <td><?= htmlspecialchars($customer['email']) ?></td>

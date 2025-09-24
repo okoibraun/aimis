@@ -95,11 +95,12 @@ if (!isset($_SESSION['user_id'])) {
                           ";
 
                           if(isset($_GET['month_from'])) {
-                            $query .= " AND p.month >= '{$_GET['month_from']}'";
+                            $from = $_GET['month_from']
+                            $query .= " AND p.month >= '$from'";
                           } else {
                             $query .= " AND p.month = '$date_month_from'";
                           }
-                          if(isset($_GET['month_to'])) $query .= " AND p.month <= '$filter_month_to'";
+                          if(isset($_GET['month_to'])) $query .= " AND p.month <= '{$_GET['month_to']}'";
 
                           $query .= "ORDER BY e.last_name";
 
