@@ -77,7 +77,6 @@ $customers = $conn->query("SELECT id, name FROM sales_customers WHERE company_id
                         <select name="status" class="form-control mx-2">
                             <option value="">All Status</option>
                             <option value="paid" <?= $status == 'paid' ? 'selected' : '' ?>>Paid</option>
-                            <option value="unpaid" <?= $status == 'unpaid' ? 'selected' : '' ?>>Unpaid</option>
                             <option value="partial" <?= $status == 'partial' ? 'selected' : '' ?>>Partial</option>
                         </select>
                         </div>
@@ -124,7 +123,7 @@ $customers = $conn->query("SELECT id, name FROM sales_customers WHERE company_id
                         SELECT i.*, 
                                 (SELECT SUM(amount) FROM sales_invoice_payments WHERE invoice_id = i.id) AS amount_paid
                         FROM sales_invoices i
-                        WHERE i.company_id = $company_id AND due_date >= '$start_date' AND due_date <= '$end_date'
+                        WHERE i.company_id = $company_id AND due_date >= '$start_date' AND due_date <= '$end_date' AND i.status != 'unpaid' AND i.payment_status != 'unpaid'
                         ";
 
                         if ($customer_id) $sql .= " AND i.customer_id = $customer_id";

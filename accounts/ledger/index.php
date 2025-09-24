@@ -40,49 +40,50 @@ $to = $_GET['to'] ?? '';
         <div class="container-fluid">
 
             <div class="content-wrapper">
-                <section class="content-header mt-3 mb-5">
+                <section class="content-header mt-3 mb-3">
                   <h1>General Ledger</h1>
                 </section>
 
                 <section class="content">
-                  <form method="GET" class="form-inline mb-3">
-                    <div class="card">
+                    <div class="card mb-3">
                       <div class="card-header">
                         <h4 class="card-title">Filter Ledger</h4>
                         <div class="card-tools">
-                          <a href="" class="btn btn-secondary">Back</a>
-                        </div>
-                      </div>
-                      <div class="card-body">
-                        <div class="row">
-                          <div class="col-lg-3">
-                            <select name="account_id" class="form-control mx-2" required>
-                              <option value="">-- Select Account --</option>
-                              <?php 
-                              $accounts = $conn->query("SELECT id, account_name FROM accounts WHERE company_id = $company_id");
-                              foreach($accounts as $account) { $selected = ($account['id'] == $account_id) ? 'selected' : '';
-                              ?>
-                              <option value="<?= $account['id'] ?>" $selected><?= $account['account_name'] ?></option>
-                              <?php } ?>
-                            </select>
-                          </div>
-                          <div class="col-lg-3">
-                            <input type="date" name="from" value="<?= $from ?>" class="form-control mx-2">
-                          </div>
-                          <div class="col-lg-3">
-                            <input type="date" name="to" value="<?= $to ?>" class="form-control mx-2">
-                          </div>
-                          <div class="col-lg-3">
-                            <button type="submit" class="btn btn-primary">View Ledger</button>
-                          </div>
+                          <form method="GET" class="row">
+                            <div class="col">
+                              <select name="account_id" class="form-control mx-2">
+                                <option value="">All Accounts</option>
+                                <?php 
+                                $accounts = $conn->query("SELECT id, account_name FROM accounts WHERE company_id = $company_id");
+                                foreach($accounts as $account) { ;
+                                ?>
+                                <option value="<?= $account['id'] ?>" <?= ($account['id'] == $account_id) ? 'selected' : '' ?>><?= $account['account_name'] ?></option>
+                                <?php } ?>
+                              </select>
+                            </div>
+                            <div class="col-auto">
+                              <label for="from" class="mt-2">From:</label>
+                            </div>
+                            <div class="col-auto">
+                              <input type="date" name="from" value="<?= $from ?>" class="form-control mx-2">
+                            </div>
+                            <div class="col-auto">
+                              <label for="to" class="mt-2">To:</label>
+                            </div>
+                            <div class="col-auto">
+                              <input type="date" name="to" value="<?= $to ?>" class="form-control mx-2">
+                            </div>
+                            <div class="col-auto">
+                              <button type="submit" class="btn btn-primary">View Ledger</button>
+                            </div>
+                          </form>
+                          
                         </div>
                       </div>
                     </div>
-                  </form>
 
                   <div class="card">
                     <div class="card-body">
-                      <?php if ($account_id): ?>
                         <table class="table table-bordered">
                           <thead>
                             <tr>
@@ -98,8 +99,9 @@ $to = $_GET['to'] ?? '';
                             $query = "SELECT je.entry_date, je.description, jl.debit, jl.credit
                                       FROM journal_lines jl
                                       JOIN journal_entries je ON jl.journal_entry_id = je.id
-                                      WHERE jl.account_id = $account_id AND je.company_id = $company_id";
-
+                                      WHERE je.company_id = $company_id";
+                            
+                            if($account_id) $query .= " AND jl.account_id = $account_id";
                             if ($from) $query .= " AND je.entry_date >= '$from'";
                             if ($to) $query .= " AND je.entry_date <= '$to'";
 
@@ -108,7 +110,7 @@ $to = $_GET['to'] ?? '';
                             $res = mysqli_query($conn, $query);
                             $balance = 0;
                             foreach($res as $row) {
-                              $balance += $row['debit'] - $row['credit'];
+                              $balance += $row['credit'] - $row['debit'];
                             ?>
                             <tr>
                               <td><?= $row['entry_date'] ?></td>
@@ -120,7 +122,6 @@ $to = $_GET['to'] ?? '';
                             <?php } ?>
                           </tbody>
                         </table>
-                      <?php endif; ?>
                     </div>
                   </div>
                 </section>

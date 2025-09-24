@@ -12,13 +12,13 @@ if (!isset($user_id)) {
 }
 
 // Check User Permissions
-$page = "view";
-$user_permissions = get_user_permissions($user_id);
+// $page = "view";
+// $user_permissions = get_user_permissions($user_id);
 
-if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
-    die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
-    exit;
-}
+// if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permissions)) {
+//     die("You are not authorised to access/perform this page/action <a href='javascript:history.back(1);'>Go Back</a>");
+//     exit;
+// }
 
 $id = isset($_GET['id']) ? $_GET['id'] : '';
 $products_tbl = 'sales_products';
@@ -63,7 +63,6 @@ $wo = $conn->query("SELECT pwo.*, ip.name AS product_name, pb.version AS bom_ver
                     <div class="card-header">
                       <h3 class="card-title">Work Order Details</h3>
                       <div class="card-tools">
-                        <a href="edit.php?id=<?= $id ?>" class="btn btn-primary btn-sm"><i class="fas fa-edit"></i></a>
                         <a href="./" class="btn btn-danger btn-sm">X</a>
                       </div>
                     </div>

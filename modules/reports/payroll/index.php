@@ -50,13 +50,19 @@ if (!isset($_SESSION['user_id'])) {
                   <div class="card-tools">
                     <form method="GET" class="row">
                       <div class="col-auto">
-                        <input type="month" name="month" class="form-control mr-2" value="<?= $_GET['month'] ?? '' ?>">
+                        <label for="month_from" class="mt-2">From:</label>
+                      </div>
+                      <div class="col-auto">
+                        <input type="month" name="month_from" class="form-control mr-2" value="<?= $_GET['month_from'] ?? '' ?>">
+                      </div>
+                      <div class="col-auto">
+                        <label for="month_to" class="mt-2">To:</label>
+                      </div>
+                      <div class="col-auto">
+                        <input type="month" name="month_to" class="form-control mr-2" value="<?= $_GET['month_to'] ?? '' ?>">
                       </div>
                       <div class="col-auto">
                         <button type="submit" class="btn btn-info">Filter</button>
-                      </div>
-                      <div class="col">
-                        <a href="generate_payslip.php" class="btn btn-primary">Generate Payslip</a>
                       </div>
                     </form>
                   </div>
@@ -80,12 +86,21 @@ if (!isset($_SESSION['user_id'])) {
                       </thead>
                       <tbody>
                           <?php
-                          $filter_month = $_GET['month'] ?? date('Y-m');
-                          $res = $conn->query("SELECT p.*, e.first_name, e.last_name 
-                                              FROM payslips p 
-                                              JOIN employees e ON p.employee_id = e.id 
-                                              WHERE p.month = '$filter_month' AND p.company_id = $company_id
-                                              ORDER BY e.last_name");
+                          $filter_month_from = $_GET['month_from'] ?? date('Y-m');
+
+                          $query = "SELECT p.*, e.first_name, e.last_name 
+                            FROM payslips p 
+                            JOIN employees e ON p.employee_id = e.id 
+                            WHERE p.company_id = $company_id
+                          ";
+
+                          if($filter_month_from) $query .= " AND p.month = '$filter_month_from'";
+                          if(isset($_GET['month_to'])) $query .= " AND p.month = '$filter_month_to'";
+
+                          $query .= "ORDER BY e.last_name";
+
+                          $res = $conn->query($query);
+
                           while ($row = $res->fetch_assoc()):
                           ?>
                               <tr>

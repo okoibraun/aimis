@@ -51,18 +51,24 @@ $to = $_GET['to'] ?? '';
                       <div class="card-tools">
                         <form method="GET" class="row">
                           <div class="col">
-                            <select name="account_id" class="form-control mx-2" required>
-                              <option value="">-- Select Account --</option>
+                            <select name="account_id" class="form-control mx-2">
+                              <option value="" selected>All Accounts</option>
                               <?php 
                               $accounts = $conn->query("SELECT id, account_name FROM accounts WHERE company_id = $company_id");
-                              foreach($accounts as $account) { $selected = ($account['id'] == $account_id) ? 'selected' : '';
+                              foreach($accounts as $account) {
                               ?>
-                              <option value="<?= $account['id'] ?>" $selected><?= $account['account_name'] ?></option>
+                              <option value="<?= $account['id'] ?>" <?= ($account['id'] == $account_id) ? 'selected' : '' ?>><?= $account['account_name'] ?></option>
                               <?php } ?>
                             </select>
                           </div>
                           <div class="col-auto">
+                            <label for="from" class="mt-2">From:</label>
+                          </div>
+                          <div class="col-auto">
                             <input type="date" name="from" value="<?= $from ?>" class="form-control mx-2">
+                          </div>
+                          <div class="col-auto">
+                            <label for="to" class="mt-2">To:</label>
                           </div>
                           <div class="col-auto">
                             <input type="date" name="to" value="<?= $to ?>" class="form-control mx-2">
@@ -74,7 +80,6 @@ $to = $_GET['to'] ?? '';
                       </div>
                     </div>
                     <div class="card-body table-responsive">
-                      <?php if ($account_id): ?>
                         <table class="table table-hover table-striped">
                           <thead>
                             <tr>
@@ -90,8 +95,9 @@ $to = $_GET['to'] ?? '';
                             $query = "SELECT je.entry_date, je.description, jl.debit, jl.credit
                                       FROM journal_lines jl
                                       JOIN journal_entries je ON jl.journal_entry_id = je.id
-                                      WHERE jl.account_id = $account_id AND je.company_id = $company_id";
-    
+                                      WHERE je.company_id = $company_id";
+                            
+                            if($account_id) $query .= " AND jl.account_id = $account_id";
                             if ($from) $query .= " AND je.entry_date >= '$from'";
                             if ($to) $query .= " AND je.entry_date <= '$to'";
     
@@ -100,7 +106,7 @@ $to = $_GET['to'] ?? '';
                             $res = $conn->query($query);
                             $balance = 0;
                             foreach($res as $row) {
-                              $balance += $row['debit'] - $row['credit'];
+                              $balance += $row['credit'] - $row['debit'];
                             ?>
                             <tr>
                               <td><?= $row['entry_date'] ?></td>
@@ -112,7 +118,6 @@ $to = $_GET['to'] ?? '';
                             <?php } ?>
                           </tbody>
                         </table>
-                      <?php endif; ?>
                     </div>
                   </div>
                   
