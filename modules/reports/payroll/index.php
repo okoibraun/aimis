@@ -10,8 +10,6 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-$date_month_from = date('Y-m');
-
 $query = "SELECT p.*, e.first_name, e.last_name 
   FROM payslips p 
   JOIN employees e ON p.employee_id = e.id 
@@ -25,7 +23,6 @@ if(isset($_GET['month_from'])) {
 
 if(isset($_GET['month_to'])) $query .= " AND p.month <= '{$_GET['month_to']}'";
 
-$query .= " AND p.month = '$date_month_from'";
 $query .= " ORDER BY e.last_name";
 
 $res = $conn->query($query);
