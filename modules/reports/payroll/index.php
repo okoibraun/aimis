@@ -95,7 +95,7 @@ if (!isset($_SESSION['user_id'])) {
                           ";
 
                           if(isset($_GET['month_from'])) {
-                            $from = $_GET['month_from']
+                            $from = $_GET['month_from'];
                             $query .= " AND p.month >= '$from'";
                           } else {
                             $query .= " AND p.month = '$date_month_from'";
