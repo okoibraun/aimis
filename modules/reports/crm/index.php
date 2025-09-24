@@ -66,7 +66,7 @@ $customers = $conn->query("SELECT * FROM sales_customers WHERE company_id = $com
                 <div class="card-header">
                     <h3 class="card-title">Customers</h3>
                     <div class="card-tools">
-                      <form action="" method="post" class="row">
+                      <form method="post" class="row">
                         <div class="col-auto">
                           <div class="form-group">
                             <label for="" class="mt-2">Filter</label>
@@ -77,7 +77,7 @@ $customers = $conn->query("SELECT * FROM sales_customers WHERE company_id = $com
                             <select name="type" id="" class="form-control">
                               <option value="">All</option>
                               <?php foreach(['lead', 'customer'] as $type) { ?>
-                              <option value="<?= $type ?>"><?= ucfirst($type) ?></option>
+                              <option value="<?= $type ?>" <?= isset($_POST['type']) && $_POST['type'] == $type ? 'selected' : '' ?>><?= ucfirst($type) ?></option>
                               <?php } ?>
                             </select>
                           </div>
@@ -103,7 +103,7 @@ $customers = $conn->query("SELECT * FROM sales_customers WHERE company_id = $com
                     </thead>
                     <tbody>
                       <?php foreach ($customers as $customer): ?>
-                        <?php if(isset($_POST['type']) && $_POST['type'] == $customer['customer_ype']) continue; ?>
+                        <?php if(isset($_POST['type']) && $_POST['type'] == $customer['customer_type']) continue; ?>
                       <tr>
                         <td><?= htmlspecialchars($customer['name']) ?></td>
                         <td><?= htmlspecialchars($customer['email']) ?></td>
