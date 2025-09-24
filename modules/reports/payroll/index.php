@@ -10,6 +10,25 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+$date_month_from = date('Y-m');
+
+$query = "SELECT p.*, e.first_name, e.last_name 
+  FROM payslips p 
+  JOIN employees e ON p.employee_id = e.id 
+  WHERE p.company_id = $company_id
+";
+
+if(isset($_GET['month_from'])) {
+  $from = $_GET['month_from'];
+  $query .= " AND p.month >= '$from'";
+}
+
+if(isset($_GET['month_to'])) $query .= " AND p.month <= '{$_GET['month_to']}'";
+
+$query .= " AND p.month = '$date_month_from'";
+$query .= " ORDER BY e.last_name";
+
+$res = $conn->query($query);
 
 ?>
 <!doctype html>
@@ -86,27 +105,7 @@ if (!isset($_SESSION['user_id'])) {
                       </thead>
                       <tbody>
                           <?php
-                          $date_month_from = date('Y-m');
-
-                          $query = "SELECT p.*, e.first_name, e.last_name 
-                            FROM payslips p 
-                            JOIN employees e ON p.employee_id = e.id 
-                            WHERE p.company_id = $company_id
-                          ";
-
-                          if(isset($_GET['month_from'])) {
-                            $from = $_GET['month_from'];
-                            $query .= " AND p.month >= '$from'";
-                          }
-
-                          if(isset($_GET['month_to'])) $query .= " AND p.month <= '{$_GET['month_to']}'";
-                          
-                          $query .= " AND p.month = '$date_month_from'";
-                          $query .= " ORDER BY e.last_name";
-
-                          $res = $conn->query($query);
-
-                          while ($row = $res->fetch_assoc()):
+                          foreach ($res as $row):
                           ?>
                               <tr>
                                   <td><?= $row['first_name'] . ' ' . $row['last_name'] ?></td>
@@ -123,7 +122,7 @@ if (!isset($_SESSION['user_id'])) {
                                   </td>
                               </tr>
         
-                          <?php endwhile; ?>
+                          <?php endforeach; ?>
                       </tbody>
                   </table>
                 </div>
