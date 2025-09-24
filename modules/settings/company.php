@@ -23,7 +23,7 @@ if (isset($_POST['updateCompanyInfoBtn']) && $_SERVER['REQUEST_METHOD'] === 'POS
 
     update_company_profile($company_id, $name, $industry, $address, $email, $phone);
     $company = get_company_by_id($company_id); // Refresh
-    $success = "Company settings updated.";
+    $_SESSION['success'] = "Company settings updated.";
 }
 
 if (isset($_POST['addCompanyLogoBtn']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -38,13 +38,24 @@ if (isset($_POST['addCompanyLogoBtn']) && $_SERVER['REQUEST_METHOD'] === 'POST')
           $conn->query("UPDATE companies SET logo='$company_logo_name' WHERE id=$company_id");
 
           $_SESSION['company_logo'] = $company_logo_name;
-          $success = "Company Logo Uploaded Successfully!";
+          $_SESSION['success'] = "Company Logo Uploaded Successfully!";
 
           // Log Audit
           log_audit($conn, $user_id, 'Company Logo Upload', 'Uploaded their Company Logo.');
       } else {
           $errors[] = "Failed to upload Company Logo.";
       }
+  }
+}
+
+if (isset($_POST['addAPIKeyBtn']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  $api = $_POST;
+  $api_key = $api['ai_api_key'];
+
+  $update_api_key = $conn->prepare("UPDATE companies SET ai_api_key = ? WHERE id = ?");
+  $update_api_key->bind_param("si", $api_key, $company_id);
+  if($update_api_key->execute()) {
+    $_SESSION['success'] = "AI API Key Updated Successfully";
   }
 }
 ?>
@@ -83,8 +94,11 @@ if (isset($_POST['addCompanyLogoBtn']) && $_SERVER['REQUEST_METHOD'] === 'POST')
                       <div class="card-header"><h3 class="card-title">Edit Company Info</h3></div>
                       <form method="POST">
                         <div class="card-body">
-                          <?php if (!empty($success)): ?>
-                            <div class="alert alert-success"><?= $success ?></div>
+                          <?php if (isset($_SESSION['success'])): ?>
+                            <div class="alert alert-success">
+                              <?= $_SESSION['success'] ?>
+                              <?php unset($_SESSION['success']) ?>
+                            </div>
                           <?php endif; ?>
                           <div class="form-group">
                             <label>Company Name</label>
@@ -113,6 +127,7 @@ if (isset($_POST['addCompanyLogoBtn']) && $_SERVER['REQUEST_METHOD'] === 'POST')
                       </form>
                     </div>
                   </div>
+
                   <div class="col-auto">
                     <div class="card">
                       <div class="card-header">
@@ -133,6 +148,30 @@ if (isset($_POST['addCompanyLogoBtn']) && $_SERVER['REQUEST_METHOD'] === 'POST')
                         </form>
                       </div>
                     </div>
+                  </div>
+                </div>
+
+                <div class="row mt-4 mb-2">
+                  <div class="col">
+                    <form action="" method="post" class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">
+                          AI API Settings
+                        </h3>
+                      </div>
+                      <div class="card-body">
+                        <?php $api_key = $conn->query("SELECT ai_api_key FROM companies WHERE id = $company_id")->fetch_assoc(); ?>
+                        <div class="form-group">
+                          <label for="ai_api_key" class="mb-2">API Key:</label>
+                          <input type="text" name="ai_api_key" class="form-control" value="<?= $api_key['ai_api_key'] ?>">
+                        </div>
+                      </div>
+                      <div class="card-footer">
+                        <div class="form-group float-end">
+                          <button type="submit" name="addAPIKeyBtn" class="btn btn-primary">Save</button>
+                        </div>
+                      </div>
+                    </form>
                   </div>
                 </div>
               </section>

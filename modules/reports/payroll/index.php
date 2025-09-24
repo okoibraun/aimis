@@ -2,8 +2,8 @@
 session_start();
 // Include database connection and header
 // This file should be included at the top of your PHP files to establish a database connection and include common header elements.
-include('../../config/db.php');
-include("../../functions/role_functions.php");
+include('../../../config/db.php');
+include("../../../functions/role_functions.php");
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
@@ -17,8 +17,8 @@ if (!isset($_SESSION['user_id'])) {
   <!--begin::Head-->
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>AIMIS | Employee Payslip</title>
-    <?php include_once("../../includes/head.phtml"); ?>
+    <title>AIMIS | Payroll Report</title>
+    <?php include_once("../../../includes/head.phtml"); ?>
   </head>
   <!--end::Head-->
   <!--begin::Body-->
@@ -26,10 +26,10 @@ if (!isset($_SESSION['user_id'])) {
     <!--begin::App Wrapper-->
     <div class="app-wrapper">
       <!--begin::Header-->
-      <?php include_once("../../includes/header.phtml"); ?>
+      <?php include_once("../../../includes/header.phtml"); ?>
       <!--end::Header-->
       <!--begin::Sidebar-->
-      <?php include_once("../../includes/sidebar.phtml"); ?>
+      <?php include_once("../../../includes/sidebar.phtml"); ?>
       <!--end::Sidebar-->
       <!--begin::App Main-->
       <main class="app-main">
@@ -38,14 +38,14 @@ if (!isset($_SESSION['user_id'])) {
 
           <div class="content-wrapper">
             <div class="content-header mt-3 mb-3">
-              <h2>Employee Payslips</h2>
+              <h2>Payroll Report</h2>
             </div>
 
             <div class="content">
               <div class="card">
                 <div class="card-header">
                   <h3 class="card-title">
-                    Payslips
+                    Reports
                   </h3>
                   <div class="card-tools">
                     <form method="GET" class="row">
@@ -84,7 +84,7 @@ if (!isset($_SESSION['user_id'])) {
                           $res = $conn->query("SELECT p.*, e.first_name, e.last_name 
                                               FROM payslips p 
                                               JOIN employees e ON p.employee_id = e.id 
-                                              WHERE p.month = '$filter_month' AND p.company_id = $company_id AND p.company_id = e.company_id
+                                              WHERE p.month = '$filter_month' AND p.company_id = $company_id
                                               ORDER BY e.last_name");
                           while ($row = $res->fetch_assoc()):
                           ?>
@@ -118,12 +118,12 @@ if (!isset($_SESSION['user_id'])) {
       </main>
       <!--end::App Main-->
       <!--begin::Footer-->
-      <?php include("../../includes/footer.phtml"); ?>
+      <?php include("../../../includes/footer.phtml"); ?>
       <!--end::Footer-->
     </div>
     <!--end::App Wrapper-->
     <!--begin::Script-->
-    <?php include("../../includes/scripts.phtml"); ?>
+    <?php include("../../../includes/scripts.phtml"); ?>
     <!--end::Script-->
   </body>
   <!--end::Body-->
