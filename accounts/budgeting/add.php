@@ -160,7 +160,6 @@ $products = $conn->query("SELECT * FROM sales_products ORDER BY name");
                                       <th>Description</th>
                                       <th>Qty</th>
                                       <th>Unit Price</th>
-                                      <th>Discount</th>
                                       <th>Tax Rate (%)</th>
                                       <th>Total</th>
                                       <th></th>
@@ -180,12 +179,11 @@ $products = $conn->query("SELECT * FROM sales_products ORDER BY name");
                                     <td>
                                       <input type="text" name="budget_items[]" class="form-control" required>
                                     </td>
-                                    <td><input type="text" name="item_description[]" class="form-control" required></td>
+                                    <td><input type="text" name="item_description[]" class="form-control w-35" required></td>
                                     <td><input type="number" step="0.01" name="item_quantity[]" class="form-control" value="1" onchange="reCalc()"></td>
-                                    <td><input type="number" step="0.01" name="item_unit_price[]" class="form-control" onchange="reCalc()"></td>
-                                    <td><input type="number" step="0.01" name="item_discount[]" class="form-control" value="0" onchange="reCalc()"></td>
-                                    <td><input type="number" step="0.01" name="item_tax_rate[]" class="form-control" readonly></td>
-                                    <td><input type="number" step="0.01" name="item_sub_total[]" class="form-control" readonly></td>
+                                    <td><input type="number" step="0.01" name="item_unit_price[]" class="form-control" value="0.00" onchange="reCalc()"></td>
+                                    <td><input type="number" step="0.01" name="item_tax_rate[]" class="form-control w-20" value="0.00"></td>
+                                    <td><input type="number" step="0.01" name="item_sub_total[]" class="form-control w-20" value="0.00"></td>
                                     <td><button type="button" class="btn btn-danger btn-sm removeItem">&times;</button></td>
                                 </tr>
                                 `;
@@ -222,7 +220,7 @@ $products = $conn->query("SELECT * FROM sales_products ORDER BY name");
                               <div class="card-body">
                                 <div class="form-group">
                                   <label>Total Amount</label>
-                                  <input type="number" step="0.01" name="total_amount" class="form-control" required>
+                                  <input type="number" step="0.01" name="total_amount" class="form-control" value="0.00" required>
                                 </div>
                               </div>
                             </div>
@@ -259,8 +257,9 @@ $products = $conn->query("SELECT * FROM sales_products ORDER BY name");
 
           let quantity = parseFloat(row.querySelector('input[name="item_quantity[]"]').value) || 0;
           let unitPrice = parseFloat(row.querySelector('input[name="item_unit_price[]"]').value) || 0;
-          let discountValue = parseFloat(row.querySelector('input[name="item_discount[]"]').value) || 0;
-          let subTotal = quantity * unitPrice * (1 - discountValue / 100);
+          // let discountValue = parseFloat(row.querySelector('input[name="item_discount[]"]').value) || 0;
+          // let subTotal = quantity * unitPrice * (1 - discountValue / 100);
+          let subTotal = quantity * unitPrice;
           row.querySelector('input[name="item_sub_total[]"]').value = subTotal.toFixed(2);
           total += subTotal;
         });

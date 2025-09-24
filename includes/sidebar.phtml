@@ -92,7 +92,7 @@
                 <!--end::Documents -->
                 
                 <!-- Reports -->
-                <!-- <li class="nav-item">
+                <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon bi bi-bar-chart"></i>
                         <span>Reports</span>
@@ -100,36 +100,57 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="/modules/reports/index.php" class="nav-link">
+                            <a href="/modules/reports/accounts/" class="nav-link">
                                 <i class="nav-icon bi bi-circle"></i>
-                                <p> All Reports</p>
+                                <p> Accounts</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="/modules/reports/builder.php" class="nav-link">
+                            <a href="/modules/reports/payroll/" class="nav-link">
                                 <i class="nav-icon bi bi-circle"></i>
-                                <p> Create Report</p>
+                                <p> Payroll</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="/modules/reports/schedule_list.php" class="nav-link">
+                            <a href="/modules/reports/sales/" class="nav-link">
                                 <i class="nav-icon bi bi-circle"></i>
                                 
-                                <p> My Scheduled Reports</p>
+                                <p> Sales</p>
                             </a>
                         </li>
                         
                         <li class="nav-item">
-                            <a href="/modules/reports/schedule.php" class="nav-link">
+                            <a href="/modules/reports/crm/" class="nav-link">
                                 <i class="nav-icon bi bi-circle"></i>
-                                <p> Schedule New</p>
+                                <p> CRM</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/reports/dms/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p> DMS</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/reports/production/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p> Production</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/reports/tax/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p> Tax</p>
                             </a>
                         </li>
                         
                     </ul>
-                </li> -->
+                </li>
                 <!--end::Reports-->
 
                 <!-- Audit Trail Logs -->
@@ -1002,7 +1023,7 @@
     <!-- /end Sales Menu -->
     
 
-    <?php if(in_array($user_role, ['system', 'superadmin', 'admin'])) { ?>
+    <?php if(in_array($user_role, ['system', 'superadmin'])) { ?>
     <div class="sidebar-wrapper">
         <nav class="mt-2">
             <!--begin::Sidebar Menu-->
@@ -1467,7 +1488,7 @@
                 <!--end::Documents-->
                 
                 <!-- Reports -->
-                <!-- <li class="nav-item">
+                <li class="nav-item">
                     <a href="#" class="nav-link">
                         <i class="nav-icon bi bi-bar-chart"></i>
                         <span>Reports</span>
@@ -1475,36 +1496,57 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="/modules/reports/index.php" class="nav-link">
+                            <a href="/modules/reports/accounts/" class="nav-link">
                                 <i class="nav-icon bi bi-circle"></i>
-                                <p> All Reports</p>
+                                <p> Accounts</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="/modules/reports/builder.php" class="nav-link">
+                            <a href="/modules/reports/payroll/" class="nav-link">
                                 <i class="nav-icon bi bi-circle"></i>
-                                <p> Create Report</p>
+                                <p> Payroll</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
-                            <a href="/modules/reports/schedule_list.php" class="nav-link">
+                            <a href="/modules/reports/sales/" class="nav-link">
                                 <i class="nav-icon bi bi-circle"></i>
                                 
-                                <p> My Scheduled Reports</p>
+                                <p> Sales</p>
                             </a>
                         </li>
                         
                         <li class="nav-item">
-                            <a href="/modules/reports/schedule.php" class="nav-link">
+                            <a href="/modules/reports/crm/" class="nav-link">
                                 <i class="nav-icon bi bi-circle"></i>
-                                <p> Schedule New</p>
+                                <p> CRM</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/reports/dms/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p> DMS</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/reports/production/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p> Production</p>
+                            </a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a href="/modules/reports/tax/" class="nav-link">
+                                <i class="nav-icon bi bi-circle"></i>
+                                <p> Tax</p>
                             </a>
                         </li>
                         
                     </ul>
-                </li> -->
+                </li>
                 <!--end::Reports-->
                 <?php $roles = ['admin', 'superadmin', 'system']; ?>
                 <?php if(in_array($_SESSION['role'], $roles)): ?>

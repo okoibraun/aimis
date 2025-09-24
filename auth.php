@@ -18,6 +18,7 @@ if (mysqli_num_rows($query) == 1) {
         $_SESSION['user_role'] = $user['role'];
         $_SESSION['employee_id'] = $user['employee_id'];
         $_SESSION['company_id'] = $user['company_id'];
+        if($user['company_id'] != 0) $_SESSION['company_logo'] = $conn->query("SELECT logo FROM companies WHERE id = '{$user['company_id']}'")->fetch_assoc()['logo'];
         $_SESSION['user_department'] = $user['department'];
         $_SESSION['role'] = $user['role'];
         $_SESSION['user_avatar'] = $user['avatar'];

@@ -5,7 +5,7 @@ session_start();
 include('../../config/db.php');
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../login.php");
+    header("Location: /login.php");
     exit;
 }
 
@@ -56,7 +56,11 @@ $result = $conn->query($sql);
               <table class="table table-bordered DataTable">
                   <thead>
                       <tr>
-                          <th>Employee</th><th>Department</th><th>Gross</th><th>Tax</th><th>Net</th>
+                          <th>Employee</th>
+                          <th>Department</th>
+                          <th>Gross</th>
+                          <th>Tax</th>
+                          <th>Net</th>
                       </tr>
                   </thead>
                   <tbody>
@@ -64,9 +68,9 @@ $result = $conn->query($sql);
                       <tr>
                           <td><?= $row['first_name'] . ' ' . $row['last_name'] ?></td>
                           <td><?= $row['department'] ?></td>
-                          <td>N<?= number_format($row['basic_salary'], 2) ?? 0.00; ?></td>
-                          <td>N<?= number_format($row['tax_deduction'], 2) ?? 0.00; ?></td>
-                          <td>N<?= number_format($row['net_salary'], 2) ?? 0.00; ?></td>
+                          <td>N<?= $row['basic_salary'] ? number_format($row['basic_salary'], 2) : 0.00; ?></td>
+                          <td>N<?= $row['tax_deduction'] ? number_format($row['tax_deduction'], 2) : 0.00; ?></td>
+                          <td>N<?= $row['net_salary'] ? number_format($row['net_salary'], 2) : 0.00; ?></td>
                       </tr>
                       <?php endwhile; ?>
                   </tbody>
@@ -78,10 +82,10 @@ $result = $conn->query($sql);
                         <td></td>
                         <td align="right" class="mt-4">
                           <p>
-                            <strong>Gross Total: </strong>N<?= number_format($total['total_basic_salary'], 2); ?>
+                            <strong>Gross Total: </strong>N<?= $total['total_basic_salary'] ? number_format($total['total_basic_salary'], 2) : 0.00; ?>
                           </p>
                           <p>
-                            <strong>Net Total: </strong>N<?= number_format($total['total_net_salary'], 2); ?>
+                            <strong>Net Total: </strong>N<?= $total['total_net_salary'] ? number_format($total['total_net_salary'], 2) : 0.00; ?>
                           </p>
                         </td>
                         <td></td>
