@@ -42,7 +42,7 @@ $sql = "SELECT d.*, u.name AS uploader, f.name AS folder_name
     FROM documents d 
     LEFT JOIN users u ON d.uploaded_by = u.id
     LEFT JOIN document_folders f ON d.folder_id = f.id
-    WHERE (d.title LIKE '{$keyword}' OR d.description LIKE '{$keyword}' OR d.tags LIKE '{$keyword}' OR d.ocr_text LIKE '{$keyword}')";
+    WHERE d.company_id = $company_id AND (d.title LIKE '{$keyword}' OR d.description LIKE '{$keyword}' OR d.tags LIKE '{$keyword}' OR d.ocr_text LIKE '{$keyword}')";
 
 if ($status_filter != '') {
     // $sql .= " AND d.status = ?";
@@ -55,6 +55,10 @@ if ($folder_filter > 0) {
     $sql .= " AND d.folder_id = $folder_filter";
 }
 
+if(isset($_GET['date_uploaded'])) {
+    $date_uploaded = date('Y-m-d H:i', strtotime($_GET['date_uploaded']));
+    $sql .= " AND created_at >= '$date_uploaded'";
+}
 // $stmt = $conn->query($sql);
 // $stmt->bind_param("ssss", $params);
 // $stmt->execute();
@@ -113,6 +117,9 @@ function getStatusColor($status) {
                                         <div class="form-group">
                                             <input type="text" name="q" value="<?= htmlspecialchars($_GET['q'] ?? '') ?>" placeholder="Search..." class="form-control mr-2">
                                         </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <label for="date_uploaded" class="mt-2">Uploaded Date:</label>
                                     </div>
                                     <div class="col-auto">
                                         <div class="form-group">

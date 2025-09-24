@@ -122,6 +122,7 @@ if(isset($_POST['generate'])) {
     }
 
     $_SESSION['message'] = "Payslips generated for $month.";
+    header("Location: index.php?month=$month");
 }
 ?>
 <!doctype html>

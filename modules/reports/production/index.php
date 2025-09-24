@@ -23,7 +23,7 @@ if (!isset($_SESSION['user_id'])) {
 $filter = $_POST;
 
 $query = "
-    SELECT po.*, pwo.order_code, sp.name AS product
+    SELECT po.*, pwo.order_code, pwo.id AS woid, sp.name AS product
     FROM production_output_logs po
     JOIN production_work_orders pwo ON po.work_order_id = pwo.id
     JOIN sales_products sp ON po.product_id = sp.id
@@ -111,6 +111,7 @@ $logs = $conn->query($query);
                                         <th>Batch</th>
                                         <th>Date</th>
                                         <th>Remarks</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -123,6 +124,7 @@ $logs = $conn->query($query);
                                             <td><?= $l['batch_number'] ?></td>
                                             <td><?= date('Y-m-d H:i', strtotime($l['produced_at'])) ?></td>
                                             <td><?= $l['remarks'] ?></td>
+                                            <td><a href="view.php?id=<?= $l['woid'] ?>" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></a></td>
                                         </tr>
                                     <?php endwhile; ?>
                                 </tbody>
