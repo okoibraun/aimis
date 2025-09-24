@@ -86,7 +86,7 @@ if (!isset($_SESSION['user_id'])) {
                       </thead>
                       <tbody>
                           <?php
-                          $filter_month_from = $_GET['month_from'] ?? date('Y-m');
+                          $date_month_from = date('Y-m');
 
                           $query = "SELECT p.*, e.first_name, e.last_name 
                             FROM payslips p 
@@ -94,8 +94,12 @@ if (!isset($_SESSION['user_id'])) {
                             WHERE p.company_id = $company_id
                           ";
 
-                          if($filter_month_from) $query .= " AND p.month = '$filter_month_from'";
-                          if(isset($_GET['month_to'])) $query .= " AND p.month = '$filter_month_to'";
+                          if(isset($_GET['month_from'])) {
+                            $query .= " AND p.month >= '{$_GET['month_from']}'";
+                          } else {
+                            $query .= " AND p.month = '$date_month_from'";
+                          }
+                          if(isset($_GET['month_to'])) $query .= " AND p.month <= '$filter_month_to'";
 
                           $query .= "ORDER BY e.last_name";
 
