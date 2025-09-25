@@ -152,7 +152,7 @@ if (!isset($_SESSION['user_id'])) {
                         </div>
 
                         <div class="row">
-                            <div class="col-md-8">
+                            <div class="col-md-9">
                                 <div class="card">
                                     <div class="card-header">
                                         <h5 class="card-title">Monthly Recap Report</h5>
@@ -198,26 +198,14 @@ if (!isset($_SESSION['user_id'])) {
                                                         $last_day_current_month = date('Y-m-d', strtotime("last day of this month"));
                                                         $last_month = date('Y-m', strtotime("-1 month"));
                                                         $current_month = date('Y-m');
-                                                        // // echo "First: {$first_day_of_last_month}\r\n";
-                                                        // echo "Last: {$last_month}\r\n";
-                                                        // echo "Current: {$current_month}\r\n";
-                                                        // // echo "Current: {$last_day_current_month}\r\n";
-                                                        // exit;
 
-                                                        // $payslip = $conn->query("SELECT 
-                                                        // SUM(allowances) AS total_allowances, 
-                                                        // SUM(bonuses) AS total_bonuses, 
-                                                        // SUM(deductions) AS total_deductions, 
-                                                        // SUM(net_salary) AS total_net
-                                                        // FROM payslips
-                                                        // WHERE company_id = $company_id AND generated_at BETWEEN 
-                                                        //     DATE_SUB(LAST_DAY(CURDATE()), INTERVAL 1 MONTH) + INTERVAL 1 DAY
-                                                        //     AND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))")->fetch_assoc();
+
                                                         $payslip = $conn->query("SELECT 
                                                             SUM(allowances) AS total_allowances, 
                                                             SUM(bonuses) AS total_bonuses, 
                                                             SUM(deductions) AS total_deductions, 
-                                                            SUM(net_salary) AS total_net
+                                                            SUM(net_salary) AS total_net,
+                                                            SUM(tax_deduction) AS total_tax
                                                             FROM payslips
                                                             WHERE company_id = $company_id AND generated_at >= '$first_day_of_last_month' AND generated_at <= '$last_day_of_last_month'
                                                         ")->fetch_assoc();
@@ -228,7 +216,7 @@ if (!isset($_SESSION['user_id'])) {
                                                 <!-- /.description-block -->
                                             </div>
                                             <!-- /.col -->
-                                            <div class="col-sm-3 col-6">
+                                            <div class="col-sm-2 col-6">
                                                 <div class="description-block border-right">
                                                     <!-- <span class="description-percentage text-warning">
                                                         <i class="fas fa-caret-left"></i> 0%
@@ -239,7 +227,7 @@ if (!isset($_SESSION['user_id'])) {
                                                 <!-- /.description-block -->
                                             </div>
                                             <!-- /.col -->
-                                            <div class="col-sm-3 col-6">
+                                            <div class="col-sm-2 col-6">
                                                 <div class="description-block border-right">
                                                     <!-- <span class="description-percentage text-success">
                                                         <i class="fas fa-caret-up"></i> 20%
@@ -250,13 +238,24 @@ if (!isset($_SESSION['user_id'])) {
                                                 <!-- /.description-block -->
                                             </div>
                                             <!-- /.col -->
-                                            <div class="col-sm-3 col-6">
+                                            <div class="col-sm-2 col-6">
                                                 <div class="description-block">
                                                     <!-- <span class="description-percentage text-danger">
                                                         <i class="fas fa-caret-down"></i> 18%
                                                     </span> -->
                                                     <h5 class="description-header">N<?= $payslip['total_deductions'] > 0 ? number_format($payslip['total_deductions'], 2) : 0; ?></h5>
                                                     <span class="description-text">DEDUCTIONS</span>
+                                                </div>
+                                                <!-- /.description-block -->
+                                            </div>
+                                            <!-- /.col -->
+                                            <div class="col-sm-3 col-6">
+                                                <div class="description-block">
+                                                    <!-- <span class="description-percentage text-danger">
+                                                        <i class="fas fa-caret-down"></i> 18%
+                                                    </span> -->
+                                                    <h5 class="description-header">N<?= $payslip['total_tax'] > 0 ? number_format($payslip['total_tax'], 2) : 0; ?></h5>
+                                                    <span class="description-text">TAX (PIT)</span>
                                                 </div>
                                                 <!-- /.description-block -->
                                             </div>
@@ -268,7 +267,7 @@ if (!isset($_SESSION['user_id'])) {
                                 <!-- /.card -->
                             </div>
                             <!-- /.col -->
-                             <div class="col-md-4">
+                             <div class="col-md-3">
                                 <div class="card mb-2">
                                     <div class="card-body">
                                         <p class="text-center">
@@ -559,7 +558,7 @@ if (!isset($_SESSION['user_id'])) {
                 datasets: [
                     {
                         label: 'NET SALARY',
-                        backgroundColor: 'rgba(60,141,188,0.9)',
+                        backgroundColor: 'rgba(27, 33, 202, 0.9)',
                         data: [<?= $payslip['total_net'] ?>]
                     },
                     {
@@ -569,13 +568,18 @@ if (!isset($_SESSION['user_id'])) {
                     },
                     {
                         label: 'ALLOWANCES',
-                        backgroundColor: 'red',
+                        backgroundColor: 'rgba(53, 130, 134, 0.9)',
                         data: [<?= $payslip['total_allowances'] ?>]
                     },
                     {
                         label: 'DEDUCTIONS',
                         backgroundColor: 'yellow',
                         data: [<?= $payslip['total_deductions'] ?>]
+                    },
+                    {
+                        label: 'TAX (PIT)',
+                        backgroundColor: 'red',
+                        data: [<?= $payslip['total_tax'] ?>]
                     }
                 ]
             }

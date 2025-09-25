@@ -103,7 +103,8 @@ if(isset($_POST['generate'])) {
 
         $tax = calculate_tax($gross_salary);
         $nin_contrib = calculate_nin_contribution($gross_salary);
-        $total_deductions = $deductions + $tax + $nin_contrib;
+        // $total_deductions = $deductions + $tax + $nin_contrib;
+        $total_deductions = $deductions + $tax;
 
         $net = $gross_salary - $total_deductions;
 
