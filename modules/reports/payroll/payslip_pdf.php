@@ -1,6 +1,6 @@
 <?php
-require_once('../../vendor/tecnickcom/tcpdf/tcpdf.php');
-include '../../config/db.php';
+require_once('../../../vendor/tecnickcom/tcpdf/tcpdf.php');
+include '../../../config/db.php';
 
 if (!isset($_GET['id'])) {
     die("Invalid payslip ID.");
@@ -65,12 +65,8 @@ $html = '
         <th align="right">' . number_format($row['net_salary'], 2) . '</th>
     </tr>
     <tr>
-        <td>Tax Deduction</td>
+        <td>Tax Deduction (personal income tax)</td>
         <td align="right">-' . number_format($row['tax_deduction'], 2) . '</td>
-    </tr>
-    <tr>
-        <td>NIN/Social Contribution</td>
-        <td align="right">-' . number_format($row['nin_contribution'], 2) . '</td>
     </tr>
 
 </table>

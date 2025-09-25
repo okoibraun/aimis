@@ -95,7 +95,6 @@ $res = $conn->query($query);
                               <th>Bonuses</th>
                               <th>Deductions</th>
                               <th>Tax Deduction</th>
-                              <th>Social Contribution (NIN)</th>
                               <th>Net</th>
                               <th>Action</th>
                           </tr>
@@ -112,7 +111,6 @@ $res = $conn->query($query);
                                   <td><?= number_format($row['bonuses'], 2) ?></td>
                                   <td><?= number_format($row['deductions'], 2) ?></td>
                                   <td align="right">-<?= number_format($row['tax_deduction'], 2) ?></td>
-                                  <td align="right">-<?= number_format($row['nin_contribution'], 2) ?></td>
                                   <td><strong><?= number_format($row['net_salary'], 2) ?></strong></td>
                                   <td>
                                       <a href="payslip_pdf.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-secondary">Download PDF</a>
