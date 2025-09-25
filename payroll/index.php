@@ -192,10 +192,10 @@ if (!isset($_SESSION['user_id'])) {
                                                         <i class="fas fa-caret-up"></i> 17%
                                                     </span> -->
                                                     <?php
-                                                        // $first_day_of_last_month = date('Y-m-d', strtotime('first day of last month'));
-                                                        // $last_day_of_last_month = date('Y-m-d', strtotime('last day of last month'));
-                                                        // $first_day_current_month = date('Y-m-d', strtotime("first day of this month"));
-                                                        // $last_day_current_month = date('Y-m-d', strtotime("last day of this month"));
+                                                        $first_day_of_last_month = date('Y-m-d', strtotime('first day of last month'));
+                                                        $last_day_of_last_month = date('Y-m-d', strtotime('last day of last month'));
+                                                        $first_day_current_month = date('Y-m-d', strtotime("first day of this month"));
+                                                        $last_day_current_month = date('Y-m-d', strtotime("last day of this month"));
                                                         $last_month = date('Y-m', strtotime("-1 month"));
                                                         $current_month = date('Y-m');
 
@@ -207,7 +207,7 @@ if (!isset($_SESSION['user_id'])) {
                                                             SUM(net_salary) AS total_net,
                                                             SUM(tax_deduction) AS total_tax
                                                             FROM payslips
-                                                            WHERE company_id = $company_id AND generated_at >= '$last_month'
+                                                            WHERE company_id = $company_id AND generated_at >= '$first_day_of_last_month' AND generated_at <= '$last_day_of_last_month'
                                                         ")->fetch_assoc();
                                                     ?>
                                                     <h5 class="description-header">N<?= $payslip['total_net'] > 0 ? number_format($payslip['total_net'], 2) : 0 ?></h5>
@@ -216,7 +216,7 @@ if (!isset($_SESSION['user_id'])) {
                                                 <!-- /.description-block -->
                                             </div>
                                             <!-- /.col -->
-                                            <div class="col-sm-3 col-6">
+                                            <div class="col-sm-2 col-6">
                                                 <div class="description-block border-right">
                                                     <!-- <span class="description-percentage text-warning">
                                                         <i class="fas fa-caret-left"></i> 0%
@@ -227,7 +227,7 @@ if (!isset($_SESSION['user_id'])) {
                                                 <!-- /.description-block -->
                                             </div>
                                             <!-- /.col -->
-                                            <div class="col-sm-3 col-6">
+                                            <div class="col-sm-2 col-6">
                                                 <div class="description-block border-right">
                                                     <!-- <span class="description-percentage text-success">
                                                         <i class="fas fa-caret-up"></i> 20%
@@ -238,7 +238,7 @@ if (!isset($_SESSION['user_id'])) {
                                                 <!-- /.description-block -->
                                             </div>
                                             <!-- /.col -->
-                                            <div class="col-sm-3 col-6">
+                                            <div class="col-sm-2 col-6">
                                                 <div class="description-block">
                                                     <!-- <span class="description-percentage text-danger">
                                                         <i class="fas fa-caret-down"></i> 18%
