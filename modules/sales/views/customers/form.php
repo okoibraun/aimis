@@ -93,7 +93,7 @@ if ($is_edit) {
                 </form>
             </section>
 
-          <?php include("_modal.php"); ?>
+          
         </div>
       </div>
       </main>

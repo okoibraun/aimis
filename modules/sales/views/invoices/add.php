@@ -17,6 +17,9 @@ if (!in_array($_SESSION['role'], super_roles()) && !in_array($page, $user_permis
     exit;
 }
 
+$orderid = $_GET['oid'] ?? null;
+$quotationid = $_GET['qid'] ?? null;
+
 $customers = $db->query("SELECT id, name FROM sales_customers WHERE company_id = $company_id AND customer_type = 'customer'");
 $leads = $conn->query("SELECT * FROM sales_customers WHERE company_id = $company_id AND customer_type = 'lead'");
 $orders = $db->query("SELECT * FROM sales_orders WHERE company_id = $company_id");
@@ -153,9 +156,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="form-group">
                             <label for="quotation_id">Linked Quotation (Optional)</label>
                             <select name="quotation_id" id="selectQuotation" class="form-control select2" onchange="getQuoteValues()" required>
-                                <option value="<?= intval("0"); ?>" selected>-- Select Quotation --</option>
+                                <option value="<?= intval("0"); ?>" <?= (!isset($quotationid)) ? 'selected' : '' ?>>-- Select Quotation --</option>
                                 <?php foreach ($quotations as $quotation): ?>
-                                <option value="<?= $quotation['id'] ?>" data-tax="<?= $quotation['tax']; ?>" data-whttaxamount="<?= $quotation['wht_tax_amount']; ?>" data-total="<?= $quotation['total']; ?>"><?= $quotation['quote_number'] ?></option>
+                                <option value="<?= $quotation['id'] ?>" data-tax="<?= $quotation['tax']; ?>" data-whttaxamount="<?= $quotation['wht_tax_amount']; ?>" data-total="<?= $quotation['total']; ?>" <?= (isset($quotationid) && $quotationid == $quotation['id']) ? 'selected' : '' ?>>
+                                  <?= $quotation['quote_number'] ?> - <?= $conn->query("SELECT name FROM sales_customers WHERE id = '{$quotation['customer_id']}' AND company_id = $company_id")->fetch_assoc()['name'] ?>
+                                </option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -165,9 +170,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="form-group">
                           <label for="order_id">Linked Order (Optional)</label>
                           <select name="order_id" id="selectOrder" class="form-control select2" onchange="getOrderValues()">
-                              <option value="<?= intval("0"); ?>" selected>-- Select Order --</option>
+                              <option value="<?= intval("0"); ?>" <?= (!isset($orderid)) ? 'selected' : '' ?>>-- Select Order --</option>
                               <?php foreach ($orders as $ord): ?>
-                              <option value="<?= $ord['id'] ?>" data-taxamount="<?= $ord['vat_tax_amount']; ?>" data-whttaxamount="<?= $ord['wht_tax_amount']; ?>" data-totalamount="<?= $ord['total_amount']; ?>"><?= $ord['order_number'] ?></option>
+                              <option value="<?= $ord['id'] ?>" data-taxamount="<?= $ord['vat_tax_amount']; ?>" data-whttaxamount="<?= $ord['wht_tax_amount']; ?>" data-totalamount="<?= $ord['total_amount']; ?>" <?= (isset($orderid) && $orderid == $ord['id']) ? 'selected' : '' ?>>
+                                <?= $ord['order_number'] ?> - <?= $conn->query("SELECT name FROM sales_customers WHERE id = '{$ord['customer_id']}' AND company_id = $company_id")->fetch_assoc()['name'] ?>
+                              </option>
                               <?php endforeach; ?>
                           </select>
                         </div>

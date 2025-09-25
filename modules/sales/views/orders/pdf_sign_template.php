@@ -1,4 +1,6 @@
-<h1>Invoice #<?= $order['order_number'] ?> (Signed)</h1>
+<?php $logo = $conn->query("SELECT logo FROM companies WHERE id = $company_id")->fetch_assoc()['logo']; ?>
+<img src="/uploads/company/<?= htmlspecialchars($logo) ?>" alt="Company Logo" height="107">
+<h1>Order #: <?= $order['order_number'] ?> (Signed)</h1>
 <p><strong>Date:</strong> <?= $order['order_date'] ?></p>
 
 <h3>Customer:</h3>
@@ -18,7 +20,6 @@
       <th><strong>Qty</strong></th>
       <th><strong>Unit Price</strong></th>
       <th><strong>Discount %</strong></th>
-      <th><strong>Tax Rate %</strong></th>
       <th><strong>Subtotal</strong></th>
     </tr>
   </thead>
@@ -34,7 +35,6 @@
       <td><?= $item['quantity'] ?></td>
       <td>N<?= number_format($item['unit_price'], 2) ?></td>
       <td><?= $item['discount_percent'] ?>%</td>
-      <td><?= $item['tax_rate'] ?>%</td>
       <td>N<?= number_format($subtotal, 2) ?></td>
     </tr>
     <?php endforeach; ?>
@@ -43,7 +43,7 @@
 
 <h3>Total Summary:</h3>
 <p>Subtotal: N<?= number_format($total, 2) ?></p>
-<p>Tax: N<?= number_format($order['tax_amount'], 2) ?></p>
+<p>Tax: N<?= number_format($order['vat_tax_amount'], 2) ?></p>
 <h2>Total: N<?= number_format($order['total_amount'], 2) ?></h2>
 
 <?php if (!empty($order['notes'])): ?>

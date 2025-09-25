@@ -95,13 +95,16 @@ if(in_array($_SESSION['user_role'], system_users())) {
                         } ?>"><?= ucfirst($order['status']) ?></td>
                         <td><?= number_format($order['total_amount'], 2) ?></td>
                         <td>
-                          <a href="order?id=<?= $order['id']; ?>" class="btn btn-info btn-xs">
+                          <a href="order?id=<?= $order['id']; ?>" class="btn btn-info btn-xs" title="View Order">
                             <i class="fas fa-eye"></i>
                           </a>
-                          <a href="orders?action=form&id=<?= $order['id'] ?>" class="btn btn-xs btn-primary">
+                          <a href="orders?action=form&id=<?= $order['id'] ?>" class="btn btn-xs btn-primary" title="Edit Order">
                             <i class="fas fa-edit"></i>
                           </a>
-                          <a href="orders?action=delete&id=<?= $order['id'] ?>" class="btn btn-xs btn-danger" onclick="return confirm('Delete this order?')">
+                          <a href="../invoices/add.php?oid=<?= $order['id'] ?>" class="btn btn-xs btn-warning" title="Create Invoice for this Order">
+                            <i class="fas fa-calculator"></i>
+                          </a>
+                          <a href="orders?action=delete&id=<?= $order['id'] ?>" class="btn btn-xs btn-danger" onclick="return confirm('Delete this order?')" title="Delete Order">
                             <i class="fas fa-trash"></i>
                           </a>
                         </td>
@@ -112,8 +115,6 @@ if(in_array($_SESSION['user_role'], system_users())) {
                 </div>
             </div>
           </section>
-
-          <?php include("_modal.php"); ?>
         </div>
       </div>
       </main>

@@ -93,13 +93,16 @@ if(in_array($_SESSION['user_role'], system_users())) {
                             } ?>"><?= ucfirst($quote['status']) ?></span></td>
                         <td>N<?= number_format($quote['total'], 2) ?></td>
                         <td>
-                          <a href="quotation?id=<?= $quote['id'] ?>" class="btn btn-xs btn-info">
+                          <a href="quotation?id=<?= $quote['id'] ?>" class="btn btn-xs btn-info" title="View Quotation">
                             <i class="fas fa-eye"></i>
                           </a>
-                          <a href="edit?id=<?= $quote['id'] ?>" class="btn btn-xs btn-primary">
+                          <a href="edit?id=<?= $quote['id'] ?>" class="btn btn-xs btn-primary" title="Edit Quotation">
                             <i class="fas fa-edit"></i>
                           </a>
-                          <a href="form?action=delete&id=<?= $quote['id'] ?>" class="btn btn-xs btn-danger" onclick="return confirm('Delete this quotation?')">
+                          <a href="../invoices/add.php?qid=<?= $quote['id'] ?>" class="btn btn-xs btn-warning" title="Create Invoice for this Quotation">
+                            <i class="fas fa-calculator"></i>
+                          </a>
+                          <a href="form?action=delete&id=<?= $quote['id'] ?>" class="btn btn-xs btn-danger" onclick="return confirm('Delete this quotation?')" title="Delete Quotation">
                             <i class="fas fa-trash"></i>
                           </a>
                         </td>
@@ -111,7 +114,7 @@ if(in_array($_SESSION['user_role'], system_users())) {
             </div>
           </section>
 
-          <?php include("_modal.php"); ?>
+          
         </div>
       </div>
       </main>
