@@ -125,7 +125,7 @@ switch ($action) {
 
     $pdf = new TCPDF();
     $pdf->SetCreator('AIMIS');
-    $pdf->SetTitle("Invoice #{$order['order_number']}");
+    $pdf->SetTitle("Invoice #: {$order['order_number']}");
     $pdf->AddPage();
 
     ob_start();
@@ -152,7 +152,7 @@ switch ($action) {
 
     $pdf = new TCPDF();
     $pdf->SetCreator('AIMIS');
-    $pdf->SetTitle("Signed Invoice #{$order['order_number']}");
+    $pdf->SetTitle("Signed Invoice #: {$order['order_number']}");
     $pdf->AddPage();
 
     ob_start();

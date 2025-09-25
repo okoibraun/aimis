@@ -64,9 +64,15 @@ if ($action === 'pdf') {
     LEFT JOIN sales_customers oc ON o.customer_id = oc.id
     LEFT JOIN sales_customers ql ON q.lead_id = ql.id
     WHERE i.id = $id AND i.company_id = $company_id")->fetch_assoc();
-
-    // $customer = $db->query("SELECT * FROM sales_customers WHERE id = {$invoice['customer_id']}")->fetch_assoc();
+    
+    // Payments
     $payments = $db->query("SELECT * FROM sales_invoice_payments WHERE invoice_id = $id");
+    // Logo
+    $logo = $conn->query("SELECT logo FROM companies WHERE id = $company_id")->fetch_assoc()['logo'];
+    // Customer
+    $customer_name = $invoice['customer_name'] ?? $invoice['lead_name'] ?? $invoice['order_cname'] ?? $invoice['quote_cname'] ?? $invoice['quote_lname'];
+    $customer_email = $invoice['customer_email'] ?? $invoice['lead_email'] ?? $invoice['order_cemail'] ?? $invoice['quote_cemail'] ?? $invoice['quote_lemail'];
+    $customer_phone = $invoice['customer_phone'] ?? $invoice['lead_phone'] ?? $invoice['order_cphone'] ?? $invoice['quote_cphone'] ?? $invoice['quote_lphone'];
 
     require_once '../../../../vendor/tecnickcom/tcpdf/tcpdf.php';
 
@@ -77,7 +83,6 @@ if ($action === 'pdf') {
     $pdf->SetMargins(15, 20, 15);
     $pdf->AddPage();
 
-    $logo = $conn->query("SELECT logo FROM companies WHERE id = $company_id")->fetch_assoc()['logo'];
     if(!empty($logo)) {
         $logoPath = "../../../../uploads/company/{$logo}";
         if (file_exists($logoPath)) {
@@ -87,16 +92,14 @@ if ($action === 'pdf') {
         }
     }
 
-    $customer_name = $invoice['customer_name'] ?? $invoice['lead_name'] ?? $invoice['order_cname'] ?? $invoice['quote_cname'] ?? $invoice['quote_lname'];
-    $customer_email = $invoice['customer_email'] ?? $invoice['lead_email'] ?? $invoice['order_cemail'] ?? $invoice['quote_cemail'] ?? $invoice['quote_lemail'];
-    $customer_phone = $invoice['customer_phone'] ?? $invoice['lead_phone'] ?? $invoice['order_cphone'] ?? $invoice['quote_cphone'] ?? $invoice['quote_lphone'];
-
     // HTML content
     $html = "
       <h1>Invoice: {$invoice['invoice_number']}</h1>
-      <p><strong>Date:</strong> {$invoice['invoice_date']}<br>
-         <strong>Due:</strong> {$invoice['due_date']}<br>
-         <strong>Status:</strong> {$invoice['status']}</p>
+      <p>
+        <strong>Date:</strong> {$invoice['invoice_date']}<br>
+        <strong>Due:</strong> {$invoice['due_date']}<br>
+        <strong>Status:</strong> {$invoice['status']}
+      </p>
 
       <h3>Bill To:</h3>
       <p>
@@ -108,9 +111,9 @@ if ($action === 'pdf') {
       <h3>Invoice Summary:</h3>
       <table border='1' cellpadding='5'>
         <tr><th>Description</th><th>Amount</th></tr>
-        <tr><td>Total</td><td>$" . number_format($invoice['total_amount'], 2) . "</td></tr>
-        <tr><td>Paid</td><td>$" . number_format($invoice['payment_received'], 2) . "</td></tr>
-        <tr><td><strong>Balance</strong></td><td><strong>$" . number_format($invoice['total_amount'] - $invoice['payment_received'], 2) . "</strong></td></tr>
+        <tr><td>Total</td><td>N" . number_format($invoice['total_amount'], 2) . "</td></tr>
+        <tr><td>Paid</td><td>N" . number_format($invoice['payment_received'], 2) . "</td></tr>
+        <tr><td><strong>Balance</strong></td><td><strong>N" . number_format($invoice['total_amount'] - $invoice['payment_received'], 2) . "</strong></td></tr>
       </table>
 
       <br><br>

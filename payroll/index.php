@@ -55,7 +55,7 @@ if (!isset($_SESSION['user_id'])) {
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-end mt-3">
                                     <li class="breadcrumb-item"><a href="/">Home</a></li>
-                                    <li class="breadcrumb-item active">Reports</li>
+                                    <li class="breadcrumb-item active">Dashboard</li>
                                 </ol>
                             </div><!-- /.col -->
                         </div><!-- /.row -->
@@ -192,17 +192,37 @@ if (!isset($_SESSION['user_id'])) {
                                                         <i class="fas fa-caret-up"></i> 17%
                                                     </span> -->
                                                     <?php
+                                                        $first_day_of_last_month = date('Y-m-d', strtotime('first day of last month'));
+                                                        $last_day_of_last_month = date('Y-m-d', strtotime('last day of last month'));
+                                                        $first_day_current_month = date('Y-m-d', strtotime("first day of this month"));
+                                                        $last_day_current_month = date('Y-m-d', strtotime("last day of this month"));
+                                                        $last_month = date('Y-m', strtotime("-1 month"));
+                                                        $current_month = date('Y-m');
+                                                        // // echo "First: {$first_day_of_last_month}\r\n";
+                                                        // echo "Last: {$last_month}\r\n";
+                                                        // echo "Current: {$current_month}\r\n";
+                                                        // // echo "Current: {$last_day_current_month}\r\n";
+                                                        // exit;
+
+                                                        // $payslip = $conn->query("SELECT 
+                                                        // SUM(allowances) AS total_allowances, 
+                                                        // SUM(bonuses) AS total_bonuses, 
+                                                        // SUM(deductions) AS total_deductions, 
+                                                        // SUM(net_salary) AS total_net
+                                                        // FROM payslips
+                                                        // WHERE company_id = $company_id AND generated_at BETWEEN 
+                                                        //     DATE_SUB(LAST_DAY(CURDATE()), INTERVAL 1 MONTH) + INTERVAL 1 DAY
+                                                        //     AND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))")->fetch_assoc();
                                                         $payslip = $conn->query("SELECT 
-                                                        SUM(allowances) AS total_allowances, 
-                                                        SUM(bonuses) AS total_bonuses, 
-                                                        SUM(deductions) AS total_deductions, 
-                                                        SUM(net_salary) AS total_net
-                                                        FROM payslips
-                                                        WHERE company_id = $company_id AND generated_at BETWEEN 
-                                                            DATE_SUB(LAST_DAY(CURDATE()), INTERVAL 1 MONTH) + INTERVAL 1 DAY
-                                                            AND LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))")->fetch_assoc();
+                                                            SUM(allowances) AS total_allowances, 
+                                                            SUM(bonuses) AS total_bonuses, 
+                                                            SUM(deductions) AS total_deductions, 
+                                                            SUM(net_salary) AS total_net
+                                                            FROM payslips
+                                                            WHERE company_id = $company_id AND generated_at >= '$first_day_of_last_month' AND generated_at <= '$last_day_of_last_month'
+                                                        ")->fetch_assoc();
                                                     ?>
-                                                    <h5 class="description-header">N<?= $payslip['total_net'] > 0 ? number_format($payslip['total_net'], 2) : 0; ?></h5>
+                                                    <h5 class="description-header">N<?= $payslip['total_net'] > 0 ? number_format($payslip['total_net'], 2) : 0 ?></h5>
                                                     <span class="description-text">NET SALARY</span>
                                                 </div>
                                                 <!-- /.description-block -->

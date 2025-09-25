@@ -96,7 +96,7 @@ if(in_array($_SESSION['user_role'], system_users())) {
             </div>
           </section>
 
-          <?php include("_modal.php"); ?>
+          
         </div>
       </div>
       </main>

@@ -154,7 +154,7 @@ $user_count = $conn->query("SELECT COUNT(*) as total FROM users WHERE company_id
             </div>
             <!--end::Row-->
             <div class="row">
-              <div class="col-6">
+              <div class="col">
                 <?php $today = date('Y-m-d H:i', strtotime(date('Y-m-d H:i'))); ?>
                 <?php $reminders = $conn->query("SELECT * FROM crm_reminders WHERE company_id = $company_id AND user_id = $user_id AND is_done = 0 ORDER BY due_at DESC"); ?>
                 <div class="card">

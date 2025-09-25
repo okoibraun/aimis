@@ -115,7 +115,7 @@ if ($is_edit) {
                 </div>
             </section>
 
-          <?php include("_modal.php"); ?>
+          
         </div>
       </div>
       </main>

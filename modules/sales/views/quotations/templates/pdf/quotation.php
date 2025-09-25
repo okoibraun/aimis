@@ -12,8 +12,8 @@
 </head>
 <body>
   <?php $logo = $conn->query("SELECT logo FROM companies WHERE id = $company_id")->fetch_assoc()['logo']; ?>
-  <img src="http://aimis.test/uploads/company/<?= htmlspecialchars($logo) ?>" alt="Company Logo" height="107">
-  <h2>Quotation #<?= $quotation['quote_number'] ?></h2>
+  <img src="http://<?= $_SERVER['HTTP_HOST'] ?>/uploads/company/<?= htmlspecialchars($logo) ?>" alt="Company Logo" height="107">
+  <h2>Quotation #: <?= $quotation['quote_number'] ?></h2>
   <p>Date: <?= $quotation['quotation_date'] ?></p>
   <p>Customer: <?= htmlspecialchars($customer['name']) ?></p>
 
